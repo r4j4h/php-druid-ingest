@@ -1,0 +1,29 @@
+{
+    "name": "r4j4h/php-druid-ingest",
+    "description": "PHP Classes to wrap ingestion of data into Druid",
+    "keywords": ["druid", "indexing", "ingestion", "overlord"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jasmine Hegman",
+            "email": "hegpetz@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0",
+        "react/promise": "~1.0",
+        "bcncommerce/json-stream": "*",
+        "guzzle/guzzle": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "PhpDruidIngest\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "PhpDruidIngest\\": "tests/"
+        }
+    }
+}
