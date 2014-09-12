@@ -14,7 +14,7 @@ use Symfony\Component\Console\Input\InputDefinition;
  *
  * @author Fabien Potencier <fabien@symfony.com>
  */
-class IngestCommand extends Command
+abstract class IngestCommand extends Command
 {
 
     /**
@@ -38,11 +38,7 @@ HELPBLURB
         ;
     }
 
-
-    protected function ingest($formattedStartTime, $formattedEndTime, InputInterface $input, OutputInterface $output)
-    {
-        $output->writeln("This is a base class. Extend me and do some work here!");
-    }
+    abstract protected function ingest($formattedStartTime, $formattedEndTime, InputInterface $input, OutputInterface $output);
 
     /**
      * {@inheritdoc}
