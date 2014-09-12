@@ -28,7 +28,7 @@ class ReferralBatchIngester {
      * @param string $end ISO DateTime for end of ingestion window
      * @return string
      */
-    public function ingest($start = '2000-01-01 00:00:01', $end = '3030-01-01 00:00:01')
+    public function ingest($start = '2000-01-01T00:00:01', $end = '3030-01-01T00:00:01')
     {
         $dataBatch = $this->fetch( $start, $end );
 
