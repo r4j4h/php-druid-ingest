@@ -54,7 +54,8 @@ HELPBLURB
         try {
 
             $response = $ingester->ingest( $formattedStartTime, $formattedEndTime );
-            var_dump( $response );
+
+            $output->writeln( $response );
 
         } catch ( \Exception $e ) {
             throw $e;
