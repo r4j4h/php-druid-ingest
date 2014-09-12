@@ -45,8 +45,7 @@ class ReferralBatchIngester {
 
         /* check connection */
         if ($mysqli->connect_errno) {
-            printf("Connect failed: %s\n", $mysqli->connect_error);
-            exit();
+            throw new \Exception( sprintf("Connect failed: %s\n", $mysqli->connect_error) );
         }
 
         echo "Connected.\n";

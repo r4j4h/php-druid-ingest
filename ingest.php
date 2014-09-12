@@ -2,13 +2,19 @@
 
 require_once('vendor/autoload.php');
 
-$ingester = new PhpDruidIngest\ReferralBatchIngester();
+date_default_timezone_set('America/Denver');
 
-$ingester->setMySqlCredentials("devdb101", "webpt_druid", "2x0hKHdXNBrXDMJ", "dev_app_webpt_com");
+use Symfony\Component\Console\Application;
 
-$response = $ingester->ingest('2008-01-01 00:00:01', '2009-01-01 00:00:01');
+use ReferralIngester\Command\IngestCommand;
 
-var_dump( $response );
 
+$console = new Application();
+
+
+$console->add( new IngestCommand() );
+
+
+$console->run();
 
 
