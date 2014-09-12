@@ -38,8 +38,11 @@ class IngestCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $startTime = new \DateTime( ( $input->getArgument('start') ) );
-        $endTime = new \DateTime( ( $input->getArgument('end') ) );
+        $inputStart = ( $input->getArgument('start') );
+        $inputEnd = ( $input->getArgument('end') );
+
+        $startTime = new \DateTime( $inputStart );
+        $endTime = new \DateTime( $inputEnd );
 
         $formattedStartTime = $startTime->format(DATE_ISO8601);
         $formattedEndTime = $endTime->format(DATE_ISO8601);
@@ -51,14 +54,12 @@ class IngestCommand extends Command
         $output->write( "\n" );
 
         // TODO Move credentials to config file
-
-
         $ingester = new \PhpDruidIngest\ReferralBatchIngester();
 
         $ingester->setMySqlCredentials("devdb101", "webpt_druid", "2x0hKHdXNBrXDMJ", "dev_app_webpt_com");
 
         try {
-            $response = $ingester->ingest( $startTime, $endTime );
+            $response = $ingester->ingest( $formattedStartTime, $formattedEndTime );
             var_dump( $response );
 
         } catch ( \Exception $e ) {
