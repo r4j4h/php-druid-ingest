@@ -6,7 +6,6 @@ namespace ReferralIngester\Command;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputDefinition;
 
@@ -18,7 +17,6 @@ use Symfony\Component\Console\Input\InputDefinition;
 class IngestCommand extends Command
 {
 
-
     /**
      * {@inheritdoc}
      */
@@ -28,10 +26,23 @@ class IngestCommand extends Command
             ->setName('ingest')
             ->setDescription('Run hardcoded ingestion task for the given time window')
             ->setDefinition($this->createDefinition())
-            ->setHelp("help infoo yo")
+            ->setHelp(<<<HELPBLURB
+Examples:
+Dates:
+\t<info>php ingest.php ingest 2008-01-01 2009-01-01</info>
+Dates with Time:
+\t<info>php ingest.php ingest 2008-01-01T01:30:00 2009-01-01T04:20:00 -v</info>
+
+HELPBLURB
+            );
         ;
     }
 
+
+    protected function ingest($formattedStartTime, $formattedEndTime, InputInterface $input, OutputInterface $output)
+    {
+        $output->writeln("This is a base class. Extend me and do some work here!");
+    }
 
     /**
      * {@inheritdoc}
@@ -53,24 +64,8 @@ class IngestCommand extends Command
         }
         $output->write( "\n" );
 
-        // TODO Move credentials to config file
-        $ingester = new \PhpDruidIngest\ReferralBatchIngester();
+        $this->ingest($formattedStartTime, $formattedEndTime, $input, $output);
 
-        $ingester->setMySqlCredentials("devdb101", "webpt_druid", "2x0hKHdXNBrXDMJ", "dev_app_webpt_com");
-
-        try {
-            $response = $ingester->ingest( $formattedStartTime, $formattedEndTime );
-            var_dump( $response );
-
-        } catch ( \Exception $e ) {
-            //$output->writeln('<error>' . $e . '</error>');
-            throw $e;
-        }
-
-
-//        $dir = $input->getArgument('dir');
-
-//        $output->writeln(sprintf('Dir listing for <info>%s</info>', $dir));
     }
 
 
@@ -86,7 +81,7 @@ class IngestCommand extends Command
     /**
      * {@inheritdoc}
      */
-    private function createDefinition()
+    protected function createDefinition()
     {
         return new InputDefinition(array(
             new InputArgument('start',  InputArgument::REQUIRED,    'Start Time of Ingestion Window as ISO String'),
