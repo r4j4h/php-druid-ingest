@@ -16,7 +16,7 @@ if  ( !isset( $configuration['referral-ingestion'] ) )
     throw new \Exception('Malformed or missing configuration. Need referral-ingestion configuration.');
 }
 
-$referralIngestCommandDbConfig = $configuration['referral-ingestion']['db'];
+$referralIngestCommandDbConfig = $configuration['referral-ingestion']['app-database'];
 
 $configuredIngestionCommand = new ReferralIngestCommand( $referralIngestCommandDbConfig );
 
@@ -24,8 +24,6 @@ $configuredIngestionCommand = new ReferralIngestCommand( $referralIngestCommandD
 $console = new Application();
 
 $console->add( $configuredIngestionCommand );
-
-$console->add( new ReferralIngester\Command\IngestCommand() );
 
 $console->run();
 

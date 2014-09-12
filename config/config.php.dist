@@ -1,8 +1,12 @@
 <?php
 
 return array(
-    'host' => '',
-    'user' => '',
-    'pass' => '',
-    'db'   => '',
+    'referral-ingestion' => array(
+        'app-database' => array(
+            'host' => '',
+            'user' => '',
+            'pass' => '',
+            'db'   => '',
+        )
+    )
 );
