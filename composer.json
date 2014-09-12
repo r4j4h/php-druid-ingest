@@ -15,10 +15,12 @@
         "react/promise": "~1.0",
         "bcncommerce/json-stream": "*",
         "guzzle/guzzle": "*"
+        "symfony/console": "2.5.4",
     },
     "autoload": {
         "psr-4": {
-            "PhpDruidIngest\\": "src/"
+            "PhpDruidIngest\\": "src/",
+            "ReferralIngester\\Command\\": "clicommands/"
         }
     },
     "autoload-dev": {
