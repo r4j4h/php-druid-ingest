@@ -3,6 +3,7 @@
 namespace PhpDruidIngest;
 
 use mysqli;
+date_default_timezone_set('America/Denver');
 
 class ReferralBatchIngester {
 
@@ -18,7 +19,27 @@ class ReferralBatchIngester {
         $this->db = $db;
     }
 
-    public function ingest() {
+
+
+    /**
+     * Ingest data into druid.
+     *
+     * @param string $start ISO DateTime for start of ingestion window
+     * @param string $end ISO DateTime for end of ingestion window
+     * @return string
+     */
+    public function ingest($start = '2000-01-01 00:00:01', $end = '3030-01-01 00:00:01')
+    {
+        $dataBatch = $this->fetch( $start, $end );
+
+        return "Fetched " . count($dataBatch) . " referrals.";
+
+
+    }
+
+
+    public function fetch($start, $end)
+    {
 
         $mysqli = new mysqli($this->host, $this->user, $this->pass, $this->db);
 
@@ -28,35 +49,57 @@ class ReferralBatchIngester {
             exit();
         }
 
-        /* Create table doesn't return a resultset */
-        if ($mysqli->query("CREATE TEMPORARY TABLE myCity LIKE City") === TRUE) {
-            printf("Table myCity successfully created.\n");
-        }
+        echo "Connected.\n";
+
+        $preparedQuery = $this->prepareQuery( $this->physicianQuery, $start, $end );
+
+//        echo $start . "\n";
+//        echo $end . "\n";
+//        echo $preparedQuery;
 
         /* Select queries return a resultset */
-        if ($result = $mysqli->query("SELECT Name FROM City LIMIT 10")) {
-            printf("Select returned %d rows.\n", $result->num_rows);
+        if ($result = $mysqli->query( $preparedQuery, MYSQLI_USE_RESULT )) {
+
+
+            while ($row = $result->fetch_array())
+            {
+                $rows[] = $row;
+            }
 
             /* free result set */
             $result->close();
-        }
 
-        /* If we have to retrieve large amount of data we use MYSQLI_USE_RESULT */
-        if ($result = $mysqli->query("SELECT * FROM City", MYSQLI_USE_RESULT)) {
-
-            /* Note, that we can't execute any functions which interact with the
-               server until result set was closed. All calls will return an
-               'out of sync' error */
-            if (!$mysqli->query("SET @a:='this will not work'")) {
-                printf("Error: %s\n", $mysqli->error);
-            }
-            $result->close();
         }
 
         $mysqli->close();
 
+        return $rows;
 
-        return 'hey';
+    }
+
+
+    /**
+     * Bind the start and end ingestion date windows to a query.
+     *
+     * @param String $query Query with {STARTDATE} and {ENDDATE} for value substituion
+     * @param String $start ISO Date Time string
+     * @param String $end ISO Date Time string
+     * @return String Prepared query string
+     */
+    public function prepareQuery($query, $start, $end)
+    {
+
+        $startTime = new \DateTime( $start );
+        $endTime = new \DateTime( $end );
+
+        $formattedStartTime = $startTime->format(DATE_ISO8601);
+        $formattedEndTime = $endTime->format(DATE_ISO8601);
+
+        $preparedQuery = $query;
+        $preparedQuery = str_replace( '{STARTDATE}', $formattedStartTime, $preparedQuery );
+        $preparedQuery = str_replace( '{ENDDATE}', $formattedEndTime, $preparedQuery );
+
+        return $preparedQuery;
 
     }
 
