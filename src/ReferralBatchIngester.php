@@ -33,8 +33,6 @@ class ReferralBatchIngester {
         $dataBatch = $this->fetch( $start, $end );
 
         return "Fetched " . count($dataBatch) . " referrals.";
-
-
     }
 
 
@@ -55,6 +53,7 @@ class ReferralBatchIngester {
 //        echo $start . "\n";
 //        echo $end . "\n";
 //        echo $preparedQuery;
+        $rows = array();
 
         /* Select queries return a resultset */
         if ($result = $mysqli->query( $preparedQuery, MYSQLI_USE_RESULT )) {
