@@ -31,22 +31,3 @@ interface ITaskRunner {
 
 
 }
-
-/**
- * Let's walk through this in a couple scenarios:
- *
- * 1) Referral report
- *  fetch/MySQL Query   ->  transform   ->  <none>      ->  load/runTask
- *
- * 2) Auction House
- *  fetch/HTTP GET      ->  transform   ->  <none>      ->  load/runTask
- *
- * 3) Auction House Remote
- *  fetch/HTTP GET      ->  transform   ->  scp         ->  load/runTask
- *
- * Making the following steps:
- *  fetch               ->  transform   ->  prepare     ->  load/runTask
- *
- * With the following classes taking on the work:
- *  IFetcher            ->  IFetcher    ->  ITaskRunner ->  ITaskRunner
- */

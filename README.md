@@ -16,6 +16,91 @@ The idea is that this guy lives on the Druid node that will ingest the data, or 
 from itself to the destination Node (say via `scp`).
 
 
+Design
+---------------
+
+This is totally _work in progress_ and _subject to change_.
+
+
+
+Let's walk through this in a couple scenarios, noting the two parallel tracks that meet together before submission
+to Druid.
+
+1) Referral report
+    fetch/MySQL Query   ->  transform   ->  <none>      ->  load/runTask
+    generate index      ----------------/
+
+2) Auction House
+    fetch/HTTP GET      ->  transform   ->  <none>      ->  load/runTask
+    generate index      ----------------/
+
+3) Auction House Remote
+    fetch/HTTP GET      ->  transform   ->  scp         ->  load/runTask
+    generate index      ----------------/
+
+4) Storm
+    storm topology      ->  transform   ->  prepare     ->  load/runTask
+    generate index      ----------------/
+
+5) MapReduce
+    map/reduce job      ->  transform   ->  prepare     ->  load/runTask
+    generate index      ----------------/
+
+
+Making the following steps:
+    fetch               ->  transform   ->  prepare     ->  load/runTask
+    generate index      ----------------/
+
+
+With the following classes taking on the work:
+    IFetcher            ->  IFetcher    ->  ITaskRunner ->  ITaskRunner
+    IIndexGenerator     ----------------/
+
+
+IF we wanted to split this work out further to be more modular:
+    IFetcher            ->  ITransformer->  IPreparer   ->  ITaskRunner
+    IIndexGenerator     ----------------/
+
+
+Resulting in these classes. Sketch of their interfaces:
+
+IFetcher
+    +fetch
+    +handleFetchedResult
+
+ITransformer
+    +transform
+    +handleTransformedResult
+
+IPreparer
+    +prepare
+    +prepared
+
+ITaskRunner
+    +run
+
+IIndexGenerator
+    +generateIndex
+
+DimensionDefinition
+    +getDimensionsKeyNames
+    +getNonTimeDimensionsKeyNames
+    +getTimeDimensionKeyName
+
+
+Looking at how these interfaces fit together:
+
+
+
+
+
+
+
+
+
+
+
+
 
 How to Install
 ---------------

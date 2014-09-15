@@ -41,7 +41,7 @@ class ReferralBatchIngester {
 
         $mysqli = new mysqli($this->host, $this->user, $this->pass, $this->db);
 
-        /* check connection */
+        // Check connection
         if ($mysqli->connect_errno) {
             throw new \Exception( sprintf("Connect failed: %s\n", $mysqli->connect_error) );
         }
@@ -55,7 +55,7 @@ class ReferralBatchIngester {
 //        echo $preparedQuery;
         $rows = array();
 
-        /* Select queries return a resultset */
+        // Select queries return a resultset
         if ($result = $mysqli->query( $preparedQuery, MYSQLI_USE_RESULT )) {
 
 
