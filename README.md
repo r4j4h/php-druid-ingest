@@ -28,38 +28,38 @@ to Druid.
 
 1) Referral report
     fetch/MySQL Query   ->  transform   ->  <none>      ->  load/runTask
-    generate index      ----------------/
+    generate index      -------------------------------/
 
 2) Auction House
     fetch/HTTP GET      ->  transform   ->  <none>      ->  load/runTask
-    generate index      ----------------/
+    generate index      -------------------------------/
 
 3) Auction House Remote
     fetch/HTTP GET      ->  transform   ->  scp         ->  load/runTask
-    generate index      ----------------/
+    generate index      -------------------------------/
 
 4) Storm
     storm topology      ->  transform   ->  prepare     ->  load/runTask
-    generate index      ----------------/
+    generate index      -------------------------------/
 
 5) MapReduce
     map/reduce job      ->  transform   ->  prepare     ->  load/runTask
-    generate index      ----------------/
+    generate index      -------------------------------/
 
 
 Making the following steps:
     fetch               ->  transform   ->  prepare     ->  load/runTask
-    generate index      ----------------/
+    generate index      -------------------------------/
 
 
 With the following classes taking on the work:
-    IFetcher            ->  IFetcher    ->  ITaskRunner ->  ITaskRunner
-    IIndexGenerator     ----------------/
+    IFetcher            ->  IFetcher    ->  IPreparer   ->  ITaskRunner
+    IIndexGenerator     -------------------------------/
 
 
 IF we wanted to split this work out further to be more modular:
     IFetcher            ->  ITransformer->  IPreparer   ->  ITaskRunner
-    IIndexGenerator     ----------------/
+    IIndexGenerator     -------------------------------/
 
 
 Resulting in these classes. Sketch of their interfaces:
@@ -69,7 +69,7 @@ IFetcher
     +handleFetchedResult
 
 ITransformer
-    +transform
+    +transform (needs data from IFetcher fetch)
     +handleTransformedResult
 
 IPreparer
@@ -77,10 +77,10 @@ IPreparer
     +prepared
 
 ITaskRunner
-    +run
+    +run (needs IPreprarer to have finished and to have index from IIndexGenerator generateIndex)
 
 IIndexGenerator
-    +generateIndex
+    +generateIndex (needs path from IPreparer prepare)
 
 DimensionDefinition
     +getDimensionsKeyNames
