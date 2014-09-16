@@ -95,9 +95,10 @@ Looking at how these interfaces fit together:
 
 
 
+How to Test
+-------------
 
-
-
+From the root directory, in a command terminal run: `php vendor/phpunit/phpunit/phpunit tests`.
 
 
 

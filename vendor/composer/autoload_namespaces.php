@@ -6,9 +6,12 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'Symfony\\Component\\Yaml\\' => array($vendorDir . '/symfony/yaml'),
     'Symfony\\Component\\EventDispatcher\\' => array($vendorDir . '/symfony/event-dispatcher'),
     'Symfony\\Component\\Console\\' => array($vendorDir . '/symfony/console'),
     'React\\Promise' => array($vendorDir . '/react/promise/src'),
+    'LazyMap\\' => array($vendorDir . '/ocramius/lazy-map/src'),
+    'Instantiator\\' => array($vendorDir . '/ocramius/instantiator/src'),
     'Guzzle\\Tests' => array($vendorDir . '/guzzle/guzzle/tests'),
     'Guzzle' => array($vendorDir . '/guzzle/guzzle/src'),
     'Bcn\\Component\\Json\\' => array($vendorDir . '/bcncommerce/json-stream'),
