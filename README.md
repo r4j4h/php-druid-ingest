@@ -19,7 +19,12 @@ from itself to the destination Node (say via `scp`).
 Design
 ---------------
 
-This is totally _work in progress_ and _subject to change_.
+This is totally _work in progress_ and _subject to change_. Please refer to this diagram for an overview of how this works underneath the hood.
+
+![Process Flow](docs/process-flow.png)
+
+(From this [Dynamic LucidChart Source URL](https://www.lucidchart.com/publicSegments/view/5418b6c7-f4c4-479c-9696-4e1a0a004a03/image.png))
+
 
 
 
@@ -90,6 +95,9 @@ DimensionDefinition
 
 Looking at how these interfaces fit together:
 
+![How Interfaces Fit Together](docs/how-interfaces-fit-together.png)
+
+(From this [Dynamic LucidChart Source URL](https://www.lucidchart.com/publicSegments/view/5418b736-2484-45e5-af7c-79100a00d7bd/image.png))
 
 
 
