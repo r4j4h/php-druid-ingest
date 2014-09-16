@@ -14,7 +14,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 class ReferralIngestCommand extends IngestCommand
 {
 
-    public function __construct($dbConfig) {
+    public function __construct($dbConfig, $name = 'referral-ingest') {
+        $this->commandName = $name;
         $this->host = $dbConfig['host'];
         $this->user = $dbConfig['user'];
         $this->pass = $dbConfig['pass'];
@@ -30,15 +31,15 @@ class ReferralIngestCommand extends IngestCommand
     {
         parent::configure();
         $this
-            ->setName('referral-ingest')
+            ->setName( $this->commandName )
             ->setDescription('Run referral ingestion task for the given time window')
             ->setDefinition($this->createDefinition())
             ->setHelp(<<<HELPBLURB
 Examples:
 Dates:
-\t<info>php ingest.php referral-ingest 2008-01-01 2009-01-01</info>
+\t<info>php ingest.php $this->commandName 2008-01-01 2009-01-01</info>
 Dates with Time:
-\t<info>php ingest.php referral-ingest 2008-01-01T01:30:00 2009-01-01T04:20:00 -v</info>
+\t<info>php ingest.php $this->commandName 2008-01-01T01:30:00 2009-01-01T04:20:00 -v</info>
 
 HELPBLURB
             );
@@ -50,12 +51,19 @@ HELPBLURB
     {
         $ingester = new ReferralBatchIngester();
         $ingester->setMySqlCredentials($this->host, $this->user, $this->pass, $this->db);
+        $ingester->setTimeWindow( $formattedStartTime, $formattedEndTime );
 
         try {
 
-            $response = $ingester->ingest( $formattedStartTime, $formattedEndTime );
+            $response = $ingester->ingest();
 
-            $output->writeln( $response );
+            $ingestedData = $response;
+
+            // TODO Prepare
+
+            // TODO Task Runner
+
+            $output->writeln( $ingestedData );
 
         } catch ( \Exception $e ) {
             throw $e;

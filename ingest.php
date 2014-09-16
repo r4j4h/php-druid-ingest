@@ -18,7 +18,7 @@ if  ( !isset( $configuration['referral-ingestion'] ) )
 
 $referralIngestCommandDbConfig = $configuration['referral-ingestion']['app-database'];
 
-$configuredIngestionCommand = new ReferralIngestCommand( $referralIngestCommandDbConfig );
+$configuredIngestionCommand = new ReferralIngestCommand( $referralIngestCommandDbConfig, 'referral-ingest' );
 
 
 $console = new Application();

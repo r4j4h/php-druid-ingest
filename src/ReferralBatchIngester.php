@@ -5,12 +5,16 @@ namespace PhpDruidIngest;
 use mysqli;
 date_default_timezone_set('America/Denver');
 
-class ReferralBatchIngester {
+class ReferralBatchIngester implements IFetcher, ITransformer
+{
 
-    private $host = '';
-    private $user = '';
-    private $pass = '';
-    private $db = '';
+    protected $timeWindowStart;
+    protected $timeWindowEnd;
+
+    protected $host = '';
+    protected $user = '';
+    protected $pass = '';
+    protected $db = '';
 
     public function setMySqlCredentials($host, $user, $pass, $db) {
         $this->host = $host;
@@ -19,6 +23,10 @@ class ReferralBatchIngester {
         $this->db = $db;
     }
 
+    public function setTimeWindow($start, $end) {
+        $this->timeWindowStart = $start;
+        $this->timeWindowEnd = $end;
+    }
 
 
     /**
@@ -30,13 +38,18 @@ class ReferralBatchIngester {
      */
     public function ingest($start = '2000-01-01T00:00:01', $end = '3030-01-01T00:00:01')
     {
-        $dataBatch = $this->fetch( $start, $end );
+        $this->setTimeWindow( $start, $end );
 
-        return "Fetched " . count($dataBatch) . " referrals.";
+        $dataBatch = $this->fetch();
+
+        $exampleData = print_r( $dataBatch[ 0 ], true );
+
+
+        return "Fetched " . count($dataBatch) . " referrals.\nOne referral looks like: " . $exampleData . "\n";
     }
 
 
-    public function fetch($start, $end)
+    public function fetch()
     {
 
         $mysqli = new mysqli($this->host, $this->user, $this->pass, $this->db);
@@ -48,7 +61,7 @@ class ReferralBatchIngester {
 
         echo "Connected.\n";
 
-        $preparedQuery = $this->prepareQuery( $this->physicianQuery, $start, $end );
+        $preparedQuery = $this->prepareQuery( $this->physicianQuery, $this->timeWindowStart, $this->timeWindowEnd );
 
 //        echo $start . "\n";
 //        echo $end . "\n";
@@ -101,4 +114,15 @@ class ReferralBatchIngester {
 
     }
 
+    /**
+     * (Optionally) transform the data for ingestion.
+     *
+     * @param $input
+     * @return mixed $output
+     */
+    public function transform($input)
+    {
+        // TODO: Implement transform() method.
+        return $input;
+    }
 }
