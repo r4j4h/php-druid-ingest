@@ -8,4 +8,5 @@ $baseDir = dirname($vendorDir);
 return array(
     'ReferralIngester\\Command\\' => array($baseDir . '/clicommands'),
     'PhpDruidIngest\\' => array($baseDir . '/src', $baseDir . '/tests'),
+    'Monolog\\' => array($vendorDir . '/monolog/monolog/src/Monolog'),
 );

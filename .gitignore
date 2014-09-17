@@ -2,3 +2,4 @@ composer.phar
 vendor/
 node_modules/
 config/config.php
+docs/main
