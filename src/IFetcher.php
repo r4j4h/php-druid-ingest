@@ -11,12 +11,4 @@ interface IFetcher {
      */
     public function fetch();
 
-    /**
-     * (Optionally) transform the data for ingestion.
-     *
-     * @param $input
-     * @return mixed $output
-     */
-    public function transform($input);
-
 }
