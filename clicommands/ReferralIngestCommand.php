@@ -8,7 +8,10 @@
 
 
 namespace ReferralIngester\Command;
+use PhpDruidIngest\BaseDruidTaskExecutor;
+use PhpDruidIngest\BasePreparer;
 use PhpDruidIngest\ReferralBatchIngester;
+use PhpDruidIngest\SimpleIndexGenerator;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -59,11 +62,13 @@ HELPBLURB
         $ingester->setMySqlCredentials($this->host, $this->user, $this->pass, $this->db);
         $ingester->setTimeWindow( $formattedStartTime, $formattedEndTime );
 
-        $preparer = 1;
+        $preparer = new BasePreparer();
 
-        $indexGenerator = 1;
+        $indexGenerator = new SimpleIndexGenerator();
 
-        $taskRunner = 1;
+        $taskRunner = new BaseDruidTaskExecutor();
+
+        $druidConnection = 1; // TODO Define -- use from php-druid-query
 
         try {
 
