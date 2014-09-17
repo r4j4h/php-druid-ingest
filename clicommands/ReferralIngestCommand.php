@@ -1,4 +1,10 @@
 <?php
+/**
+ * Referral Ingestion Command
+ *
+ * Utilizes ReferralBatchIngester aka PhpDruidIngest\ReferralBatchIngester giving it the passed CLI parameters.
+ *
+ */
 
 
 namespace ReferralIngester\Command;
@@ -7,9 +13,9 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * IngestCommand runs ReferralBatchIngester
+ * ReferralIngestCommand runs ReferralBatchIngester giving it the passed CLI parameters.
  *
- * @author Fabien Potencier <fabien@symfony.com>
+ * @author Jasmine Hegman <jasmine@webpt.com>
  */
 class ReferralIngestCommand extends IngestCommand
 {
