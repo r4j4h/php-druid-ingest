@@ -1,4 +1,7 @@
 <?php
+/**
+ * A base command to wrap common ingestion tasks. Handles getting start/end time window arguments.
+ */
 
 
 namespace ReferralIngester\Command;
@@ -10,9 +13,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputDefinition;
 
 /**
- * IngestCommand runs ReferralBatchIngester
+ * IngestCommand is a base command to wrap common ingestion tasks. Handles getting start/end time window arguments.
  *
- * @author Fabien Potencier <fabien@symfony.com>
+ * @author Jasmine Hegman <jasmine@webpt.com>
  */
 abstract class IngestCommand extends Command
 {
