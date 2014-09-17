@@ -1,15 +1,24 @@
 <?php
+/**
+ * Referral Ingestion Command
+ *
+ * Utilizes ReferralBatchIngester aka PhpDruidIngest\ReferralBatchIngester giving it the passed CLI parameters.
+ *
+ */
 
 
 namespace ReferralIngester\Command;
+use PhpDruidIngest\BaseDruidTaskExecutor;
+use PhpDruidIngest\BasePreparer;
 use PhpDruidIngest\ReferralBatchIngester;
+use PhpDruidIngest\SimpleIndexGenerator;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * IngestCommand runs ReferralBatchIngester
+ * ReferralIngestCommand runs ReferralBatchIngester giving it the passed CLI parameters.
  *
- * @author Fabien Potencier <fabien@symfony.com>
+ * @author Jasmine Hegman <jasmine@webpt.com>
  */
 class ReferralIngestCommand extends IngestCommand
 {
@@ -53,6 +62,14 @@ HELPBLURB
         $ingester->setMySqlCredentials($this->host, $this->user, $this->pass, $this->db);
         $ingester->setTimeWindow( $formattedStartTime, $formattedEndTime );
 
+        $preparer = new BasePreparer();
+
+        $indexGenerator = new SimpleIndexGenerator();
+
+        $taskRunner = new BaseDruidTaskExecutor();
+
+        $druidConnection = 1; // TODO Define -- use from php-druid-query
+
         try {
 
             $response = $ingester->ingest();
@@ -60,8 +77,13 @@ HELPBLURB
             $ingestedData = $response;
 
             // TODO Prepare
+            $pathOfPreparedData = $preparer->prepare($ingestedData);
+
+            // TODO Generate Index
+            $indexBody = $indexGenerator->generateIndex( $pathOfPreparedData, $dimensionData );
 
             // TODO Task Runner
+            $success = $taskRunner->index( $druidConnection, $indexBody );
 
             $output->writeln( $ingestedData );
 
