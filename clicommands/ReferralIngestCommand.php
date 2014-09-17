@@ -59,6 +59,12 @@ HELPBLURB
         $ingester->setMySqlCredentials($this->host, $this->user, $this->pass, $this->db);
         $ingester->setTimeWindow( $formattedStartTime, $formattedEndTime );
 
+        $preparer = 1;
+
+        $indexGenerator = 1;
+
+        $taskRunner = 1;
+
         try {
 
             $response = $ingester->ingest();
@@ -66,8 +72,13 @@ HELPBLURB
             $ingestedData = $response;
 
             // TODO Prepare
+            $pathOfPreparedData = $preparer->prepare($ingestedData);
+
+            // TODO Generate Index
+            $indexBody = $indexGenerator->generateIndex( $pathOfPreparedData, $dimensionData );
 
             // TODO Task Runner
+            $success = $taskRunner->index( $druidConnection, $indexBody );
 
             $output->writeln( $ingestedData );
 
