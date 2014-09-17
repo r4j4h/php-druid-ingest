@@ -116,15 +116,19 @@ How to Install
 
 Right now, there is no tagged version.
 
-- Stable branch: `dev-master`
+- Stable branch: `~1.0-dev`
+- Stable branch w/ PHP 5.3 Compatibility Support: `dev-php-53-compat`
 - Cutting edge: `dev-develop`
 
 To install, it is suggested to use [Composer](http://getcomposer.org). If you have it installed, then the following instructions
 in a composer.json should be all you need to get started:
 
+If you are using PHP 5.3, there [is](https://bugs.php.net/bug.php?id=66818) [a](http://php.net/archive/2014.php#id2014-08-14-1) [bug](https://bugs.php.net/bug.php?id=43200) and you will need to use an alternative branch.
+
+Up to date PHP:
+
 ```json
 {
-    "minimum-stability": "dev",
     "repositories": [
         {
             "type": "vcs",
@@ -132,7 +136,23 @@ in a composer.json should be all you need to get started:
         }
     ],
     "require": {
-        "r4j4h/php-druid-query": "dev-master"
+        "r4j4h/php-druid-ingest": "~1.0-dev"
+    }
+}
+```
+
+PHP 5.3 Compatibility:
+
+```json
+{
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "git@github.com:r4j4h/php-druid-ingest"
+        }
+    ],
+    "require": {
+        "r4j4h/php-druid-ingest": "dev-php-53-compat"
     }
 }
 ```
@@ -158,7 +178,6 @@ Appendix A. Composer.json example that does not rely on Packagist.org:
 
 ```json
 {
-    "minimum-stability": "dev",
     "repositories": [
         {
             "type": "vcs",
@@ -166,7 +185,7 @@ Appendix A. Composer.json example that does not rely on Packagist.org:
         }
     ],
     "require": {
-        "r4j4h/php-druid-query": "dev-master"
+        "r4j4h/php-druid-ingest": "~1.0-dev"
     }
 }
 ```
