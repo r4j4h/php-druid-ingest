@@ -14,17 +14,7 @@ class SimpleIndexGenerator extends BaseIndexGenerator
         "gran" : "{GRANULARITYSPEC.GRAN}",
         "intervals" : [ "{GRANULARITYSPEC.START}/{GRANULARITYSPEC.END}" ]
     },
-    "aggregators" : [
-        {
-            "type" : "count",
-            "name" : "count"
-        },
-        {
-            "type": "longSum",
-            "name": "total_referral_count",
-            "fieldName": "referral_count"
-         }
-    ],
+    "aggregators": [{AGGREGATORS}],
     "firehose" : {
         "type" : "{FIREHOSE.TYPE}",
         "baseDir" : "{FIREHOSE.BASEDIR}",
@@ -50,28 +40,27 @@ INDEXTEMPLATE;
      * @return mixed $output
      */
     public function generateIndex(IndexTaskParameters $indexTaskParams) {
+
+        // Generate Index
         $generatedIndex = $this->baseIndexTemplate;
 
         $generatedIndex = str_replace( '{INDEXTYPE}', 'index', $generatedIndex );
         $generatedIndex = str_replace( '{DATASOURCE}', $indexTaskParams->dataSource, $generatedIndex );
-        $generatedIndex = str_replace( '{GRANULARITYSPEC.TYPE}', 'uniform', $generatedIndex );
-        $generatedIndex = str_replace( '{GRANULARITYSPEC.GRAN}', 'DAY', $generatedIndex );
-        $generatedIndex = str_replace( '{GRANULARITYSPEC.START}', '2010', $generatedIndex );
-        $generatedIndex = str_replace( '{GRANULARITYSPEC.END}', '2020', $generatedIndex );
+        $generatedIndex = str_replace( '{GRANULARITYSPEC.TYPE}', $indexTaskParams->granularityType, $generatedIndex );
+        $generatedIndex = str_replace( '{GRANULARITYSPEC.GRAN}', $indexTaskParams->granularity, $generatedIndex );
+        $generatedIndex = str_replace( '{GRANULARITYSPEC.START}', $indexTaskParams->intervalStart, $generatedIndex );
+        $generatedIndex = str_replace( '{GRANULARITYSPEC.END}', $indexTaskParams->intervalEnd, $generatedIndex );
 
         $generatedIndex = str_replace( '{FIREHOSE.TYPE}', 'local', $generatedIndex );
-        $generatedIndex = str_replace( '{DATASOURCE}', 'uniform', $generatedIndex );
-        $generatedIndex = str_replace( '{FIREHOSE.BASEDIR}', '/home/jhegman', $generatedIndex );
-        $generatedIndex = str_replace( '{FIREHOSE.FILTER}', 'all.json', $generatedIndex );
+        $generatedIndex = str_replace( '{FIREHOSE.BASEDIR}', $indexTaskParams->baseDir, $generatedIndex );
+        $generatedIndex = str_replace( '{FIREHOSE.FILTER}', $indexTaskParams->filePath, $generatedIndex );
 
         $generatedIndex = str_replace( '{FIREHOSE.FORMAT}', 'json', $generatedIndex );
-        $generatedIndex = str_replace( '{TIME_DIMENSION}', 'date', $generatedIndex );
+        $generatedIndex = str_replace( '{TIME_DIMENSION}', $indexTaskParams->timeDimension, $generatedIndex );
 
-        $dims = array('group', 'referral_id', "referral_name", "referral_count", "patient_id", "facility_id");
+        $generatedIndex = str_replace( '{NON_TIME_DIMENSIONS}', join('", "', $indexTaskParams->dimensions), $generatedIndex );
 
-        $generatedIndex = str_replace( '{NON_TIME_DIMENSIONS}', join('", "', $dims), $generatedIndex );
-
-        // TODO Handle aggregators
+        $generatedIndex = str_replace( '{AGGREGATORS}', join(",", $indexTaskParams->aggregators), $generatedIndex );
 
         var_dump( $generatedIndex );
 

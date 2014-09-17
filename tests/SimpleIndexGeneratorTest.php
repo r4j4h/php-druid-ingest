@@ -12,8 +12,21 @@ class SimpleIndexGeneratorTest extends PHPUnit_Framework_TestCase
     {
         $params = new IndexTaskParameters();
 
+        $params->intervalStart = '1981-01-01T4:20';
+        $params->intervalEnd = '2012-03-01T3:00';
+        $params->granularityType = 'uniform';
+        $params->granularity = 'DAY';
         $params->dataSource = $this->mockDataSourceName;
-        $params->intervalStart = '2009-01-01T00:00';
+        $params->format = 'json';
+        $params->timeDimension = 'date_dim';
+        $params->dimensions = array('one_dim', 'two_dim');
+
+        $params->setFilePath('/another/file/path/to/a/file.bebop');
+        $params->setAggregators(array(
+            array( 'type' => 'count', 'name' => 'count' ),
+            array( 'type' => 'longSum', 'name' => 'total_referral_count', 'fieldName' => 'referral_count' )
+        ));
+
 
         return $params;
     }
@@ -23,12 +36,9 @@ class SimpleIndexGeneratorTest extends PHPUnit_Framework_TestCase
         $generator = new SimpleIndexGenerator();
         $params = $this->getMockIndexTaskParameters();
 
-
         $index = $generator->generateIndex( $params );
 
-
         $this->assertJson( $index );
-
         return $index;
     }
 
@@ -41,7 +51,6 @@ class SimpleIndexGeneratorTest extends PHPUnit_Framework_TestCase
 
         $this->assertArrayHasKey('type', $parsedIndex);
         $this->assertEquals( 'index', $parsedIndex['type'] );
-
     }
 
     /**
@@ -62,15 +71,41 @@ class SimpleIndexGeneratorTest extends PHPUnit_Framework_TestCase
         $this->markTestIncomplete();
     }
 
-    public function testGenerateIndexUsesNonTimeDimensions()
+    /**
+     * @depends testGenerateIndexReturnsJSONString
+     */
+    public function testGenerateIndexUsesNonTimeDimensions($jsonString)
     {
-        $this->markTestIncomplete();
+        $parsedIndex = json_decode( $jsonString, true );
+        $mockParams = $this->getMockIndexTaskParameters();
+
+        $this->assertArrayHasKey( 'firehose', $parsedIndex );
+        $this->assertArrayHasKey( 'parser', $parsedIndex['firehose'] );
+        $this->assertArrayHasKey( 'data', $parsedIndex['firehose']['parser'] );
+
+        $this->assertArrayHasKey( 'format', $parsedIndex['firehose']['parser']['data'] );
+        $this->assertEquals( 'json', $parsedIndex['firehose']['parser']['data']['format'] );
+
+        $this->assertArrayHasKey( 'dimensions', $parsedIndex['firehose']['parser']['data'] );
+        $this->assertCount(count($mockParams->dimensions), $parsedIndex['firehose']['parser']['data']['dimensions']);
+        $this->assertEquals($mockParams->dimensions, $parsedIndex['firehose']['parser']['data']['dimensions']);
+        $this->assertContains( 'one_dim', $parsedIndex['firehose']['parser']['data']['dimensions'] );
+        $this->assertContains( 'two_dim', $parsedIndex['firehose']['parser']['data']['dimensions'] );
     }
 
-    public function testGenerateIndexUsesTimeDimension()
+    /**
+     * @depends testGenerateIndexReturnsJSONString
+     */
+    public function testGenerateIndexUsesTimeDimension($jsonString)
     {
-        // granularitySpec's intervals
-        $this->markTestIncomplete();
+        $parsedIndex = json_decode( $jsonString, true );
+        $mockParams = $this->getMockIndexTaskParameters();
+
+        $this->assertArrayHasKey( 'firehose', $parsedIndex );
+        $this->assertArrayHasKey( 'parser', $parsedIndex['firehose'] );
+        $this->assertArrayHasKey( 'timestampSpec', $parsedIndex['firehose']['parser'] );
+        $this->assertArrayHasKey( 'column', $parsedIndex['firehose']['parser']['timestampSpec'] );
+        $this->assertEquals( $mockParams->timeDimension, $parsedIndex['firehose']['parser']['timestampSpec']['column'] );
     }
 
     public function testGenerateIndexUsesFirehose()
