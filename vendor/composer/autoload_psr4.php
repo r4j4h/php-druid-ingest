@@ -8,4 +8,5 @@ $baseDir = dirname($vendorDir);
 return array(
     'ReferralIngester\\Command\\' => array($baseDir . '/clicommands'),
     'PhpDruidIngest\\' => array($baseDir . '/src', $baseDir . '/tests'),
+    'DruidFamiliar\\' => array($vendorDir . '/r4j4h/php-druid-query/src/DruidFamiliar'),
 );

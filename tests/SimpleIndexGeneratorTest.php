@@ -1,16 +1,16 @@
 <?php
-
 namespace PhpDruidIngest;
 
+use PhpDruidIngest\QueryParameters\IndexTaskQueryParameters;
 use PHPUnit_Framework_TestCase;
 
 class SimpleIndexGeneratorTest extends PHPUnit_Framework_TestCase
 {
     private $mockDataSourceName = 'my-datasource';
 
-    public function getMockIndexTaskParameters()
+    public function getMockIndexTaskQueryParameters()
     {
-        $params = new IndexTaskParameters();
+        $params = new IndexTaskQueryParameters();
 
         $params->intervalStart = '1981-01-01T4:20';
         $params->intervalEnd = '2012-03-01T3:00';
@@ -27,14 +27,13 @@ class SimpleIndexGeneratorTest extends PHPUnit_Framework_TestCase
             array( 'type' => 'longSum', 'name' => 'total_referral_count', 'fieldName' => 'referral_count' )
         ));
 
-
         return $params;
     }
 
     public function testGenerateIndexReturnsJSONString()
     {
         $generator = new SimpleIndexGenerator();
-        $params = $this->getMockIndexTaskParameters();
+        $params = $this->getMockIndexTaskQueryParameters();
 
         $index = $generator->generateIndex( $params );
 
@@ -77,7 +76,7 @@ class SimpleIndexGeneratorTest extends PHPUnit_Framework_TestCase
     public function testGenerateIndexUsesNonTimeDimensions($jsonString)
     {
         $parsedIndex = json_decode( $jsonString, true );
-        $mockParams = $this->getMockIndexTaskParameters();
+        $mockParams = $this->getMockIndexTaskQueryParameters();
 
         $this->assertArrayHasKey( 'firehose', $parsedIndex );
         $this->assertArrayHasKey( 'parser', $parsedIndex['firehose'] );
@@ -99,7 +98,7 @@ class SimpleIndexGeneratorTest extends PHPUnit_Framework_TestCase
     public function testGenerateIndexUsesTimeDimension($jsonString)
     {
         $parsedIndex = json_decode( $jsonString, true );
-        $mockParams = $this->getMockIndexTaskParameters();
+        $mockParams = $this->getMockIndexTaskQueryParameters();
 
         $this->assertArrayHasKey( 'firehose', $parsedIndex );
         $this->assertArrayHasKey( 'parser', $parsedIndex['firehose'] );
@@ -121,11 +120,90 @@ class SimpleIndexGeneratorTest extends PHPUnit_Framework_TestCase
     public function testGenerateIndexDefinesGranularitySpec()
     {
         // granularitySpec
-            // type
-            // gran
-            // intervals
+        // type
+        // gran
+        // intervals
         $this->markTestIncomplete();
     }
+
+    public function testGenerateIndexDefinesPostAggregates()
+    {
+
+
+        $this->markTestIncomplete();
+    }
+
+/*
+{
+  "queryType": "topN",
+  "dataSource": "example",
+  "dimension": "facility_id",
+  "threshold": 3,
+  "metric": "referral_count",
+  "granularity": "all",
+  "filter": {
+    "type": "or",
+    "fields": [
+      {
+          "type": "selector",s
+        "dimension": "facility_id",
+        "value": "3"
+      },
+      {
+          "type": "selector",
+        "dimension": "facility_id",
+        "value": "4"
+      },
+      {
+          "type": "selector",
+        "dimension": "facility_id",
+        "value": "16"
+      }
+    ]
+  },
+  "aggregations": [
+    {
+        "type": "count",
+      "name": "referral_count"
+    },
+    {
+        "type": "longSum",
+      "name": "active_patients",
+      "fieldName": "is_active_patient"
+    },
+    {
+        "type": "longSum",
+      "name": "discharged_patients",
+      "fieldName": "was_discharged"
+    }
+  ],
+  "postAggregations": [
+    {
+      "type": "arithmetic",
+      "name": "inactive_patients",
+      "fn": "-",
+      "fields": [
+        {
+            "type": "fieldAccess",
+          "fieldName": "referral_count"
+        },
+        {
+            "type": "fieldAccess",
+          "fieldName": "active_patients"
+        }
+      ]
+    },
+    {
+        "type": "javascript",
+      "name": "shrinkage",
+      "fieldNames": ["referral_count", "discharged_patients"],
+      "function": "function(total, discharge) { return 100 * (total /w discharge); }"
+    }
+  ],
+  "intervals": [
+    "2013-08-31T00:00:00.000/2013-09-03T00:00:00.000"
+]
+}
 
 /**
  * Example index task for reference
@@ -168,6 +246,10 @@ curl -X 'POST' -H 'Content-Type:application/json' -d @referral_visit-data_indexi
     }
 }
      *
+ *
+ *
+ * More complicated example
+
 */
 
 }

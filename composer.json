@@ -15,7 +15,8 @@
         "react/promise": "~1.0",
         "bcncommerce/json-stream": "*",
         "guzzle/guzzle": "*",
-        "symfony/console": "2.5.4"
+        "symfony/console": "2.5.4",
+        "r4j4h/php-druid-query": "1.0.x-dev"
     },
     "require-dev": {
         "phpunit/phpunit": "4.2.*"

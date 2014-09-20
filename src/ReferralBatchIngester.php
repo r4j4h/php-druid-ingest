@@ -28,6 +28,66 @@ class ReferralBatchIngester implements IFetcher, ITransformer
         $this->timeWindowEnd = $end;
     }
 
+    protected $contactsQuery = <<<QUERY
+SELECT patientTable.created as `date`,
+3 as `group`,
+Contact.ContactID as referral_id,
+FacilityHasPatient.Fcltyhpnt_FacilityID as facility_id,
+patientTable.PatientID as patient_id,
+Company.Cmp_CompanyID as company_id,
+(
+    SELECT IF(COUNT(PTCase.CaseID)>0,1,0) as is_active
+    FROM Appointment INNER JOIN PTCase ON Appointment.CaseID = PTCase.CaseID
+    WHERE Appointment.AptType = 'IE'
+    AND Appointment.`Status` = 'A'
+    AND Appointment.PatientID = patientTable.PatientID
+    AND PTCase.CaseID = cases.CaseID
+    ) as is_active_patient,
+(
+    SELECT IF(COUNT(PTCase.CaseID)>0,1,0) as is_active
+    FROM Appointment INNER JOIN PTCase ON Appointment.CaseID = PTCase.CaseID
+    WHERE Appointment.AptType = 'DN'
+    AND Appointment.`Status` = 'A'
+    AND Appointment.PatientID = patientTable.PatientID
+    AND PTCase.CaseID = cases.CaseID
+) as was_discharged
+FROM PTCase as cases
+INNER JOIN Contact ON cases.MarketingReferral_ContactID = Contact.ContactID
+INNER JOIN Patient as patientTable ON patientTable.PatientID = cases.PatientID
+INNER JOIN Appointment ON Appointment.CaseID = cases.CaseID
+INNER JOIN FacilityHasPatient ON FacilityHasPatient.Fcltyhpnt_PatientID = patientTable.PatientID
+INNER JOIN Facility ON FacilityHasPatient.Fcltyhpnt_FacilityID = Facility.Fclty_FacilityID
+INNER JOIN Company ON Facility.Fclty_CompanyID = Company.Cmp_CompanyID
+WHERE patientTable.created BETWEEN '{STARTDATE}' AND '{ENDDATE}'
+GROUP BY referral_id LIMIT 10;
+QUERY;
+
+
+    protected $physicianQuery = <<<QUERY
+SELECT Patient.PatientID,
+    Patient.created,
+    FacilityHasPatient.Fcltyhpnt_FacilityID AS facilityId,
+    Physician.PhysicianID
+    , Count( distinct Patient.PatientID) AS myCount
+    , Physician.*
+    , PhysicianType.*
+    , concat( Physician.LastName , ', ' , Physician.FirstName ) SortName
+FROM Patient
+JOIN FacilityHasPatient ON
+Patient.PatientID = FacilityHasPatient.Fcltyhpnt_PatientID
+JOIN PTCase ON
+Patient.PatientID = PTCase.PatientID
+AND Patient.PatientStatus IN ('A','D')
+JOIN Physician ON
+Physician.PhysicianID IN (PTCase.PhysicianID)
+LEFT JOIN PhysicianType ON
+Physician.DrType=PhysicianType.PhysicianTypeID
+WHERE PTCase.Status IN ('A','D')
+ AND Patient.created BETWEEN '{STARTDATE}' AND '{ENDDATE}'
+GROUP BY Physician.PhysicianID
+ORDER BY myCount DESC , SortName asc LIMIT 10;
+QUERY;
+
 
     /**
      * Ingest data into druid.

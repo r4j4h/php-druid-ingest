@@ -1,13 +1,17 @@
 <?php
 
-namespace PhpDruidIngest;
+namespace PhpDruidIngest\QueryParameters;
+
+use DruidFamiliar\Abstracts\AbstractTaskParameters;
+use DruidFamiliar\Exception\MissingParametersException;
+use DruidFamiliar\Interfaces\IDruidQueryParameters;
 
 /**
- * Class IndexTaskParameters represents parameter values for an indexing task for Druid.
+ * Class IndexTaskQueryParameters represents parameter values for an indexing task for Druid.
  *
  * @package PhpDruidIngest
  */
-class IndexTaskParameters
+class IndexTaskQueryParameters extends AbstractTaskParameters implements IDruidQueryParameters
 {
 
     /**
@@ -123,4 +127,36 @@ class IndexTaskParameters
     }
 
 
+    /**
+     * @throws MissingParametersException
+     */
+    public function validate()
+    {
+        // Validate missing params
+        $missingParams = array();
+
+        if ( !isset( $this->queryType       ) ) { $missingParams[] = 'queryType';       }
+        if ( !isset( $this->dataSource      ) ) { $missingParams[] = 'dataSource';      }
+        if ( !isset( $this->intervalStart   ) ) { $missingParams[] = 'intervalStart';   }
+        if ( !isset( $this->intervalEnd     ) ) { $missingParams[] = 'intervalEnd';     }
+        if ( !isset( $this->granularity     ) ) { $missingParams[] = 'granularity';     }
+        if ( !isset( $this->dimensions      ) ) { $missingParams[] = 'dimensions';      }
+        if ( !isset( $this->aggregators     ) ) { $missingParams[] = 'aggregators';     }
+
+        if ( count($missingParams) > 0 ) {
+            throw new \DruidFamiliar\Exception\MissingParametersException($missingParams);
+        }
+
+
+
+        // Validate empty params
+        $emptyParams = array();
+
+        if ( $this->queryType === '' ) { $emptyParams[] = 'queryType'; }
+        if ( $this->dataSource === '' ) { $emptyParams[] = 'dataSource'; }
+
+        if ( count($emptyParams) > 0 ) {
+            throw new \DruidFamiliar\Exception\MissingParametersException($missingParams);
+        }
+    }
 }

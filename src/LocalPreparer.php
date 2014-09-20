@@ -11,7 +11,7 @@ class LocalPreparer extends BasePreparer
      */
     public function prepare($data) {
 
-        // TODO Prepare data into a file somewhere
+        // TODO Prepare data into a file somewhere by writing it to a file
 
         // TODO Utilize http://php.net/manual/en/function.rename.php to move file to destination dir
         // TODO Need extra params for destination dir, exceptions for failure cases

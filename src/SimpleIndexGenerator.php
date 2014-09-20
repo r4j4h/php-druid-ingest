@@ -2,6 +2,8 @@
 
 namespace PhpDruidIngest;
 
+use PhpDruidIngest\QueryParameters\IndexTaskQueryParameters;
+
 class SimpleIndexGenerator extends BaseIndexGenerator
 {
 
@@ -39,7 +41,7 @@ INDEXTEMPLATE;
      * @param $input
      * @return mixed $output
      */
-    public function generateIndex(IndexTaskParameters $indexTaskParams) {
+    public function generateIndex(IndexTaskQueryParameters $indexTaskParams) {
 
         // Generate Index
         $generatedIndex = $this->baseIndexTemplate;

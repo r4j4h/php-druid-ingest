@@ -8,6 +8,8 @@
 
 
 namespace ReferralIngester\Command;
+use DruidFamiliar\QueryExecutor\DruidNodeDruidQueryExecutor;
+use PhpDruidIngest\QueryParameters\IndexTaskQueryParameters;
 use PhpDruidIngest\BaseDruidTaskExecutor;
 use PhpDruidIngest\BasePreparer;
 use PhpDruidIngest\ReferralBatchIngester;
@@ -66,9 +68,12 @@ HELPBLURB
 
         $indexGenerator = new SimpleIndexGenerator();
 
+        $dimensionData = new IndexTaskQueryParameters();
+
         $taskRunner = new BaseDruidTaskExecutor();
 
-        $druidConnection = 1; // TODO Define -- use from php-druid-query
+        // TODO Pull from config? or cmd line?
+        $druidConnection = new DruidNodeDruidQueryExecutor('0.0.0.0', '8087', '/druid/indexer/v1/task');
 
         try {
 

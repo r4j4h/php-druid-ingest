@@ -1137,5 +1137,59 @@
             "testing",
             "xunit"
         ]
+    },
+    {
+        "name": "r4j4h/php-druid-query",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/r4j4h/php-druid-query.git",
+            "reference": "21a3eee513d7f930f8b2ae6e8503496655e3dda9"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/r4j4h/php-druid-query/zipball/21a3eee513d7f930f8b2ae6e8503496655e3dda9",
+            "reference": "21a3eee513d7f930f8b2ae6e8503496655e3dda9",
+            "shasum": ""
+        },
+        "require": {
+            "guzzle/guzzle": "*",
+            "php": ">=5.3.0"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "4.2.*"
+        },
+        "time": "2014-09-20 00:38:27",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "1.0.x-dev"
+            }
+        },
+        "installation-source": "source",
+        "autoload": {
+            "psr-4": {
+                "DruidFamiliar\\": "src/DruidFamiliar/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Jasmine Hegman",
+                "email": "hegpetz@gmail.com",
+                "role": "Developer"
+            }
+        ],
+        "description": "Experimental PHP wrapper around querying druid",
+        "keywords": [
+            "druid",
+            "parameterized query",
+            "query",
+            "querying"
+        ]
     }
 ]

@@ -2,14 +2,16 @@
 
 namespace PhpDruidIngest;
 
+use PhpDruidIngest\QueryParameters\IndexTaskQueryParameters;
+
 abstract class BaseIndexGenerator {
 
     /**
      * Generate the JSON POST body for an indexing task reflecting the given parameters.
      *
-     * @param IndexTaskParameters $indexTaskParams
+     * @param IndexTaskQueryParameters $indexTaskParams
      * @return string $output
      */
-    abstract public function generateIndex(IndexTaskParameters $indexTaskParams);
+    abstract public function generateIndex(IndexTaskQueryParameters $indexTaskParams);
 
 }
