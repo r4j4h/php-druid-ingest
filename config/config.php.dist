@@ -8,5 +8,9 @@ return array(
             'pass' => '',
             'db'   => '',
         )
+    ),
+    'druid-connection' => array(
+            'ip'   => '0.0.0.0',
+            'port' => '8087'
     )
 );

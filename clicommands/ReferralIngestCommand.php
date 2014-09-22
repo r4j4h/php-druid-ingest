@@ -25,12 +25,24 @@ use Symfony\Component\Console\Output\OutputInterface;
 class ReferralIngestCommand extends IngestCommand
 {
 
-    public function __construct($dbConfig, $name = 'referral-ingest') {
+    protected $host;
+    protected $user;
+    protected $pass;
+    protected $db;
+
+    protected $druidIp;
+    protected $druidPort;
+
+    public function __construct($dbConfig, $druidNodeConfig, $name = 'referral-ingest' ) {
         $this->commandName = $name;
         $this->host = $dbConfig['host'];
         $this->user = $dbConfig['user'];
         $this->pass = $dbConfig['pass'];
         $this->db = $dbConfig['db'];
+
+        $this->druidIp = $druidNodeConfig['ip'];
+        $this->druidPort = $druidNodeConfig['port'];
+
         parent::__construct();
     }
 
@@ -72,8 +84,7 @@ HELPBLURB
 
         $taskRunner = new BaseDruidTaskExecutor();
 
-        // TODO Pull from config? or cmd line?
-        $druidConnection = new DruidNodeDruidQueryExecutor('0.0.0.0', '8087', '/druid/indexer/v1/task');
+        $druidConnection = new DruidNodeDruidQueryExecutor($this->druidIp, $this->druidPort, '/druid/indexer/v1/task');
 
         try {
 
