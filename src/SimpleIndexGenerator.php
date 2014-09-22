@@ -46,7 +46,7 @@ INDEXTEMPLATE;
         // Generate Index
         $generatedIndex = $this->baseIndexTemplate;
 
-        $generatedIndex = str_replace( '{INDEXTYPE}', 'index', $generatedIndex );
+        $generatedIndex = str_replace( '{INDEXTYPE}', $indexTaskParams->queryType, $generatedIndex );
         $generatedIndex = str_replace( '{DATASOURCE}', $indexTaskParams->dataSource, $generatedIndex );
         $generatedIndex = str_replace( '{GRANULARITYSPEC.TYPE}', $indexTaskParams->granularityType, $generatedIndex );
         $generatedIndex = str_replace( '{GRANULARITYSPEC.GRAN}', $indexTaskParams->granularity, $generatedIndex );

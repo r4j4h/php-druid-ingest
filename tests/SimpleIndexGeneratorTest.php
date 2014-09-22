@@ -65,26 +65,81 @@ class SimpleIndexGeneratorTest extends PHPUnit_Framework_TestCase
         $this->assertEquals( $this->mockDataSourceName, $parsedIndex['dataSource'] );
     }
 
-    public function testGenerateIndexUsesPathFromPreparer()
+
+    /**
+     * @depends testGenerateIndexReturnsJSONString
+     */
+    public function testGenerateIndexDefinesGranularitySpec($jsonString)
     {
-        $this->markTestIncomplete();
+        $parsedIndex = json_decode( $jsonString, true );
+        $mockParams = $this->getMockIndexTaskQueryParameters();
+
+        $this->assertArrayHasKey( 'granularitySpec', $parsedIndex );
+        $this->assertArrayHasKey( 'type', $parsedIndex['granularitySpec'] );
+        $this->assertArrayHasKey( 'gran', $parsedIndex['granularitySpec'] );
+        $this->assertArrayHasKey( 'intervals', $parsedIndex['granularitySpec'] );
+
+        $this->assertEquals( $mockParams->granularityType, $parsedIndex['granularitySpec']['type'] );
+        $this->assertEquals( $mockParams->granularity, $parsedIndex['granularitySpec']['gran'] );
+        $this->assertCount( 1, $parsedIndex['granularitySpec']['intervals'] );
+
+        $expected = $mockParams->intervalStart . '/' . $mockParams->intervalEnd;
+        $this->assertEquals($expected, $parsedIndex['granularitySpec']['intervals'][0] );
     }
 
     /**
      * @depends testGenerateIndexReturnsJSONString
      */
-    public function testGenerateIndexUsesNonTimeDimensions($jsonString)
+    public function testGenerateIndexUsesFirehose($jsonString)
     {
         $parsedIndex = json_decode( $jsonString, true );
         $mockParams = $this->getMockIndexTaskQueryParameters();
 
         $this->assertArrayHasKey( 'firehose', $parsedIndex );
+        $this->assertArrayHasKey( 'type', $parsedIndex['firehose'] );
+        $this->assertEquals( 'local', $parsedIndex['firehose']['type'] );
+
+        return $jsonString;
+    }
+
+    /**
+     * @depends testGenerateIndexUsesFirehose
+     */
+    public function testGenerateIndexUsesFirehoseParserUsesFilePath($jsonString)
+    {
+        $parsedIndex = json_decode( $jsonString, true );
+        $mockParams = $this->getMockIndexTaskQueryParameters();
+
+        // baseDir & filter should reflect path to prepared file
+        $this->assertArrayHasKey( 'baseDir', $parsedIndex['firehose'] );
+        $this->assertArrayHasKey( 'filter', $parsedIndex['firehose'] );
+        $this->assertEquals( $mockParams->baseDir, $parsedIndex['firehose']['baseDir'] );
+        $this->assertEquals( $mockParams->filePath, $parsedIndex['firehose']['filter'] );
+    }
+
+    /**
+     * @depends testGenerateIndexUsesFirehose
+     */
+    public function testGenerateIndexUsesFirehoseParserUsesJsonFormat($jsonString)
+    {
+        $parsedIndex = json_decode( $jsonString, true );
+
+        // parser should include json format
         $this->assertArrayHasKey( 'parser', $parsedIndex['firehose'] );
         $this->assertArrayHasKey( 'data', $parsedIndex['firehose']['parser'] );
-
         $this->assertArrayHasKey( 'format', $parsedIndex['firehose']['parser']['data'] );
         $this->assertEquals( 'json', $parsedIndex['firehose']['parser']['data']['format'] );
+    }
 
+    /**
+     * @depends testGenerateIndexUsesFirehose
+     */
+    public function testGenerateIndexUsesFirehoseParserIncludesNonTimeDimensions($jsonString)
+    {
+        $parsedIndex = json_decode( $jsonString, true );
+        $mockParams = $this->getMockIndexTaskQueryParameters();
+
+        // parser should include all dimension data
         $this->assertArrayHasKey( 'dimensions', $parsedIndex['firehose']['parser']['data'] );
         $this->assertCount(count($mockParams->dimensions), $parsedIndex['firehose']['parser']['data']['dimensions']);
         $this->assertEquals($mockParams->dimensions, $parsedIndex['firehose']['parser']['data']['dimensions']);
@@ -93,9 +148,9 @@ class SimpleIndexGeneratorTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @depends testGenerateIndexReturnsJSONString
+     * @depends testGenerateIndexUsesFirehose
      */
-    public function testGenerateIndexUsesTimeDimension($jsonString)
+    public function testGenerateIndexUsesFirehoseParserUsesTimeDimension($jsonString)
     {
         $parsedIndex = json_decode( $jsonString, true );
         $mockParams = $this->getMockIndexTaskQueryParameters();
@@ -107,103 +162,7 @@ class SimpleIndexGeneratorTest extends PHPUnit_Framework_TestCase
         $this->assertEquals( $mockParams->timeDimension, $parsedIndex['firehose']['parser']['timestampSpec']['column'] );
     }
 
-    public function testGenerateIndexUsesFirehose()
-    {
-        // type should be local
-        // baseDir & filter should reflect path to prepared file
-        // parser should include json format and all dimension data
 
-        $this->markTestIncomplete();
-    }
-
-
-    public function testGenerateIndexDefinesGranularitySpec()
-    {
-        // granularitySpec
-        // type
-        // gran
-        // intervals
-        $this->markTestIncomplete();
-    }
-
-    public function testGenerateIndexDefinesPostAggregates()
-    {
-
-
-        $this->markTestIncomplete();
-    }
-
-/*
-{
-  "queryType": "topN",
-  "dataSource": "example",
-  "dimension": "facility_id",
-  "threshold": 3,
-  "metric": "referral_count",
-  "granularity": "all",
-  "filter": {
-    "type": "or",
-    "fields": [
-      {
-          "type": "selector",s
-        "dimension": "facility_id",
-        "value": "3"
-      },
-      {
-          "type": "selector",
-        "dimension": "facility_id",
-        "value": "4"
-      },
-      {
-          "type": "selector",
-        "dimension": "facility_id",
-        "value": "16"
-      }
-    ]
-  },
-  "aggregations": [
-    {
-        "type": "count",
-      "name": "referral_count"
-    },
-    {
-        "type": "longSum",
-      "name": "active_patients",
-      "fieldName": "is_active_patient"
-    },
-    {
-        "type": "longSum",
-      "name": "discharged_patients",
-      "fieldName": "was_discharged"
-    }
-  ],
-  "postAggregations": [
-    {
-      "type": "arithmetic",
-      "name": "inactive_patients",
-      "fn": "-",
-      "fields": [
-        {
-            "type": "fieldAccess",
-          "fieldName": "referral_count"
-        },
-        {
-            "type": "fieldAccess",
-          "fieldName": "active_patients"
-        }
-      ]
-    },
-    {
-        "type": "javascript",
-      "name": "shrinkage",
-      "fieldNames": ["referral_count", "discharged_patients"],
-      "function": "function(total, discharge) { return 100 * (total /w discharge); }"
-    }
-  ],
-  "intervals": [
-    "2013-08-31T00:00:00.000/2013-09-03T00:00:00.000"
-]
-}
 
 /**
  * Example index task for reference
@@ -211,14 +170,14 @@ class SimpleIndexGeneratorTest extends PHPUnit_Framework_TestCase
 curl -X 'POST' -H 'Content-Type:application/json' -d @referral_visit-data_indexing-task.json 0.0.0.0:8087/druid/indexer/v1/task
      *
 {
-"type" : "index",
-"dataSource" : "referral-visit-test-data-w-facility-ids",
-"granularitySpec" : {
-"type" : "uniform",
-"gran" : "DAY",
-"intervals" : [ "2010/2020" ]
-},
-"aggregators" : [
+    "type" : "index",
+    "dataSource" : "referral-visit-test-data-w-facility-ids",
+    "granularitySpec" : {
+        "type" : "uniform",
+        "gran" : "DAY",
+        "intervals" : [ "2010/2020" ]
+    },
+    "aggregators" : [
         {
             "type" : "count",
             "name" : "count"
@@ -230,7 +189,7 @@ curl -X 'POST' -H 'Content-Type:application/json' -d @referral_visit-data_indexi
          }
     ],
     "firehose" : {
-    "type" : "local",
+        "type" : "local",
         "baseDir" : "/home/jhegman",
         "filter" : "all.json",
         "parser" : {
@@ -245,10 +204,6 @@ curl -X 'POST' -H 'Content-Type:application/json' -d @referral_visit-data_indexi
         }
     }
 }
-     *
- *
- *
- * More complicated example
 
 */
 

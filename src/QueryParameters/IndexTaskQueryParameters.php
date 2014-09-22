@@ -15,6 +15,13 @@ class IndexTaskQueryParameters extends AbstractTaskParameters implements IDruidQ
 {
 
     /**
+     * Query Type.
+     *
+     * @var string
+     */
+    public $queryType = 'index';
+
+    /**
      * ISO Time String of Batch Ingestion Window Start Time
      *
      * @var string
