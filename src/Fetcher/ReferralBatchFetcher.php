@@ -18,6 +18,14 @@ class ReferralBatchFetcher implements IFetcher
     protected $pass = '';
     protected $db = '';
 
+    /**
+     * Set the MySQL DB credentials for fetching.
+     * 
+     * @param $host
+     * @param $user
+     * @param $pass
+     * @param $db
+     */
     public function setMySqlCredentials($host, $user, $pass, $db) {
         $this->host = $host;
         $this->user = $user;
@@ -25,6 +33,13 @@ class ReferralBatchFetcher implements IFetcher
         $this->db = $db;
     }
 
+    /**
+     * Set the time window for fetching.
+     *
+     * @param string $start ISO DateTime for start of ingestion window
+     * @param string $end ISO DateTime for end of ingestion window
+     * @return string
+     */
     public function setTimeWindow($start, $end) {
         $this->timeWindowStart = $start;
         $this->timeWindowEnd = $end;
@@ -94,18 +109,13 @@ QUERY;
     /**
      * Ingest data into druid.
      *
-     * @param string $start ISO DateTime for start of ingestion window
-     * @param string $end ISO DateTime for end of ingestion window
      * @return string
      */
-    public function ingest($start = '2000-01-01T00:00:01', $end = '3030-01-01T00:00:01')
+    public function ingest()
     {
-        $this->setTimeWindow( $start, $end );
-
         $dataBatch = $this->fetch();
 
         $exampleData = print_r( $dataBatch[ 0 ], true );
-
 
         return "Fetched " . count($dataBatch) . " referrals.\nOne referral looks like: " . $exampleData . "\n";
     }
