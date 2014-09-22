@@ -1,11 +1,13 @@
 <?php
 
-namespace PhpDruidIngest;
+namespace PhpDruidIngest\Fetcher;
 
 use mysqli;
+use PhpDruidIngest\Interfaces\IFetcher;
+
 date_default_timezone_set('America/Denver');
 
-class ReferralBatchIngester implements IFetcher, ITransformer
+class ReferralBatchFetcher implements IFetcher
 {
 
     protected $timeWindowStart;
@@ -174,15 +176,4 @@ QUERY;
 
     }
 
-    /**
-     * (Optionally) transform the data for ingestion.
-     *
-     * @param $input
-     * @return mixed $output
-     */
-    public function transform($input)
-    {
-        // TODO: Implement transform() method.
-        return $input;
-    }
 }

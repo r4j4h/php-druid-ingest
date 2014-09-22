@@ -2,6 +2,8 @@
 
 namespace PhpDruidIngest;
 
+use PhpDruidIngest\Abstracts\BasePreparer;
+
 date_default_timezone_set('America/Denver');
 
 class RemotePreparer extends BasePreparer

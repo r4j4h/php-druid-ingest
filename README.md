@@ -71,26 +71,14 @@ Resulting in these classes. Sketch of their interfaces:
 
 IFetcher
     +fetch
-    +handleFetchedResult
-
-ITransformer
-    +transform (needs data from IFetcher fetch)
-    +handleTransformedResult
 
 IPreparer
     +prepare
     +prepared
 
-ITaskRunner
-    +run (needs IPreprarer to have finished and to have index from IIndexGenerator generateIndex)
+IDruidJobWatcher
+    +watchJob (needs job id from `IDruidQueryExecutor`'s `executeQuery` function's result)
 
-IIndexGenerator
-    +generateIndex (needs path from IPreparer prepare)
-
-DimensionDefinition
-    +getDimensionsKeyNames
-    +getNonTimeDimensionsKeyNames
-    +getTimeDimensionKeyName
 
 
 Looking at how these interfaces fit together:
@@ -102,16 +90,14 @@ Looking at how these interfaces fit together:
 Interface wise, this looks like:
 
 1. Instantiate a `IFetcher`, configured to fetch the desired records for the desired time periods.
-1. He records results in memory or in file
-1. He transfers results to destination, returning the destination path
+1. Instantiate a `IPreparer` to record the results in memory or in file, tranfser results to destination, returning the destination path
+1. Instantiate a `IDruidQueryParameters`, configured with parameters. <-- was dimension definition, now index task params + path from IFetcher
 1. Instantiate a `IDruidQueryExecutor`, configured to hit a Druid endpoint.
 1. Instantiate a `IDruidQueryGenerator`. <-- index task generator
-1. Instantiate a `IDruidQueryParameters`, configured with parameters. <-- was dimension definition, now index task params + path from IFetcher
-1. Instantiate a `IDruidQueryResponseHandler`. <-- gets the task id, should return it for later processing
+1. Instantiate a `IDruidQueryResponseHandler`. <-- gets the task id
 1. Run the `IDruidQueryExecutor`'s `executeQuery` function with the IDruidQuery, getting the result.
-1. Take the task id and hand it to `ITaskRunner`
-1. He polls until task succeeds or finishes
-1. He then cleans up left over ingestion file
+1. Hand the resulting task id to `IDruidJobWatcher` who polls until task succeeds or finishes
+1. `IPreparer` then cleans up left over ingestion file
 
 
 

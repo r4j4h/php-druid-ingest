@@ -1,6 +1,6 @@
 <?php
 
-namespace PhpDruidIngest;
+namespace PhpDruidIngest\Interfaces;
 
 interface IFetcher {
 

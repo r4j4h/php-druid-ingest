@@ -1,5 +1,5 @@
 <?php
-namespace PhpDruidIngest;
+namespace PhpDruidIngest\QueryGenerator;
 
 use PhpDruidIngest\QueryParameters\IndexTaskQueryParameters;
 use PHPUnit_Framework_TestCase;
@@ -32,7 +32,7 @@ class SimpleIndexGeneratorTest extends PHPUnit_Framework_TestCase
 
     public function testGenerateIndexReturnsJSONString()
     {
-        $generator = new SimpleIndexGenerator();
+        $generator = new SimpleIndexQueryGenerator();
         $params = $this->getMockIndexTaskQueryParameters();
 
         $index = $generator->generateIndex( $params );

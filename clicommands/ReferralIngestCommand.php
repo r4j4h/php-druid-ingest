@@ -9,11 +9,13 @@
 
 namespace ReferralIngester\Command;
 use DruidFamiliar\QueryExecutor\DruidNodeDruidQueryExecutor;
+use DruidFamiliar\ResponseHandler\DoNothingResponseHandler;
+use DruidFamiliar\Test\ResponseHandler\DoNothingResponseHandlerTest;
 use PhpDruidIngest\QueryParameters\IndexTaskQueryParameters;
-use PhpDruidIngest\BaseDruidTaskExecutor;
-use PhpDruidIngest\BasePreparer;
-use PhpDruidIngest\ReferralBatchIngester;
-use PhpDruidIngest\SimpleIndexGenerator;
+use PhpDruidIngest\DruidJobWatcher\BasicDruidJobWatcher;
+use PhpDruidIngest\Abstracts\BasePreparer;
+use PhpDruidIngest\Fetcher\ReferralBatchFetcher;
+use PhpDruidIngest\QueryGenerator\SimpleIndexQueryGenerator;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -72,17 +74,17 @@ HELPBLURB
 
     protected function ingest($formattedStartTime, $formattedEndTime, InputInterface $input, OutputInterface $output)
     {
-        $ingester = new ReferralBatchIngester();
+        $ingester = new ReferralBatchFetcher();
         $ingester->setMySqlCredentials($this->host, $this->user, $this->pass, $this->db);
         $ingester->setTimeWindow( $formattedStartTime, $formattedEndTime );
 
         $preparer = new BasePreparer();
 
-        $indexGenerator = new SimpleIndexGenerator();
+        $indexGenerator = new SimpleIndexQueryGenerator();
 
         $dimensionData = new IndexTaskQueryParameters();
 
-        $taskRunner = new BaseDruidTaskExecutor();
+        $taskRunner = new BasicDruidJobWatcher();
 
         $druidConnection = new DruidNodeDruidQueryExecutor($this->druidIp, $this->druidPort, '/druid/indexer/v1/task');
 
@@ -98,8 +100,10 @@ HELPBLURB
             // TODO Generate Index
             $indexBody = $indexGenerator->generateIndex( $pathOfPreparedData, $dimensionData );
 
+            $ingestionTaskId = $druidConnection->executeQuery($indexGenerator, $dimensionData, new DoNothingResponseHandler());
+
             // TODO Task Runner
-            $success = $taskRunner->index( $druidConnection, $indexBody );
+            $success = $taskRunner->watchJob( $ingestionTaskId );
 
             $output->writeln( $ingestedData );
 

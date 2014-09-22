@@ -1,10 +1,11 @@
 <?php
 
-namespace PhpDruidIngest;
+namespace PhpDruidIngest\QueryGenerator;
 
+use PhpDruidIngest\Abstracts\BaseIndexQueryGenerator;
 use PhpDruidIngest\QueryParameters\IndexTaskQueryParameters;
 
-class SimpleIndexGenerator extends BaseIndexGenerator
+class SimpleIndexQueryGenerator extends BaseIndexQueryGenerator
 {
 
     protected $baseIndexTemplate = <<<INDEXTEMPLATE
