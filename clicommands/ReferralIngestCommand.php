@@ -8,10 +8,16 @@
 
 
 namespace ReferralIngester\Command;
-use PhpDruidIngest\BaseDruidTaskExecutor;
-use PhpDruidIngest\BasePreparer;
-use PhpDruidIngest\ReferralBatchIngester;
-use PhpDruidIngest\SimpleIndexGenerator;
+
+use DruidFamiliar\QueryExecutor\DruidNodeDruidQueryExecutor;
+use DruidFamiliar\ResponseHandler\DoNothingResponseHandler;
+use DruidFamiliar\Test\ResponseHandler\DoNothingResponseHandlerTest;
+use PhpDruidIngest\LocalPreparer;
+use PhpDruidIngest\QueryParameters\IndexTaskQueryParameters;
+use PhpDruidIngest\DruidJobWatcher\BasicDruidJobWatcher;
+use PhpDruidIngest\Abstracts\BasePreparer;
+use PhpDruidIngest\Fetcher\ReferralBatchFetcher;
+use PhpDruidIngest\QueryGenerator\SimpleIndexQueryGenerator;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -23,12 +29,25 @@ use Symfony\Component\Console\Output\OutputInterface;
 class ReferralIngestCommand extends IngestCommand
 {
 
-    public function __construct($dbConfig, $name = 'referral-ingest') {
+    protected $host;
+    protected $user;
+    protected $pass;
+    protected $db;
+
+    protected $druidIp;
+    protected $druidPort;
+
+    public function __construct($dbConfig, $druidNodeConfig, $name = 'referral-ingest' )
+    {
         $this->commandName = $name;
         $this->host = $dbConfig['host'];
         $this->user = $dbConfig['user'];
         $this->pass = $dbConfig['pass'];
         $this->db = $dbConfig['db'];
+
+        $this->druidIp = $druidNodeConfig['ip'];
+        $this->druidPort = $druidNodeConfig['port'];
+
         parent::__construct();
     }
 
@@ -58,34 +77,41 @@ HELPBLURB
 
     protected function ingest($formattedStartTime, $formattedEndTime, InputInterface $input, OutputInterface $output)
     {
-        $ingester = new ReferralBatchIngester();
-        $ingester->setMySqlCredentials($this->host, $this->user, $this->pass, $this->db);
-        $ingester->setTimeWindow( $formattedStartTime, $formattedEndTime );
+        $fetcher = new ReferralBatchFetcher();
+        $fetcher->setMySqlCredentials($this->host, $this->user, $this->pass, $this->db);
+        $fetcher->setTimeWindow( $formattedStartTime, $formattedEndTime );
 
-        $preparer = new BasePreparer();
+        $preparer = new LocalPreparer();
 
-        $indexGenerator = new SimpleIndexGenerator();
+        $indexTaskQueryGenerator = new SimpleIndexQueryGenerator();
 
-        $taskRunner = new BaseDruidTaskExecutor();
+        $indexTaskQueryParameters = new IndexTaskQueryParameters();
 
-        $druidConnection = 1; // TODO Define -- use from php-druid-query
+        $basicDruidJobWatcher = new BasicDruidJobWatcher();
+
+        $druidQueryExecutor = new DruidNodeDruidQueryExecutor($this->druidIp, $this->druidPort, '/druid/indexer/v1/task');
 
         try {
 
-            $response = $ingester->ingest();
+            $fetchedData = $fetcher->fetch();
 
-            $ingestedData = $response;
+            ////////////////////////////////
+            $exampleData = print_r( $fetchedData[ 0 ], true );
+            $output->writeln( "Fetched " . count($fetchedData) . " referrals.\nOne referral looks like: " . $exampleData . "\n" );
+            ////////////////////////////////
 
-            // TODO Prepare
-            $pathOfPreparedData = $preparer->prepare($ingestedData);
+            $pathOfPreparedData = $preparer->prepare($fetchedData);
 
-            // TODO Generate Index
-            $indexBody = $indexGenerator->generateIndex( $pathOfPreparedData, $dimensionData );
+            $indexBody = $indexTaskQueryGenerator->generateIndex( $pathOfPreparedData, $indexTaskQueryParameters );
 
-            // TODO Task Runner
-            $success = $taskRunner->index( $druidConnection, $indexBody );
+            $ingestionTaskId = $druidQueryExecutor->executeQuery($indexTaskQueryGenerator, $indexTaskQueryParameters, new DoNothingResponseHandler());
 
-            $output->writeln( $ingestedData );
+            var_dump('A future IndexTaskResponseHandler will need to handle:');
+            var_dump( $ingestionTaskId );
+
+            $success = $basicDruidJobWatcher->watchJob( $ingestionTaskId );
+
+            $output->writeln( $success );
 
         } catch ( \Exception $e ) {
             throw $e;

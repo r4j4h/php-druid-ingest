@@ -1,19 +1,25 @@
 <?php
+namespace PhpDruidIngest\QueryGenerator;
 
-namespace PhpDruidIngest;
-
+use DruidFamiliar\Interval;
+use PhpDruidIngest\QueryParameters\IndexTaskQueryParameters;
 use PHPUnit_Framework_TestCase;
 
 class SimpleIndexGeneratorTest extends PHPUnit_Framework_TestCase
 {
+    public function setUp()
+    {
+        date_default_timezone_set('UTC');
+    }
+
+
     private $mockDataSourceName = 'my-datasource';
 
-    public function getMockIndexTaskParameters()
+    public function getMockIndexTaskQueryParameters()
     {
-        $params = new IndexTaskParameters();
+        $params = new IndexTaskQueryParameters();
 
-        $params->intervalStart = '1981-01-01T4:20';
-        $params->intervalEnd = '2012-03-01T3:00';
+        $params->intervals = new Interval('1981-01-01T4:20', '2012-03-01T3:00');
         $params->granularityType = 'uniform';
         $params->granularity = 'DAY';
         $params->dataSource = $this->mockDataSourceName;
@@ -21,20 +27,23 @@ class SimpleIndexGeneratorTest extends PHPUnit_Framework_TestCase
         $params->timeDimension = 'date_dim';
         $params->dimensions = array('one_dim', 'two_dim');
 
+        $params->setIntervals( '1981-01-01T4:20', '2012-03-01T3:00' );
+
         $params->setFilePath('/another/file/path/to/a/file.bebop');
         $params->setAggregators(array(
             array( 'type' => 'count', 'name' => 'count' ),
             array( 'type' => 'longSum', 'name' => 'total_referral_count', 'fieldName' => 'referral_count' )
         ));
 
-
         return $params;
     }
 
+
+
     public function testGenerateIndexReturnsJSONString()
     {
-        $generator = new SimpleIndexGenerator();
-        $params = $this->getMockIndexTaskParameters();
+        $generator = new SimpleIndexQueryGenerator();
+        $params = $this->getMockIndexTaskQueryParameters();
 
         $index = $generator->generateIndex( $params );
 
@@ -66,26 +75,81 @@ class SimpleIndexGeneratorTest extends PHPUnit_Framework_TestCase
         $this->assertEquals( $this->mockDataSourceName, $parsedIndex['dataSource'] );
     }
 
-    public function testGenerateIndexUsesPathFromPreparer()
+
+    /**
+     * @depends testGenerateIndexReturnsJSONString
+     */
+    public function testGenerateIndexDefinesGranularitySpec($jsonString)
     {
-        $this->markTestIncomplete();
+        $parsedIndex = json_decode( $jsonString, true );
+        $mockParams = $this->getMockIndexTaskQueryParameters();
+
+        $this->assertArrayHasKey( 'granularitySpec', $parsedIndex );
+        $this->assertArrayHasKey( 'type', $parsedIndex['granularitySpec'] );
+        $this->assertArrayHasKey( 'gran', $parsedIndex['granularitySpec'] );
+        $this->assertArrayHasKey( 'intervals', $parsedIndex['granularitySpec'] );
+
+        $this->assertEquals( $mockParams->granularityType, $parsedIndex['granularitySpec']['type'] );
+        $this->assertEquals( $mockParams->granularity, $parsedIndex['granularitySpec']['gran'] );
+        $this->assertCount( 1, $parsedIndex['granularitySpec']['intervals'] );
+
+        $expected = '1981-01-01T04:20:00Z' . '/' . '2012-03-01T03:00:00Z';
+        $this->assertEquals($expected, $parsedIndex['granularitySpec']['intervals'][0] );
     }
 
     /**
      * @depends testGenerateIndexReturnsJSONString
      */
-    public function testGenerateIndexUsesNonTimeDimensions($jsonString)
+    public function testGenerateIndexUsesFirehose($jsonString)
     {
         $parsedIndex = json_decode( $jsonString, true );
-        $mockParams = $this->getMockIndexTaskParameters();
+        $mockParams = $this->getMockIndexTaskQueryParameters();
 
         $this->assertArrayHasKey( 'firehose', $parsedIndex );
+        $this->assertArrayHasKey( 'type', $parsedIndex['firehose'] );
+        $this->assertEquals( 'local', $parsedIndex['firehose']['type'] );
+
+        return $jsonString;
+    }
+
+    /**
+     * @depends testGenerateIndexUsesFirehose
+     */
+    public function testGenerateIndexUsesFirehoseParserUsesFilePath($jsonString)
+    {
+        $parsedIndex = json_decode( $jsonString, true );
+        $mockParams = $this->getMockIndexTaskQueryParameters();
+
+        // baseDir & filter should reflect path to prepared file
+        $this->assertArrayHasKey( 'baseDir', $parsedIndex['firehose'] );
+        $this->assertArrayHasKey( 'filter', $parsedIndex['firehose'] );
+        $this->assertEquals( $mockParams->baseDir, $parsedIndex['firehose']['baseDir'] );
+        $this->assertEquals( $mockParams->filePath, $parsedIndex['firehose']['filter'] );
+    }
+
+    /**
+     * @depends testGenerateIndexUsesFirehose
+     */
+    public function testGenerateIndexUsesFirehoseParserUsesJsonFormat($jsonString)
+    {
+        $parsedIndex = json_decode( $jsonString, true );
+
+        // parser should include json format
         $this->assertArrayHasKey( 'parser', $parsedIndex['firehose'] );
         $this->assertArrayHasKey( 'data', $parsedIndex['firehose']['parser'] );
-
         $this->assertArrayHasKey( 'format', $parsedIndex['firehose']['parser']['data'] );
         $this->assertEquals( 'json', $parsedIndex['firehose']['parser']['data']['format'] );
+    }
 
+    /**
+     * @depends testGenerateIndexUsesFirehose
+     */
+    public function testGenerateIndexUsesFirehoseParserIncludesNonTimeDimensions($jsonString)
+    {
+        $parsedIndex = json_decode( $jsonString, true );
+        $mockParams = $this->getMockIndexTaskQueryParameters();
+
+        // parser should include all dimension data
         $this->assertArrayHasKey( 'dimensions', $parsedIndex['firehose']['parser']['data'] );
         $this->assertCount(count($mockParams->dimensions), $parsedIndex['firehose']['parser']['data']['dimensions']);
         $this->assertEquals($mockParams->dimensions, $parsedIndex['firehose']['parser']['data']['dimensions']);
@@ -94,12 +158,12 @@ class SimpleIndexGeneratorTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @depends testGenerateIndexReturnsJSONString
+     * @depends testGenerateIndexUsesFirehose
      */
-    public function testGenerateIndexUsesTimeDimension($jsonString)
+    public function testGenerateIndexUsesFirehoseParserUsesTimeDimension($jsonString)
     {
         $parsedIndex = json_decode( $jsonString, true );
-        $mockParams = $this->getMockIndexTaskParameters();
+        $mockParams = $this->getMockIndexTaskQueryParameters();
 
         $this->assertArrayHasKey( 'firehose', $parsedIndex );
         $this->assertArrayHasKey( 'parser', $parsedIndex['firehose'] );
@@ -108,24 +172,7 @@ class SimpleIndexGeneratorTest extends PHPUnit_Framework_TestCase
         $this->assertEquals( $mockParams->timeDimension, $parsedIndex['firehose']['parser']['timestampSpec']['column'] );
     }
 
-    public function testGenerateIndexUsesFirehose()
-    {
-        // type should be local
-        // baseDir & filter should reflect path to prepared file
-        // parser should include json format and all dimension data
 
-        $this->markTestIncomplete();
-    }
-
-
-    public function testGenerateIndexDefinesGranularitySpec()
-    {
-        // granularitySpec
-            // type
-            // gran
-            // intervals
-        $this->markTestIncomplete();
-    }
 
 /**
  * Example index task for reference
@@ -133,14 +180,14 @@ class SimpleIndexGeneratorTest extends PHPUnit_Framework_TestCase
 curl -X 'POST' -H 'Content-Type:application/json' -d @referral_visit-data_indexing-task.json 0.0.0.0:8087/druid/indexer/v1/task
      *
 {
-"type" : "index",
-"dataSource" : "referral-visit-test-data-w-facility-ids",
-"granularitySpec" : {
-"type" : "uniform",
-"gran" : "DAY",
-"intervals" : [ "2010/2020" ]
-},
-"aggregators" : [
+    "type" : "index",
+    "dataSource" : "referral-visit-test-data-w-facility-ids",
+    "granularitySpec" : {
+        "type" : "uniform",
+        "gran" : "DAY",
+        "intervals" : [ "2010/2020" ]
+    },
+    "aggregators" : [
         {
             "type" : "count",
             "name" : "count"
@@ -152,7 +199,7 @@ curl -X 'POST' -H 'Content-Type:application/json' -d @referral_visit-data_indexi
          }
     ],
     "firehose" : {
-    "type" : "local",
+        "type" : "local",
         "baseDir" : "/home/jhegman",
         "filter" : "all.json",
         "parser" : {
@@ -167,7 +214,7 @@ curl -X 'POST' -H 'Content-Type:application/json' -d @referral_visit-data_indexi
         }
     }
 }
-     *
+
 */
 
 }

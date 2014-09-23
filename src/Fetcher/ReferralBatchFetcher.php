@@ -1,11 +1,19 @@
 <?php
 
-namespace PhpDruidIngest;
+namespace PhpDruidIngest\Fetcher;
 
 use mysqli;
-date_default_timezone_set('America/Denver');
+use PhpDruidIngest\Abstracts\BaseFetcher;
+use PhpDruidIngest\Interfaces\IFetcher;
 
-class ReferralBatchIngester implements IFetcher, ITransformer
+//date_default_timezone_set('UTC');
+
+/**
+ * Class ReferralBatchFetcher fetches Referral Data from an app MySQL database.
+ *
+ * @package PhpDruidIngest\Fetcher
+ */
+class ReferralBatchFetcher extends BaseFetcher implements IFetcher
 {
 
     protected $timeWindowStart;
@@ -16,6 +24,14 @@ class ReferralBatchIngester implements IFetcher, ITransformer
     protected $pass = '';
     protected $db = '';
 
+    /**
+     * Set the MySQL DB credentials for fetching.
+     *
+     * @param $host
+     * @param $user
+     * @param $pass
+     * @param $db
+     */
     public function setMySqlCredentials($host, $user, $pass, $db) {
         $this->host = $host;
         $this->user = $user;
@@ -23,35 +39,38 @@ class ReferralBatchIngester implements IFetcher, ITransformer
         $this->db = $db;
     }
 
-    public function setTimeWindow($start, $end) {
-        $this->timeWindowStart = $start;
-        $this->timeWindowEnd = $end;
-    }
-
-
     /**
-     * Ingest data into druid.
+     * Set the time window for fetching.
      *
      * @param string $start ISO DateTime for start of ingestion window
      * @param string $end ISO DateTime for end of ingestion window
      * @return string
      */
-    public function ingest($start = '2000-01-01T00:00:01', $end = '3030-01-01T00:00:01')
-    {
-        $this->setTimeWindow( $start, $end );
-
-        $dataBatch = $this->fetch();
-
-        $exampleData = print_r( $dataBatch[ 0 ], true );
-
-
-        return "Fetched " . count($dataBatch) . " referrals.\nOne referral looks like: " . $exampleData . "\n";
+    public function setTimeWindow($start, $end) {
+        $this->timeWindowStart = $start;
+        $this->timeWindowEnd = $end;
     }
 
+    protected $contactsQuery = <<<QUERY
 
+QUERY;
+
+
+    protected $physicianQuery = <<<QUERY
+
+QUERY;
+
+
+    /**
+     * Fetch data.
+     *
+     * @return array|mixed
+     * @throws \Exception
+     */
     public function fetch()
     {
 
+        // TODO TODO make it so mysqli object is passed, DI driven, and not instantiated here
         $mysqli = new mysqli($this->host, $this->user, $this->pass, $this->db);
 
         // Check connection
@@ -61,6 +80,7 @@ class ReferralBatchIngester implements IFetcher, ITransformer
 
         echo "Connected.\n";
 
+//        $preparedQuery = $this->prepareQuery( $this->contactsQuery, $this->timeWindowStart, $this->timeWindowEnd );
         $preparedQuery = $this->prepareQuery( $this->physicianQuery, $this->timeWindowStart, $this->timeWindowEnd );
 
 //        echo $start . "\n";
@@ -114,15 +134,4 @@ class ReferralBatchIngester implements IFetcher, ITransformer
 
     }
 
-    /**
-     * (Optionally) transform the data for ingestion.
-     *
-     * @param $input
-     * @return mixed $output
-     */
-    public function transform($input)
-    {
-        // TODO: Implement transform() method.
-        return $input;
-    }
 }

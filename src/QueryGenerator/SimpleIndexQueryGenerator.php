@@ -1,8 +1,11 @@
 <?php
 
-namespace PhpDruidIngest;
+namespace PhpDruidIngest\QueryGenerator;
 
-class SimpleIndexGenerator extends BaseIndexGenerator
+use PhpDruidIngest\Abstracts\BaseIndexQueryGenerator;
+use PhpDruidIngest\QueryParameters\IndexTaskQueryParameters;
+
+class SimpleIndexQueryGenerator extends BaseIndexQueryGenerator
 {
 
     protected $baseIndexTemplate = <<<INDEXTEMPLATE
@@ -12,7 +15,7 @@ class SimpleIndexGenerator extends BaseIndexGenerator
     "granularitySpec" : {
         "type" : "{GRANULARITYSPEC.TYPE}",
         "gran" : "{GRANULARITYSPEC.GRAN}",
-        "intervals" : [ "{GRANULARITYSPEC.START}/{GRANULARITYSPEC.END}" ]
+        "intervals" : [ "{GRANULARITYSPEC.INTERVALS}" ]
     },
     "aggregators": [{AGGREGATORS}],
     "firehose" : {
@@ -39,17 +42,17 @@ INDEXTEMPLATE;
      * @param $input
      * @return mixed $output
      */
-    public function generateIndex(IndexTaskParameters $indexTaskParams) {
+    public function generateIndex( IndexTaskQueryParameters $indexTaskParams )
+    {
 
         // Generate Index
         $generatedIndex = $this->baseIndexTemplate;
 
-        $generatedIndex = str_replace( '{INDEXTYPE}', 'index', $generatedIndex );
+        $generatedIndex = str_replace( '{INDEXTYPE}', $indexTaskParams->queryType, $generatedIndex );
         $generatedIndex = str_replace( '{DATASOURCE}', $indexTaskParams->dataSource, $generatedIndex );
         $generatedIndex = str_replace( '{GRANULARITYSPEC.TYPE}', $indexTaskParams->granularityType, $generatedIndex );
         $generatedIndex = str_replace( '{GRANULARITYSPEC.GRAN}', $indexTaskParams->granularity, $generatedIndex );
-        $generatedIndex = str_replace( '{GRANULARITYSPEC.START}', $indexTaskParams->intervalStart, $generatedIndex );
-        $generatedIndex = str_replace( '{GRANULARITYSPEC.END}', $indexTaskParams->intervalEnd, $generatedIndex );
+        $generatedIndex = str_replace( '{GRANULARITYSPEC.INTERVALS}', $indexTaskParams->intervals, $generatedIndex );
 
         $generatedIndex = str_replace( '{FIREHOSE.TYPE}', 'local', $generatedIndex );
         $generatedIndex = str_replace( '{FIREHOSE.BASEDIR}', $indexTaskParams->baseDir, $generatedIndex );
@@ -62,6 +65,7 @@ INDEXTEMPLATE;
 
         $generatedIndex = str_replace( '{AGGREGATORS}', join(",", $indexTaskParams->aggregators), $generatedIndex );
 
+        var_dump( "Here's a generated index. I hope you like it! As follows:" );
         var_dump( $generatedIndex );
 
         return $generatedIndex;

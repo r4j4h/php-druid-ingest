@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "05993435460d282767ae050c7f914cbb",
+    "hash": "246095f67e217802e3fadcbf7e8b1bca",
     "packages": [
         {
             "name": "bcncommerce/json-stream",
@@ -145,6 +145,58 @@
                 "web service"
             ],
             "time": "2014-08-11 04:32:36"
+        },
+        {
+            "name": "r4j4h/php-druid-query",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/r4j4h/php-druid-query.git",
+                "reference": "b3e2e410e5f0984bcbb8eeb430d0ce67e083b057"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/r4j4h/php-druid-query/zipball/b3e2e410e5f0984bcbb8eeb430d0ce67e083b057",
+                "reference": "b3e2e410e5f0984bcbb8eeb430d0ce67e083b057",
+                "shasum": ""
+            },
+            "require": {
+                "guzzle/guzzle": "*",
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.2.*"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "DruidFamiliar\\": "src/DruidFamiliar/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jasmine Hegman",
+                    "email": "hegpetz@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Experimental PHP wrapper around querying druid",
+            "keywords": [
+                "druid",
+                "parameterized query",
+                "query",
+                "querying"
+            ],
+            "time": "2014-09-23 00:08:10"
         },
         {
             "name": "react/promise",
@@ -3602,9 +3654,9 @@
 
     ],
     "minimum-stability": "stable",
-    "stability-flags": [
-
-    ],
+    "stability-flags": {
+        "r4j4h/php-druid-query": 20
+    },
     "prefer-stable": false,
     "platform": {
         "php": ">=5.3.0"

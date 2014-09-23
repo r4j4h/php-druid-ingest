@@ -9,4 +9,5 @@ return array(
     'ReferralIngester\\Command\\' => array($baseDir . '/clicommands'),
     'PhpDruidIngest\\' => array($baseDir . '/src', $baseDir . '/tests'),
     'Monolog\\' => array($vendorDir . '/monolog/monolog/src/Monolog'),
+    'DruidFamiliar\\' => array($vendorDir . '/r4j4h/php-druid-query/src/DruidFamiliar'),
 );

@@ -17,8 +17,9 @@ if  ( !isset( $configuration['referral-ingestion'] ) )
 }
 
 $referralIngestCommandDbConfig = $configuration['referral-ingestion']['app-database'];
+$druidNodeConnInfo = $configuration['referral-ingestion']['druid-connection'];
 
-$configuredIngestionCommand = new ReferralIngestCommand( $referralIngestCommandDbConfig, 'referral-ingest' );
+$configuredIngestionCommand = new ReferralIngestCommand( $referralIngestCommandDbConfig, $druidNodeConnInfo, 'referral-ingest' );
 
 
 $console = new Application();
