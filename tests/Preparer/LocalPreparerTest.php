@@ -35,15 +35,16 @@ class LocalPreparerTest extends PHPUnit_Framework_TestCase
     {
         $p = $this->getMock('PhpDruidIngest\Preparer\LocalFilePreparer', array('writeFile'));
 
-        $p->expects($this->once())->method('writeFile')->with( 'some/dir/filename.json', 'row1\nrow2\nrow3' );
+        $p->expects($this->once())->method('writeFile')->with( $this->anything(), '{"id":1,"animal":"cat","legs":4}' . "\n" . '{"id":2,"animal":"cat","legs":3}' );
 
         $fakeData = array(
-            '{"id": 1,"animal":"cat","legs":4}',
-            '{"id": 2,"animal":"cat","legs":3}',
-            '{"id": 3,"animal":"dog","legs":4}',
-            '{"id": 4,"animal":"spider","legs":8}',
+            '{"id":1,"animal":"cat","legs":4}',
+            '{"id":2,"animal":"cat","legs":3}',
         );
 
+        /**
+         * @var \PhpDruidIngest\Preparer\LocalFilePreparer $p
+         */
         $p->prepare( $fakeData );
 
         $this->markTestIncomplete('need to mock io');
@@ -53,14 +54,12 @@ class LocalPreparerTest extends PHPUnit_Framework_TestCase
     {
         $p = $this->getMock('PhpDruidIngest\Preparer\LocalFilePreparer', array('writeFile'));
 
-        $p->expects($this->once())->method('writeFile')->with( $this->anything(), 'row1\nrow2\nrow3' );
+        $p->expects($this->once())->method('writeFile')->with( $this->anything(), "id,animal,legs\n1,cat,4\n2,cat,3" );
 
         $fakeData = array(
             'id,animal,legs',
             '1,cat,4',
             '2,cat,3',
-            '3,dog,4',
-            '4,spider,8',
         );
 
         $p->prepare( $fakeData );
@@ -73,14 +72,12 @@ class LocalPreparerTest extends PHPUnit_Framework_TestCase
     {
         $p = $this->getMock('PhpDruidIngest\Preparer\LocalFilePreparer', array('writeFile'));
 
-        $p->expects($this->once())->method('writeFile')->with( 'some/dir/filename.json', 'row1\nrow2\nrow3' );
+        $p->expects($this->once())->method('writeFile')->with( $this->anything(), "id animal  legs\n1  cat 4\n2  cat 3" );
 
         $fakeData = array(
             'id animal  legs',
             '1  cat 4',
             '2  cat 3',
-            '3  dog 4',
-            '4  spider  8',
         );
 
         $p->prepare( $fakeData );
