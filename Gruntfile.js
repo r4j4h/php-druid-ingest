@@ -25,7 +25,7 @@ module.exports = function(grunt) {
 
             src_documentation : {
                 options: {
-                    directory : 'src/,clicommands/',
+                    directory : 'src/,clicommands/,vendor/r4j4h/php-druid-query',
                     target : 'docs/main'
                 }
             }
