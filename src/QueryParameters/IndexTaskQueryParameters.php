@@ -4,7 +4,9 @@ namespace PhpDruidIngest\QueryParameters;
 
 use DruidFamiliar\Abstracts\AbstractTaskParameters;
 use DruidFamiliar\Exception\MissingParametersException;
+use DruidFamiliar\Exception\UnexpectedTypeException;
 use DruidFamiliar\Interfaces\IDruidQueryParameters;
+use DruidFamiliar\Interval;
 
 /**
  * Class IndexTaskQueryParameters represents parameter values for an indexing task for Druid.
@@ -20,6 +22,12 @@ class IndexTaskQueryParameters extends AbstractTaskParameters implements IDruidQ
      * @var string
      */
     public $queryType = 'index';
+
+    /**
+     * @var Interval
+     */
+    public $intervals = null;
+
 
     /**
      * ISO Time String of Batch Ingestion Window Start Time
@@ -133,6 +141,17 @@ class IndexTaskQueryParameters extends AbstractTaskParameters implements IDruidQ
 
     }
 
+    /**
+     * Set the interval boundaries for this query.
+     *
+     * @param string $intervalStart
+     * @param string $intervalEnd
+     */
+    public function setIntervals($intervalStart = "1970-01-01 01:30:00", $intervalEnd = "3030-01-01 01:30:00")
+    {
+        $this->intervals = new Interval($intervalStart, $intervalEnd);
+    }
+
 
     /**
      * @throws MissingParametersException
@@ -144,8 +163,7 @@ class IndexTaskQueryParameters extends AbstractTaskParameters implements IDruidQ
 
         if ( !isset( $this->queryType       ) ) { $missingParams[] = 'queryType';       }
         if ( !isset( $this->dataSource      ) ) { $missingParams[] = 'dataSource';      }
-        if ( !isset( $this->intervalStart   ) ) { $missingParams[] = 'intervalStart';   }
-        if ( !isset( $this->intervalEnd     ) ) { $missingParams[] = 'intervalEnd';     }
+        if ( !isset( $this->intervals       ) ) { $missingParams[] = 'intervals';       }
         if ( !isset( $this->granularity     ) ) { $missingParams[] = 'granularity';     }
         if ( !isset( $this->dimensions      ) ) { $missingParams[] = 'dimensions';      }
         if ( !isset( $this->aggregators     ) ) { $missingParams[] = 'aggregators';     }
@@ -164,6 +182,12 @@ class IndexTaskQueryParameters extends AbstractTaskParameters implements IDruidQ
 
         if ( count($emptyParams) > 0 ) {
             throw new \DruidFamiliar\Exception\MissingParametersException($missingParams);
+        }
+
+        // Validate types
+
+        if ( !$this->intervals instanceof Interval ) {
+            throw new UnexpectedTypeException($this->intervals, "DruidFamiliar\Interval", "intervals property.");
         }
     }
 }

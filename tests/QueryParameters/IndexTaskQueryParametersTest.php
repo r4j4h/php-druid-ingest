@@ -13,14 +13,14 @@ class IndexTaskQueryParametersTest extends PHPUnit_Framework_TestCase
     {
         $params = new IndexTaskQueryParameters();
 
-        $params->intervalStart = '1981-01-01T4:20';
-        $params->intervalEnd = '2012-03-01T3:00';
         $params->granularityType = 'uniform';
         $params->granularity = 'DAY';
         $params->dataSource = $this->mockDataSource;
         $params->format = 'json';
         $params->timeDimension = 'date_dim';
         $params->dimensions = array('one_dim', 'two_dim');
+
+        $params->setIntervals('1981-01-01T4:20', '2012-03-01T3:00');
 
         $params->setFilePath('/another/file/path/to/a/file.bebop');
         $params->setAggregators(array(
@@ -72,10 +72,9 @@ class IndexTaskQueryParametersTest extends PHPUnit_Framework_TestCase
     {
         $parametersInstance = $this->getMockIndexTaskQueryParameters();
 
-        $parametersInstance->intervalStart = null;
-        $parametersInstance->intervalEnd = null;
+        $parametersInstance->intervals = null;
 
-        $this->setExpectedException('DruidFamiliar\Exception\MissingParametersException', 'Missing parameters: intervalStart, intervalEnd');
+        $this->setExpectedException('DruidFamiliar\Exception\MissingParametersException', 'Missing parameters: intervals');
 
         $parametersInstance->validate();
     }

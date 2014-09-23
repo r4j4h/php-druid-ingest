@@ -1,25 +1,33 @@
 <?php
 namespace PhpDruidIngest\QueryGenerator;
 
+use DruidFamiliar\Interval;
 use PhpDruidIngest\QueryParameters\IndexTaskQueryParameters;
 use PHPUnit_Framework_TestCase;
 
 class SimpleIndexGeneratorTest extends PHPUnit_Framework_TestCase
 {
+    public function setUp()
+    {
+        date_default_timezone_set('UTC');
+    }
+
+
     private $mockDataSourceName = 'my-datasource';
 
     public function getMockIndexTaskQueryParameters()
     {
         $params = new IndexTaskQueryParameters();
 
-        $params->intervalStart = '1981-01-01T4:20';
-        $params->intervalEnd = '2012-03-01T3:00';
+        $params->intervals = new Interval('1981-01-01T4:20', '2012-03-01T3:00');
         $params->granularityType = 'uniform';
         $params->granularity = 'DAY';
         $params->dataSource = $this->mockDataSourceName;
         $params->format = 'json';
         $params->timeDimension = 'date_dim';
         $params->dimensions = array('one_dim', 'two_dim');
+
+        $params->setIntervals( '1981-01-01T4:20', '2012-03-01T3:00' );
 
         $params->setFilePath('/another/file/path/to/a/file.bebop');
         $params->setAggregators(array(
@@ -29,6 +37,8 @@ class SimpleIndexGeneratorTest extends PHPUnit_Framework_TestCase
 
         return $params;
     }
+
+
 
     public function testGenerateIndexReturnsJSONString()
     {
@@ -83,7 +93,7 @@ class SimpleIndexGeneratorTest extends PHPUnit_Framework_TestCase
         $this->assertEquals( $mockParams->granularity, $parsedIndex['granularitySpec']['gran'] );
         $this->assertCount( 1, $parsedIndex['granularitySpec']['intervals'] );
 
-        $expected = $mockParams->intervalStart . '/' . $mockParams->intervalEnd;
+        $expected = '1981-01-01T04:20:00Z' . '/' . '2012-03-01T03:00:00Z';
         $this->assertEquals($expected, $parsedIndex['granularitySpec']['intervals'][0] );
     }
 

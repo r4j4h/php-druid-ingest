@@ -15,7 +15,7 @@ class SimpleIndexQueryGenerator extends BaseIndexQueryGenerator
     "granularitySpec" : {
         "type" : "{GRANULARITYSPEC.TYPE}",
         "gran" : "{GRANULARITYSPEC.GRAN}",
-        "intervals" : [ "{GRANULARITYSPEC.START}/{GRANULARITYSPEC.END}" ]
+        "intervals" : [ "{GRANULARITYSPEC.INTERVALS}" ]
     },
     "aggregators": [{AGGREGATORS}],
     "firehose" : {
@@ -51,8 +51,7 @@ INDEXTEMPLATE;
         $generatedIndex = str_replace( '{DATASOURCE}', $indexTaskParams->dataSource, $generatedIndex );
         $generatedIndex = str_replace( '{GRANULARITYSPEC.TYPE}', $indexTaskParams->granularityType, $generatedIndex );
         $generatedIndex = str_replace( '{GRANULARITYSPEC.GRAN}', $indexTaskParams->granularity, $generatedIndex );
-        $generatedIndex = str_replace( '{GRANULARITYSPEC.START}', $indexTaskParams->intervalStart, $generatedIndex );
-        $generatedIndex = str_replace( '{GRANULARITYSPEC.END}', $indexTaskParams->intervalEnd, $generatedIndex );
+        $generatedIndex = str_replace( '{GRANULARITYSPEC.INTERVALS}', $indexTaskParams->intervals, $generatedIndex );
 
         $generatedIndex = str_replace( '{FIREHOSE.TYPE}', 'local', $generatedIndex );
         $generatedIndex = str_replace( '{FIREHOSE.BASEDIR}', $indexTaskParams->baseDir, $generatedIndex );
