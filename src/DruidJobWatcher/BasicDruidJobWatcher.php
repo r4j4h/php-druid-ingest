@@ -48,7 +48,7 @@ class BasicDruidJobWatcher implements IDruidJobWatcher
      *
      * @return mixed
      */
-    public function stopWatchingJob()
+    protected function stopWatchingJob()
     {
         if ( $this->watchingJobId ) {
             // TODO: Implement stopWatchingJob() method.
@@ -63,7 +63,7 @@ class BasicDruidJobWatcher implements IDruidJobWatcher
      *
      * @return mixed
      */
-    public function onJobCompleted()
+    protected function onJobCompleted()
     {
         // TODO: Implement onJobCompleted() method.
     }
@@ -73,7 +73,7 @@ class BasicDruidJobWatcher implements IDruidJobWatcher
      *
      * @return mixed
      */
-    public function onJobFailed()
+    protected function onJobFailed()
     {
         // TODO: Implement onJobFailed() method.
     }

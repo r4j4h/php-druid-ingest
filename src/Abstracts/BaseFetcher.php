@@ -2,14 +2,15 @@
 
 namespace PhpDruidIngest\Abstracts;
 
-use PhpDruidIngest\IFetcher;
+use PhpDruidIngest\Interfaces\IFetcher;
 
 abstract class BaseFetcher implements IFetcher {
 
     /**
      * Fetch the data to be ingested.
      *
-     * @return mixed
+     * @return array|mixed
+     * @throws \Exception
      */
     abstract public function fetch();
 

@@ -26,7 +26,7 @@ abstract class BaseIndexQueryGenerator implements IDruidQueryGenerator {
      */
     public function generateQuery(IDruidQueryParameters $params) {
         if ( $params instanceof IndexTaskQueryParameters ) {
-            throw \Exception("Expected IndexTaskQueryParameters");
+            throw new \Exception("Expected IndexTaskQueryParameters");
         }
 
         $this->generateIndex($params);

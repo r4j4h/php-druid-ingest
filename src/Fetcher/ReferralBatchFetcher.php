@@ -3,11 +3,17 @@
 namespace PhpDruidIngest\Fetcher;
 
 use mysqli;
+use PhpDruidIngest\Abstracts\BaseFetcher;
 use PhpDruidIngest\Interfaces\IFetcher;
 
-date_default_timezone_set('America/Denver');
+//date_default_timezone_set('UTC');
 
-class ReferralBatchFetcher implements IFetcher
+/**
+ * Class ReferralBatchFetcher fetches Referral Data from an app MySQL database.
+ *
+ * @package PhpDruidIngest\Fetcher
+ */
+class ReferralBatchFetcher extends BaseFetcher implements IFetcher
 {
 
     protected $timeWindowStart;
@@ -56,23 +62,15 @@ QUERY;
 
 
     /**
-     * Ingest data into druid.
+     * Fetch data.
      *
-     * @return string
+     * @return array|mixed
+     * @throws \Exception
      */
-    public function ingest()
-    {
-        $dataBatch = $this->fetch();
-
-        $exampleData = print_r( $dataBatch[ 0 ], true );
-
-        return "Fetched " . count($dataBatch) . " referrals.\nOne referral looks like: " . $exampleData . "\n";
-    }
-
-
     public function fetch()
     {
 
+        // TODO TODO make it so mysqli object is passed, DI driven, and not instantiated here
         $mysqli = new mysqli($this->host, $this->user, $this->pass, $this->db);
 
         // Check connection
@@ -82,6 +80,7 @@ QUERY;
 
         echo "Connected.\n";
 
+//        $preparedQuery = $this->prepareQuery( $this->contactsQuery, $this->timeWindowStart, $this->timeWindowEnd );
         $preparedQuery = $this->prepareQuery( $this->physicianQuery, $this->timeWindowStart, $this->timeWindowEnd );
 
 //        echo $start . "\n";

@@ -42,7 +42,8 @@ INDEXTEMPLATE;
      * @param $input
      * @return mixed $output
      */
-    public function generateIndex(IndexTaskQueryParameters $indexTaskParams) {
+    public function generateIndex( IndexTaskQueryParameters $indexTaskParams )
+    {
 
         // Generate Index
         $generatedIndex = $this->baseIndexTemplate;
@@ -64,6 +65,7 @@ INDEXTEMPLATE;
 
         $generatedIndex = str_replace( '{AGGREGATORS}', join(",", $indexTaskParams->aggregators), $generatedIndex );
 
+        var_dump( "Here's a generated index. I hope you like it! As follows:" );
         var_dump( $generatedIndex );
 
         return $generatedIndex;

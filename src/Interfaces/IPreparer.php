@@ -7,8 +7,8 @@ interface IPreparer {
     /*
      * Prepare a file for ingestion.
      *
-     * @param $data
-     * @return string Prepared path
+     * @param array $data Array of records to ingest
+     * @return string Path of prepared file
      */
     public function prepare($data);
 

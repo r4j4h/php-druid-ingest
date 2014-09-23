@@ -7,6 +7,12 @@ use PHPUnit_Framework_TestCase;
 class IndexTaskQueryParametersTest extends PHPUnit_Framework_TestCase
 {
 
+    public function setUp()
+    {
+        date_default_timezone_set('UTC');
+    }
+
+
     private $mockDataSource = 'my-datasource';
 
     public function getMockIndexTaskQueryParameters()
@@ -29,12 +35,6 @@ class IndexTaskQueryParametersTest extends PHPUnit_Framework_TestCase
         ));
 
         return $params;
-    }
-
-
-    public function setUp()
-    {
-        date_default_timezone_set('America/Denver');
     }
 
 

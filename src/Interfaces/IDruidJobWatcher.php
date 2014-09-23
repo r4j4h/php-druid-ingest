@@ -2,6 +2,12 @@
 
 namespace PhpDruidIngest\Interfaces;
 
+/**
+ * Interface IDruidJobWatcher is for things that can watch jobs, usually over a longer period of time
+ * or over multiple HTTP requests.
+ *
+ * @package PhpDruidIngest\Interfaces
+ */
 interface IDruidJobWatcher
 {
 
@@ -14,31 +20,6 @@ interface IDruidJobWatcher
      * @param string $jobId
      * @return mixed
      */
-    public function watchJob($jobId);
-
-
-    /**
-     * If a job watching can be cancelled, call this to cancel.
-     *
-     * @return mixed
-     */
-    public function stopWatchingJob();
-
-
-
-    /**
-     * Called when a job's status moves to Completed state.
-     *
-     * @return mixed
-     */
-    public function onJobCompleted();
-
-
-    /**
-     * Called when a job's status moves to a Failed state.
-     *
-     * @return mixed
-     */
-    public function onJobFailed();
+    function watchJob($jobId);
 
 }
