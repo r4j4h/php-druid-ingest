@@ -152,12 +152,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/r4j4h/php-druid-query.git",
-                "reference": "0486264746b8435d5a70015474550bf43cb4e48d"
+                "reference": "21b1b36163d2ffce3ba74532416c5b0a83d94dfa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/r4j4h/php-druid-query/zipball/0486264746b8435d5a70015474550bf43cb4e48d",
-                "reference": "0486264746b8435d5a70015474550bf43cb4e48d",
+                "url": "https://api.github.com/repos/r4j4h/php-druid-query/zipball/21b1b36163d2ffce3ba74532416c5b0a83d94dfa",
+                "reference": "21b1b36163d2ffce3ba74532416c5b0a83d94dfa",
                 "shasum": ""
             },
             "require": {
@@ -199,7 +199,7 @@
                 "query",
                 "querying"
             ],
-            "time": "2014-09-24 01:04:08"
+            "time": "2014-09-24 23:33:23"
         },
         {
             "name": "react/promise",

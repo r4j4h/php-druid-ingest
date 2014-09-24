@@ -10,14 +10,12 @@
 namespace ReferralIngester\Command;
 
 use DruidFamiliar\QueryExecutor\DruidNodeDruidQueryExecutor;
-use DruidFamiliar\ResponseHandler\DoNothingResponseHandler;
-use DruidFamiliar\Test\ResponseHandler\DoNothingResponseHandlerTest;
-use PhpDruidIngest\LocalPreparer;
+use PhpDruidIngest\Preparer\LocalFilePreparer;
 use PhpDruidIngest\QueryParameters\IndexTaskQueryParameters;
 use PhpDruidIngest\DruidJobWatcher\BasicDruidJobWatcher;
-use PhpDruidIngest\Abstracts\BasePreparer;
 use PhpDruidIngest\Fetcher\ReferralBatchFetcher;
 use PhpDruidIngest\QueryGenerator\SimpleIndexQueryGenerator;
+use PhpDruidIngest\ResponseHandler\IndexingTaskResponseHandler;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -81,7 +79,7 @@ HELPBLURB
         $fetcher->setMySqlCredentials($this->host, $this->user, $this->pass, $this->db);
         $fetcher->setTimeWindow( $formattedStartTime, $formattedEndTime );
 
-        $preparer = new LocalPreparer();
+        $preparer = new LocalFilePreparer();
 
         $indexTaskQueryGenerator = new SimpleIndexQueryGenerator();
 
@@ -104,9 +102,9 @@ HELPBLURB
 
             $indexBody = $indexTaskQueryGenerator->generateIndex( $pathOfPreparedData, $indexTaskQueryParameters );
 
-            $ingestionTaskId = $druidQueryExecutor->executeQuery($indexTaskQueryGenerator, $indexTaskQueryParameters, new DoNothingResponseHandler());
+            $ingestionTaskId = $druidQueryExecutor->executeQuery($indexTaskQueryGenerator, $indexTaskQueryParameters, new IndexingTaskResponseHandler());
 
-            var_dump('A future IndexTaskResponseHandler will need to handle:');
+            var_dump('IndexTaskResponseHandler returned task id:');
             var_dump( $ingestionTaskId );
 
             $success = $basicDruidJobWatcher->watchJob( $ingestionTaskId );

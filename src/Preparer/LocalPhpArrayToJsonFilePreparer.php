@@ -22,6 +22,12 @@ class LocalPhpArrayToJsonFilePreparer extends LocalFilePreparer
 
     }
 
+    /**
+     * Convert an array's items to JSON, without affecting the array itself.
+     *
+     * @param $zeArray Array of items to convert
+     * @return array Array of JSON strings
+     */
     protected function convertPhpArrayToJson($zeArray)
     {
         $zeJsonArray = array();
