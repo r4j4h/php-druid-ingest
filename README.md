@@ -104,9 +104,13 @@ Interface wise, this looks like:
 How to Test
 -------------
 
-From the root directory, in a command terminal run: `php vendor/phpunit/phpunit/phpunit tests`.
+From the root directory, in a command terminal run: `php vendor/bin/phpunit tests` or more preferably `php vendor/bin/phing`.
 
 
+Generate Documentation
+-------------
+
+From the root directory, in a command terminal run: `php vendor/bin/phing docs`.
 
 
 How to Install

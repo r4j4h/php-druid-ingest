@@ -1,5 +1,4 @@
 composer.phar
 vendor/
-node_modules/
 build/
 config/config.php
