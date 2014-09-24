@@ -142,7 +142,7 @@
 
     <target name="build" depends="clean,prepare,phpunit"/>
 
-    <target name="report" depends="clean,prepare,phpmd,phploc"/>
+    <target name="report" depends="clean,prepare,phpmd,phploc,docs"/>
 
     <target name="all" depends="build,report"/>
 
