@@ -5,14 +5,34 @@
 
 <project name="php-druid-ingest" default="build">
 
+
     <target name="clean">
         <delete dir="build"/>
+        <delete dir="docs/main"/>
     </target>
 
 
     <target name="prepare">
         <mkdir dir="build/logs"/>
         <mkdir dir="build/reports"/>
+        <mkdir dir="docs/main"/>
+    </target>
+
+
+    <target name="docs" depends="prepare">
+        <phpdoc2 title="API Documentation"
+                 destdir="docs/main"
+                 template="responsive-twig">
+            <fileset dir="./src">
+                <include name="**/*.php" />
+            </fileset>
+            <fileset dir="./clicommands">
+                <include name="**/*.php" />
+            </fileset>
+            <fileset dir="./vendor/r4j4h/php-druid-query">
+                <include name="**/*.php" />
+            </fileset>
+        </phpdoc2>
     </target>
 
 
@@ -35,5 +55,6 @@
 
 
     <target name="build" depends="clean,prepare,phpunit"/>
+    
 
 </project>
