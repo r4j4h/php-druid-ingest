@@ -5,6 +5,8 @@
 
 <project name="php-druid-ingest" default="build">
 
+    <autoloader autoloaderpath="vendor/autoload.php"/>
+
     <target name="clean">
         <delete dir="build"/>
     </target>
