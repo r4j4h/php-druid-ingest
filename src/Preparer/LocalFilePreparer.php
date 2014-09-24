@@ -4,7 +4,11 @@ namespace PhpDruidIngest\Preparer;
 
 use PhpDruidIngest\Abstracts\BasePreparer;
 
-
+/**
+ * Class LocalFilePreparer prepares files locally on the file system.
+ *
+ * @package PhpDruidIngest\Preparer
+ */
 class LocalFilePreparer extends BasePreparer
 {
 

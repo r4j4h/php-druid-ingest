@@ -3,6 +3,7 @@
 namespace PhpDruidIngest\ResponseHandler;
 
 use DruidFamiliar\ResponseHandler\DoNothingResponseHandler;
+use Guzzle\Http\Message\Response;
 
 /**
  * Class IndexingTaskResponseHandler returns the task id.
@@ -17,12 +18,19 @@ class IndexingTaskResponseHandler extends DoNothingResponseHandler
      *
      * This hook must return the response, whether changed or not, so that the rest of the system can continue with it.
      *
-     * @param array $response
+     * @param Response $response
      * @return mixed
      */
     public function handleResponse($response)
     {
-        return $response;
+        $response = $response->json();
+
+        if ( !isset( $response['task'] ) ) {
+            throw new \Exception("Unexpected response"); // TODO Replace with subclassed exception
+        }
+
+        $taskId = $response['task'];
+        return $taskId;
     }
 
 }

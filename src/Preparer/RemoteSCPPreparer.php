@@ -4,6 +4,11 @@ namespace PhpDruidIngest\Preparer;
 
 use PhpDruidIngest\Abstracts\BasePreparer;
 
+/**
+ * Class RemoteSCPPreparer prepares files on remote machines via SCP/SSH.
+ *
+ * @package PhpDruidIngest\Preparer
+ */
 class RemoteSCPPreparer extends BasePreparer
 {
     /*
