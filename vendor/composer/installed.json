@@ -1,125 +1,18 @@
 [
     {
-        "name": "bcncommerce/json-stream",
-        "version": "0.3.0",
-        "version_normalized": "0.3.0.0",
-        "target-dir": "Bcn/Component/Json",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/bcncommerce/json-stream.git",
-            "reference": "9ce2aa962bc881fb0222246ba2d6d6e52d1ea5aa"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/bcncommerce/json-stream/zipball/9ce2aa962bc881fb0222246ba2d6d6e52d1ea5aa",
-            "reference": "9ce2aa962bc881fb0222246ba2d6d6e52d1ea5aa",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=5.3"
-        },
-        "require-dev": {
-            "bcncommerce/stream-wrapper": "dev-master",
-            "phpunit/phpunit": "~3.7.0"
-        },
-        "time": "2014-04-27 23:53:40",
-        "type": "library",
-        "installation-source": "dist",
-        "autoload": {
-            "psr-0": {
-                "Bcn\\Component\\Json\\": ""
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Sergey Kolodyazhnyy",
-                "email": "sergey.kolodyazhnyy@gmail.com"
-            }
-        ],
-        "description": "A bundle of tools to work with JSON in PHP",
-        "keywords": [
-            "json",
-            "parser",
-            "reader",
-            "streaming",
-            "writer"
-        ]
-    },
-    {
-        "name": "symfony/console",
-        "version": "v2.5.4",
-        "version_normalized": "2.5.4.0",
-        "target-dir": "Symfony/Component/Console",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/symfony/Console.git",
-            "reference": "748beed2a1e73179c3f5154d33fe6ae100c1aeb1"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/symfony/Console/zipball/748beed2a1e73179c3f5154d33fe6ae100c1aeb1",
-            "reference": "748beed2a1e73179c3f5154d33fe6ae100c1aeb1",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=5.3.3"
-        },
-        "require-dev": {
-            "psr/log": "~1.0",
-            "symfony/event-dispatcher": "~2.1"
-        },
-        "suggest": {
-            "psr/log": "For using the console logger",
-            "symfony/event-dispatcher": ""
-        },
-        "time": "2014-08-14 16:10:54",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "2.5-dev"
-            }
-        },
-        "installation-source": "dist",
-        "autoload": {
-            "psr-0": {
-                "Symfony\\Component\\Console\\": ""
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Symfony Community",
-                "homepage": "http://symfony.com/contributors"
-            },
-            {
-                "name": "Fabien Potencier",
-                "email": "fabien@symfony.com"
-            }
-        ],
-        "description": "Symfony Console Component",
-        "homepage": "http://symfony.com"
-    },
-    {
         "name": "symfony/event-dispatcher",
-        "version": "v2.5.4",
-        "version_normalized": "2.5.4.0",
+        "version": "v2.5.5",
+        "version_normalized": "2.5.5.0",
         "target-dir": "Symfony/Component/EventDispatcher",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/EventDispatcher.git",
-            "reference": "8faf5cc7e80fde74a650a36e60d32ce3c3e0457b"
+            "reference": "f6281337bf5f985f585d1db6a83adb05ce531f46"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/EventDispatcher/zipball/8faf5cc7e80fde74a650a36e60d32ce3c3e0457b",
-            "reference": "8faf5cc7e80fde74a650a36e60d32ce3c3e0457b",
+            "url": "https://api.github.com/repos/symfony/EventDispatcher/zipball/f6281337bf5f985f585d1db6a83adb05ce531f46",
+            "reference": "f6281337bf5f985f585d1db6a83adb05ce531f46",
             "shasum": ""
         },
         "require": {
@@ -128,14 +21,14 @@
         "require-dev": {
             "psr/log": "~1.0",
             "symfony/config": "~2.0",
-            "symfony/dependency-injection": "~2.0",
+            "symfony/dependency-injection": "~2.0,<2.6.0",
             "symfony/stopwatch": "~2.2"
         },
         "suggest": {
             "symfony/dependency-injection": "",
             "symfony/http-kernel": ""
         },
-        "time": "2014-07-28 13:20:46",
+        "time": "2014-09-28 15:56:11",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -260,6 +153,63 @@
         ]
     },
     {
+        "name": "r4j4h/php-druid-query",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/r4j4h/php-druid-query.git",
+            "reference": "5f42cb5ab7f1a30a9a972151d52b19edf7de3225"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/r4j4h/php-druid-query/zipball/5f42cb5ab7f1a30a9a972151d52b19edf7de3225",
+            "reference": "5f42cb5ab7f1a30a9a972151d52b19edf7de3225",
+            "shasum": ""
+        },
+        "require": {
+            "guzzle/guzzle": "~3.9",
+            "php": ">=5.3.0"
+        },
+        "require-dev": {
+            "phing/phing": "2.*",
+            "phploc/phploc": "~2.0",
+            "phpmd/phpmd": "2.1.1",
+            "phpunit/phpunit": "4.2.*"
+        },
+        "time": "2014-09-29 21:52:22",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "1.0.x-dev"
+            }
+        },
+        "installation-source": "source",
+        "autoload": {
+            "psr-4": {
+                "DruidFamiliar\\": "src/DruidFamiliar/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Jasmine Hegman",
+                "email": "hegpetz@gmail.com",
+                "role": "Developer"
+            }
+        ],
+        "description": "Experimental PHP wrapper around querying druid",
+        "keywords": [
+            "druid",
+            "parameterized query",
+            "query",
+            "querying"
+        ]
+    },
+    {
         "name": "react/promise",
         "version": "v1.0.4",
         "version_normalized": "1.0.4.0",
@@ -303,6 +253,56 @@
             }
         ],
         "description": "A lightweight implementation of CommonJS Promises/A for PHP"
+    },
+    {
+        "name": "bcncommerce/json-stream",
+        "version": "0.3.0",
+        "version_normalized": "0.3.0.0",
+        "target-dir": "Bcn/Component/Json",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/bcncommerce/json-stream.git",
+            "reference": "9ce2aa962bc881fb0222246ba2d6d6e52d1ea5aa"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/bcncommerce/json-stream/zipball/9ce2aa962bc881fb0222246ba2d6d6e52d1ea5aa",
+            "reference": "9ce2aa962bc881fb0222246ba2d6d6e52d1ea5aa",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3"
+        },
+        "require-dev": {
+            "bcncommerce/stream-wrapper": "dev-master",
+            "phpunit/phpunit": "~3.7.0"
+        },
+        "time": "2014-04-27 23:53:40",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-0": {
+                "Bcn\\Component\\Json\\": ""
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Sergey Kolodyazhnyy",
+                "email": "sergey.kolodyazhnyy@gmail.com"
+            }
+        ],
+        "description": "A bundle of tools to work with JSON in PHP",
+        "keywords": [
+            "json",
+            "parser",
+            "reader",
+            "streaming",
+            "writer"
+        ]
     },
     {
         "name": "sebastian/version",
@@ -465,27 +465,30 @@
     },
     {
         "name": "sebastian/diff",
-        "version": "1.1.0",
-        "version_normalized": "1.1.0.0",
+        "version": "1.2.0",
+        "version_normalized": "1.2.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/sebastianbergmann/diff.git",
-            "reference": "1e091702a5a38e6b4c1ba9ca816e3dd343df2e2d"
+            "reference": "5843509fed39dee4b356a306401e9dd1a931fec7"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/sebastianbergmann/diff/zipball/1e091702a5a38e6b4c1ba9ca816e3dd343df2e2d",
-            "reference": "1e091702a5a38e6b4c1ba9ca816e3dd343df2e2d",
+            "url": "https://api.github.com/repos/sebastianbergmann/diff/zipball/5843509fed39dee4b356a306401e9dd1a931fec7",
+            "reference": "5843509fed39dee4b356a306401e9dd1a931fec7",
             "shasum": ""
         },
         "require": {
             "php": ">=5.3.3"
         },
-        "time": "2013-08-03 16:46:33",
+        "require-dev": {
+            "phpunit/phpunit": "~4.2"
+        },
+        "time": "2014-08-15 10:29:00",
         "type": "library",
         "extra": {
             "branch-alias": {
-                "dev-master": "1.1-dev"
+                "dev-master": "1.2-dev"
             }
         },
         "installation-source": "dist",
@@ -500,13 +503,12 @@
         ],
         "authors": [
             {
-                "name": "Sebastian Bergmann",
-                "email": "sebastian@phpunit.de",
-                "role": "lead"
-            },
-            {
                 "name": "Kore Nordmann",
                 "email": "mail@kore-nordmann.de"
+            },
+            {
+                "name": "Sebastian Bergmann",
+                "email": "sebastian@phpunit.de"
             }
         ],
         "description": "Diff implementation",
@@ -584,24 +586,24 @@
     },
     {
         "name": "symfony/yaml",
-        "version": "v2.5.4",
-        "version_normalized": "2.5.4.0",
+        "version": "v2.5.5",
+        "version_normalized": "2.5.5.0",
         "target-dir": "Symfony/Component/Yaml",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/Yaml.git",
-            "reference": "01a7695bcfb013d0a15c6757e15aae120342986f"
+            "reference": "b1dbc53593b98c2d694ebf383660ac9134d30b96"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/Yaml/zipball/01a7695bcfb013d0a15c6757e15aae120342986f",
-            "reference": "01a7695bcfb013d0a15c6757e15aae120342986f",
+            "url": "https://api.github.com/repos/symfony/Yaml/zipball/b1dbc53593b98c2d694ebf383660ac9134d30b96",
+            "reference": "b1dbc53593b98c2d694ebf383660ac9134d30b96",
             "shasum": ""
         },
         "require": {
             "php": ">=5.3.3"
         },
-        "time": "2014-08-31 03:22:04",
+        "time": "2014-09-22 09:14:18",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -1139,63 +1141,6 @@
         ]
     },
     {
-        "name": "r4j4h/php-druid-query",
-        "version": "dev-master",
-        "version_normalized": "9999999-dev",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/r4j4h/php-druid-query.git",
-            "reference": "21b1b36163d2ffce3ba74532416c5b0a83d94dfa"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/r4j4h/php-druid-query/zipball/21b1b36163d2ffce3ba74532416c5b0a83d94dfa",
-            "reference": "21b1b36163d2ffce3ba74532416c5b0a83d94dfa",
-            "shasum": ""
-        },
-        "require": {
-            "guzzle/guzzle": "*",
-            "php": ">=5.3.0"
-        },
-        "require-dev": {
-            "phing/phing": "2.*",
-            "phploc/phploc": "~2.0",
-            "phpmd/phpmd": "~2.1",
-            "phpunit/phpunit": "4.2.*"
-        },
-        "time": "2014-09-24 23:33:23",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "1.0.x-dev"
-            }
-        },
-        "installation-source": "source",
-        "autoload": {
-            "psr-4": {
-                "DruidFamiliar\\": "src/DruidFamiliar/"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Jasmine Hegman",
-                "email": "hegpetz@gmail.com",
-                "role": "Developer"
-            }
-        ],
-        "description": "Experimental PHP wrapper around querying druid",
-        "keywords": [
-            "druid",
-            "parameterized query",
-            "query",
-            "querying"
-        ]
-    },
-    {
         "name": "phing/phing",
         "version": "2.8.2",
         "version_normalized": "2.8.2.0",
@@ -1270,24 +1215,24 @@
     },
     {
         "name": "symfony/filesystem",
-        "version": "v2.5.4",
-        "version_normalized": "2.5.4.0",
+        "version": "v2.5.5",
+        "version_normalized": "2.5.5.0",
         "target-dir": "Symfony/Component/Filesystem",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/Filesystem.git",
-            "reference": "a765efd199e02ff4001c115c318e219030be9364"
+            "reference": "4e62fab0060a826561c78b665925b37c870c45f5"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/Filesystem/zipball/a765efd199e02ff4001c115c318e219030be9364",
-            "reference": "a765efd199e02ff4001c115c318e219030be9364",
+            "url": "https://api.github.com/repos/symfony/Filesystem/zipball/4e62fab0060a826561c78b665925b37c870c45f5",
+            "reference": "4e62fab0060a826561c78b665925b37c870c45f5",
             "shasum": ""
         },
         "require": {
             "php": ">=5.3.3"
         },
-        "time": "2014-09-03 09:00:14",
+        "time": "2014-09-22 09:14:18",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -1319,25 +1264,25 @@
     },
     {
         "name": "symfony/config",
-        "version": "v2.5.4",
-        "version_normalized": "2.5.4.0",
+        "version": "v2.5.5",
+        "version_normalized": "2.5.5.0",
         "target-dir": "Symfony/Component/Config",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/Config.git",
-            "reference": "080eabdc256c1d7a3a7cf6296271edb68eb1ab2b"
+            "reference": "0316364bfebc8b080077c731a99f189341476bd7"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/Config/zipball/080eabdc256c1d7a3a7cf6296271edb68eb1ab2b",
-            "reference": "080eabdc256c1d7a3a7cf6296271edb68eb1ab2b",
+            "url": "https://api.github.com/repos/symfony/Config/zipball/0316364bfebc8b080077c731a99f189341476bd7",
+            "reference": "0316364bfebc8b080077c731a99f189341476bd7",
             "shasum": ""
         },
         "require": {
             "php": ">=5.3.3",
             "symfony/filesystem": "~2.3"
         },
-        "time": "2014-08-31 03:22:04",
+        "time": "2014-09-23 05:25:11",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -1369,18 +1314,18 @@
     },
     {
         "name": "symfony/dependency-injection",
-        "version": "v2.5.4",
-        "version_normalized": "2.5.4.0",
+        "version": "v2.5.5",
+        "version_normalized": "2.5.5.0",
         "target-dir": "Symfony/Component/DependencyInjection",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/DependencyInjection.git",
-            "reference": "dcfdfbfdab2dc5bf00e5274719126a3079c6d02c"
+            "reference": "1f01a64c9047909e40700a14ee34e8c446300618"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/DependencyInjection/zipball/dcfdfbfdab2dc5bf00e5274719126a3079c6d02c",
-            "reference": "dcfdfbfdab2dc5bf00e5274719126a3079c6d02c",
+            "url": "https://api.github.com/repos/symfony/DependencyInjection/zipball/1f01a64c9047909e40700a14ee34e8c446300618",
+            "reference": "1f01a64c9047909e40700a14ee34e8c446300618",
             "shasum": ""
         },
         "require": {
@@ -1396,7 +1341,7 @@
             "symfony/proxy-manager-bridge": "Generate service proxies to lazy load them",
             "symfony/yaml": ""
         },
-        "time": "2014-08-31 03:22:04",
+        "time": "2014-09-27 08:35:39",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -1468,48 +1413,61 @@
         "description": "Official version of pdepend to be handled with Composer"
     },
     {
-        "name": "phpmd/phpmd",
-        "version": "2.1.1",
-        "version_normalized": "2.1.1.0",
+        "name": "symfony/console",
+        "version": "v2.5.4",
+        "version_normalized": "2.5.4.0",
+        "target-dir": "Symfony/Component/Console",
         "source": {
             "type": "git",
-            "url": "https://github.com/phpmd/phpmd.git",
-            "reference": "0a1a12f6867d0e676718fd1ac287e0c34b956fb2"
+            "url": "https://github.com/symfony/Console.git",
+            "reference": "748beed2a1e73179c3f5154d33fe6ae100c1aeb1"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/phpmd/phpmd/zipball/0a1a12f6867d0e676718fd1ac287e0c34b956fb2",
-            "reference": "0a1a12f6867d0e676718fd1ac287e0c34b956fb2",
+            "url": "https://api.github.com/repos/symfony/Console/zipball/748beed2a1e73179c3f5154d33fe6ae100c1aeb1",
+            "reference": "748beed2a1e73179c3f5154d33fe6ae100c1aeb1",
             "shasum": ""
         },
         "require": {
-            "pdepend/pdepend": "2.0.*",
-            "php": ">=5.3.0",
-            "symfony/config": "@stable",
-            "symfony/dependency-injection": "@stable",
-            "symfony/filesystem": "@stable"
+            "php": ">=5.3.3"
         },
-        "time": "2014-09-09 18:47:29",
-        "bin": [
-            "src/bin/phpmd"
-        ],
+        "require-dev": {
+            "psr/log": "~1.0",
+            "symfony/event-dispatcher": "~2.1"
+        },
+        "suggest": {
+            "psr/log": "For using the console logger",
+            "symfony/event-dispatcher": ""
+        },
+        "time": "2014-08-14 16:10:54",
         "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "2.5-dev"
+            }
+        },
         "installation-source": "dist",
         "autoload": {
             "psr-0": {
-                "PHPMD\\": "src/main/php",
-                "PDepend\\": "vendor/pdepend/pdepend/src/main/php/"
+                "Symfony\\Component\\Console\\": ""
             }
         },
         "notification-url": "https://packagist.org/downloads/",
-        "include-path": [
-            "../../pdepend/pdepend/src/main/php",
-            "src/main/php"
-        ],
         "license": [
-            "BSD-3-Clause"
+            "MIT"
         ],
-        "description": "Official version of PHPMD handled with Composer."
+        "authors": [
+            {
+                "name": "Symfony Community",
+                "homepage": "http://symfony.com/contributors"
+            },
+            {
+                "name": "Fabien Potencier",
+                "email": "fabien@symfony.com"
+            }
+        ],
+        "description": "Symfony Console Component",
+        "homepage": "http://symfony.com"
     },
     {
         "name": "sebastian/git",
@@ -1561,24 +1519,24 @@
     },
     {
         "name": "symfony/finder",
-        "version": "v2.5.4",
-        "version_normalized": "2.5.4.0",
+        "version": "v2.5.5",
+        "version_normalized": "2.5.5.0",
         "target-dir": "Symfony/Component/Finder",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/Finder.git",
-            "reference": "f40854d1a19c339c7f969f8f6d6d6e9153311c4c"
+            "reference": "d5033742b9a6206ef6d06e813870bca18e9205df"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/Finder/zipball/f40854d1a19c339c7f969f8f6d6d6e9153311c4c",
-            "reference": "f40854d1a19c339c7f969f8f6d6d6e9153311c4c",
+            "url": "https://api.github.com/repos/symfony/Finder/zipball/d5033742b9a6206ef6d06e813870bca18e9205df",
+            "reference": "d5033742b9a6206ef6d06e813870bca18e9205df",
             "shasum": ""
         },
         "require": {
             "php": ">=5.3.3"
         },
-        "time": "2014-09-03 09:00:14",
+        "time": "2014-09-27 08:35:39",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -1742,5 +1700,49 @@
         ],
         "description": "A tool for quickly measuring the size of a PHP project.",
         "homepage": "https://github.com/sebastianbergmann/phploc"
+    },
+    {
+        "name": "phpmd/phpmd",
+        "version": "2.1.1",
+        "version_normalized": "2.1.1.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/phpmd/phpmd.git",
+            "reference": "0a1a12f6867d0e676718fd1ac287e0c34b956fb2"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/phpmd/phpmd/zipball/0a1a12f6867d0e676718fd1ac287e0c34b956fb2",
+            "reference": "0a1a12f6867d0e676718fd1ac287e0c34b956fb2",
+            "shasum": ""
+        },
+        "require": {
+            "pdepend/pdepend": "2.0.*",
+            "php": ">=5.3.0",
+            "symfony/config": "@stable",
+            "symfony/dependency-injection": "@stable",
+            "symfony/filesystem": "@stable"
+        },
+        "time": "2014-09-09 18:47:29",
+        "bin": [
+            "src/bin/phpmd"
+        ],
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-0": {
+                "PHPMD\\": "src/main/php",
+                "PDepend\\": "vendor/pdepend/pdepend/src/main/php/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "include-path": [
+            "../../pdepend/pdepend/src/main/php",
+            "src/main/php"
+        ],
+        "license": [
+            "BSD-3-Clause"
+        ],
+        "description": "Official version of PHPMD handled with Composer."
     }
 ]
