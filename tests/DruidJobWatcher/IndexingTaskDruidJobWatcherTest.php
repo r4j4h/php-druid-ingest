@@ -10,7 +10,7 @@ class IndexingTaskDruidJobWatcherTest extends PHPUnit_Framework_TestCase
     public function getGenericQueryResponse()
     {
         $taskStatus = new IndexingTaskStatusQueryResponse();
-        $taskStatus->setStatus('PENDING');
+        $taskStatus->setStatus('RUNNING');
         $taskStatus->setDuration(1);
         $taskStatus->setId('task.id');
         $taskStatus->setTask('task.id');
@@ -125,10 +125,10 @@ class IndexingTaskDruidJobWatcherTest extends PHPUnit_Framework_TestCase
 
     }
 
-    public function testRetriesIfDruidTaskStatusIsPending()
+    public function testRetriesIfDruidTaskStatusIsRunning()
     {
         $taskStatus = $this->getGenericQueryResponse();
-        $taskStatus->setStatus('PENDING');
+        $taskStatus->setStatus('RUNNING');
 
         $jobWatcher = $this->getMock(
             'PhpDruidIngest\DruidJobWatcher\IndexingTaskDruidJobWatcher',
@@ -146,10 +146,10 @@ class IndexingTaskDruidJobWatcherTest extends PHPUnit_Framework_TestCase
         $jobWatcher->handleTaskStatus($taskStatus);
     }
 
-    public function testFailsIfRetriesHitsThresholdAndDruidTaskStatusIsPending()
+    public function testFailsIfRetriesHitsThresholdAndDruidTaskStatusIsRunning()
     {
         $taskStatus = $this->getGenericQueryResponse();
-        $taskStatus->setStatus('PENDING');
+        $taskStatus->setStatus('RUNNING');
 
         $mockQueryExecutor = $this->getFakeQueryExecutor($taskStatus);
 
@@ -208,7 +208,7 @@ class IndexingTaskDruidJobWatcherTest extends PHPUnit_Framework_TestCase
     public function testWatchJobPassesTaskStatusToHandleTaskStatus()
     {
         $taskStatus = $this->getGenericQueryResponse();
-        $taskStatus->setStatus('PENDING');
+        $taskStatus->setStatus('RUNNING');
 
         $mockQueryExecutor = $this->getFakeQueryExecutor($taskStatus);
 

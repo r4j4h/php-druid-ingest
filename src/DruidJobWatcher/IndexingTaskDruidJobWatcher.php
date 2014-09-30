@@ -10,9 +10,16 @@ use PhpDruidIngest\QueryParameters\IndexingTaskStatusQueryParameters;
 use PhpDruidIngest\QueryParameters\IndexTaskQueryParameters;
 use PhpDruidIngest\QueryResponse\IndexingTaskStatusQueryResponse;
 use PhpDruidIngest\ResponseHandler\IndexingTaskStatusResponseHandler;
+use Symfony\Component\Console\Output\NullOutput;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class IndexingTaskDruidJobWatcher extends BasicDruidJobWatcher
 {
+    /**
+     * @var OutputInterface
+     */
+    protected $output;
+
     protected $druidIp;
     protected $druidPort;
     protected $protocol = 'http';
@@ -40,6 +47,10 @@ class IndexingTaskDruidJobWatcher extends BasicDruidJobWatcher
      * @var int seconds waited between polling
      */
     public $watchAttemptDelay = 5;
+
+    public function __construct() {
+        $this->output = new NullOutput();
+    }
 
     /**
      * Begin watching given job id.
@@ -86,10 +97,12 @@ class IndexingTaskDruidJobWatcher extends BasicDruidJobWatcher
     {
         $taskStatus = $response->getStatus();
 
-        if ( $taskStatus === 'PENDING' )
+        if ( $taskStatus === 'RUNNING' )
         {
             if ( $this->watchAttempts < $this->maximumWatchAttempts )
             {
+                $this->onJobPending();
+
                 $jobId = $response->getTask();
                 $this->doWait($this->watchAttemptDelay);
                 return $this->watchJob($jobId);
@@ -114,7 +127,7 @@ class IndexingTaskDruidJobWatcher extends BasicDruidJobWatcher
             return false;
 
         } else {
-            throw new \Exception('Unexpected task status encountered.');
+            throw new \Exception('Unexpected task status encountered: "' . $taskStatus . '"');
         }
 
         return false;
@@ -248,6 +261,54 @@ class IndexingTaskDruidJobWatcher extends BasicDruidJobWatcher
      */
     public function setProtocol($protocol)
     {
-        $this->protocol = $protocols;
+        $this->protocol = $protocol;
+    }
+
+
+    /**
+     * Called when a job's status moves to Completed state.
+     *
+     * @return mixed
+     */
+    protected function onJobCompleted()
+    {
+        $this->output->writeln('Druid says the job was successful! :)');
+    }
+
+    /**
+     * Called when a job's status moves to a Failed state.
+     *
+     * @return mixed
+     */
+    protected function onJobFailed()
+    {
+        $this->output->writeln('Druid says the job failed. :(');
+    }
+
+    /**
+     * Called when a job's status is in a Running/Pending state.
+     *
+     * @return mixed
+     */
+    protected function onJobPending()
+    {
+        $this->output->writeln('Druid says the job is still running.');
+        $this->output->writeln('Trying again in ' . $this->watchAttemptDelay . ' seconds.');
+    }
+
+    /**
+     * @return OutputInterface
+     */
+    public function getOutput()
+    {
+        return $this->output;
+    }
+
+    /**
+     * @param OutputInterface $output
+     */
+    public function setOutput($output)
+    {
+        $this->output = $output;
     }
 }

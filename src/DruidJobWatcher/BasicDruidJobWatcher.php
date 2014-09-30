@@ -77,4 +77,14 @@ class BasicDruidJobWatcher implements IDruidJobWatcher
     {
         // TODO: Implement onJobFailed() method.
     }
+
+    /**
+     * Called when a job's status is still in a Running/Pending state after watching period ends.
+     *
+     * @return mixed
+     */
+    protected function onJobPending()
+    {
+        // TODO: Implement onJobFailed() method.
+    }
 }

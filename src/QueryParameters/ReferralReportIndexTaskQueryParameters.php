@@ -1,4 +1,7 @@
 <?php
+// todo this class should hardcode the appropriate dims/aggs for referral report
+// todo the above
+
 
 namespace PhpDruidIngest\QueryParameters;
 
@@ -13,7 +16,7 @@ use DruidFamiliar\Interval;
  *
  * @package PhpDruidIngest
  */
-class IndexTaskQueryParameters extends AbstractTaskParameters implements IDruidQueryParameters
+class ReferralReportIndexTaskQueryParameters extends IndexTaskQueryParameters
 {
 
     /**

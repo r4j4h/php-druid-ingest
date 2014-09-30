@@ -10,8 +10,10 @@
 namespace ReferralIngester\Command;
 
 use DruidFamiliar\QueryExecutor\DruidNodeDruidQueryExecutor;
+use PhpDruidIngest\DruidJobWatcher\CallbackBasedIndexingTaskDruidJobWatcher;
 use PhpDruidIngest\DruidJobWatcher\IndexingTaskDruidJobWatcher;
 use PhpDruidIngest\Preparer\LocalFilePreparer;
+use PhpDruidIngest\Preparer\LocalPhpArrayToJsonFilePreparer;
 use PhpDruidIngest\QueryParameters\IndexTaskQueryParameters;
 use PhpDruidIngest\DruidJobWatcher\BasicDruidJobWatcher;
 use PhpDruidIngest\Fetcher\ReferralBatchFetcher;
@@ -80,13 +82,29 @@ HELPBLURB
         $fetcher->setMySqlCredentials($this->host, $this->user, $this->pass, $this->db);
         $fetcher->setTimeWindow( $formattedStartTime, $formattedEndTime );
 
-        $preparer = new LocalFilePreparer();
+        $preparer = new LocalPhpArrayToJsonFilePreparer();
+        $preparer->outputFilename = 'referral_temp.json';
 
         $indexTaskQueryGenerator = new SimpleIndexQueryGenerator();
 
         $indexTaskQueryParameters = new IndexTaskQueryParameters();
+        $indexTaskQueryParameters->dataSource = 'referral-report-referrals';
+        $indexTaskQueryParameters->setIntervals( $formattedStartTime, $formattedEndTime );
+        $indexTaskQueryParameters->dimensions = array('a', 'b');
+        $indexTaskQueryParameters->timeDimension = 'created';
+        // TODO Fill in with dimensions, etc for referrals.
+        $indexTaskQueryParameters->validate();
 
-        $basicDruidJobWatcher = new IndexingTaskDruidJobWatcher();
+        $basicDruidJobWatcher = new CallbackBasedIndexingTaskDruidJobWatcher();
+        /**
+         * @param CallbackBasedIndexingTaskDruidJobWatcher $jobWatcher
+         */
+        $myOnPendingCallback = function($jobWatcher) use ($output) {
+            $output->writeln('Druid says the job is still running. Trying again in ' . $jobWatcher->watchAttemptDelay . ' seconds...');
+        };
+
+        $basicDruidJobWatcher->setOnJobPending($myOnPendingCallback);
+        $basicDruidJobWatcher->setOutput($output);
         $basicDruidJobWatcher->setDruidIp( $this->druidIp );
         $basicDruidJobWatcher->setDruidPort( $this->druidPort );
 
@@ -94,25 +112,54 @@ HELPBLURB
 
         try {
 
+            $output->writeln("Fetching referral data from source database...");
+
             $fetchedData = $fetcher->fetch();
 
             ////////////////////////////////
-            $exampleData = print_r( $fetchedData[ 0 ], true );
-            $output->writeln( "Fetched " . count($fetchedData) . " referrals.\nOne referral looks like: " . $exampleData . "\n" );
-            ////////////////////////////////
+            $output->writeln( "Fetched " . count($fetchedData) . " referrals." );
+            if ( count( $fetchedData ) === 0 ) {
+                $output->writeln( "Fetched no records, so stopping here." );
+                return;
+            }
+
 
             $pathOfPreparedData = $preparer->prepare($fetchedData);
 
             $indexTaskQueryParameters->setFilePath($pathOfPreparedData);
+            $output->writeln('File is prepared for druid at "' . $pathOfPreparedData . '"');
+
 
             $ingestionTaskId = $druidQueryExecutor->executeQuery($indexTaskQueryGenerator, $indexTaskQueryParameters, new IndexingTaskResponseHandler());
+            $output->writeln('Druid has received the job. Job id is "' . $ingestionTaskId . '"');
 
-            var_dump('IndexTaskResponseHandler returned task id:');
-            var_dump( $ingestionTaskId );
-
+            $output->writeln('Checking Druid for the job status:');
             $success = $basicDruidJobWatcher->watchJob( $ingestionTaskId );
 
-            $output->writeln( $success );
+
+
+            if ( $success )
+            {
+                $output->writeln('Done checking druid job status.');
+
+                $output->writeln('Cleaning up prepared file "' . $pathOfPreparedData . '"...');
+
+                $cleanedUpSuccess = $preparer->cleanup($pathOfPreparedData);
+
+                if ( $cleanedUpSuccess ) {
+                    $output->writeln('Succesfully cleaned up file.');
+                }
+            }
+            else
+            {
+                $output->writeln('Job failed or did not finish in time.');
+                $output->writeln('In the future I will ask you if you want to delete the temporary file but for now I will leave it in place so that ingestion is not interrupted.');
+            }
+
+            $output->writeln('Done.');
+
+            ////////////////////////////////
+
 
         } catch ( \Exception $e ) {
             throw $e;

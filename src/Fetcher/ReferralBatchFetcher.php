@@ -69,9 +69,7 @@ QUERY;
      */
     public function fetch()
     {
-
-        // TODO TODO make it so mysqli object is passed, DI driven, and not instantiated here
-        $mysqli = new mysqli($this->host, $this->user, $this->pass, $this->db);
+        $mysqli = $this->getMysqli($this->host, $this->user, $this->pass, $this->db);
 
         // Check connection
         if ($mysqli->connect_errno) {
@@ -80,11 +78,9 @@ QUERY;
 
         echo "Connected.\n";
 
-//        $preparedQuery = $this->prepareQuery( $this->contactsQuery, $this->timeWindowStart, $this->timeWindowEnd );
-        $preparedQuery = $this->prepareQuery( $this->physicianQuery, $this->timeWindowStart, $this->timeWindowEnd );
+        $preparedQuery = $this->prepareQuery( $this->contactsQuery, $this->timeWindowStart, $this->timeWindowEnd );
+//        $preparedQuery = $this->prepareQuery( $this->physicianQuery, $this->timeWindowStart, $this->timeWindowEnd );
 
-//        echo $start . "\n";
-//        echo $end . "\n";
 //        echo $preparedQuery;
         $rows = array();
 
@@ -92,7 +88,7 @@ QUERY;
         if ($result = $mysqli->query( $preparedQuery, MYSQLI_USE_RESULT )) {
 
 
-            while ($row = $result->fetch_array())
+            while ($row = $result->fetch_array(MYSQLI_ASSOC))
             {
                 $rows[] = $row;
             }
@@ -132,6 +128,19 @@ QUERY;
 
         return $preparedQuery;
 
+    }
+
+    /**
+     * @param $host
+     * @param $user
+     * @param $pass
+     * @param $db
+     * @return mysqli
+     */
+    protected function getMysqli($host, $user, $pass, $db)
+    {
+        $mysqli = new mysqli($host, $user, $pass, $db);
+        return $mysqli;
     }
 
 }
