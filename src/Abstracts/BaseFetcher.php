@@ -12,6 +12,6 @@ abstract class BaseFetcher implements IFetcher {
      * @return array|mixed
      * @throws \Exception
      */
-    abstract public function fetch();
+    //abstract public function fetch();
 
 }
