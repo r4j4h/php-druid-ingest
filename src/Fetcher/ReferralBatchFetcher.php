@@ -2,9 +2,13 @@
 
 namespace PhpDruidIngest\Fetcher;
 
+use DateTime;
+use DruidFamiliar\DruidTime;
 use mysqli;
 use PhpDruidIngest\Abstracts\BaseFetcher;
 use PhpDruidIngest\Interfaces\IFetcher;
+use Symfony\Component\Console\Output\NullOutput;
+use Symfony\Component\Console\Output\OutputInterface;
 
 //date_default_timezone_set('UTC');
 
@@ -23,6 +27,18 @@ class ReferralBatchFetcher extends BaseFetcher implements IFetcher
     protected $user = '';
     protected $pass = '';
     protected $db = '';
+
+    /**
+     * @var OutputInterface
+     */
+    protected $output;
+
+
+    public function __construct() {
+        $this->output = new NullOutput();
+    }
+
+
 
     /**
      * Set the MySQL DB credentials for fetching.
@@ -76,21 +92,43 @@ QUERY;
             throw new \Exception( sprintf("Connect failed: %s\n", $mysqli->connect_error) );
         }
 
-        echo "Connected.\n";
+        if (OutputInterface::VERBOSITY_VERY_VERBOSE <= $this->output->getVerbosity()) {
+            $this->output->writeln("Connected to MySQL Database at " . $this->host . " as user " . $this->user . " using db " . $this->db);
+        } else if (OutputInterface::VERBOSITY_VERBOSE <= $this->output->getVerbosity()) {
+            $this->output->writeln("Connected to MySQL Database at " . $this->host);
+        } else {
+            $this->output->writeln("Connected to MySQL Database.");
+        }
+
 
         $preparedQuery = $this->prepareQuery( $this->contactsQuery, $this->timeWindowStart, $this->timeWindowEnd );
 //        $preparedQuery = $this->prepareQuery( $this->physicianQuery, $this->timeWindowStart, $this->timeWindowEnd );
 
-//        echo $preparedQuery;
+        if (OutputInterface::VERBOSITY_DEBUG <= $this->output->getVerbosity()) {
+            $this->output->writeln("Prepared query:\n\n" . $preparedQuery . "\n\n");
+        }
+
         $rows = array();
 
         // Select queries return a resultset
         if ($result = $mysqli->query( $preparedQuery, MYSQLI_USE_RESULT )) {
 
 
+            if (OutputInterface::VERBOSITY_DEBUG <= $this->output->getVerbosity()) {
+                $this->output->writeln("Iterating mysql result set...");
+            }
+
             while ($row = $result->fetch_array(MYSQLI_ASSOC))
             {
+                $timeForDruid = new DruidTime( new DateTime( $row['date'] ) );
+                $row['date'] = $timeForDruid->formatTimeForDruid();
+
                 $rows[] = $row;
+            }
+
+
+            if (OutputInterface::VERBOSITY_DEBUG <= $this->output->getVerbosity()) {
+                $this->output->writeln("Finished iterating mysql result set.");
             }
 
             /* free result set */
@@ -99,6 +137,10 @@ QUERY;
         }
 
         $mysqli->close();
+
+        if (OutputInterface::VERBOSITY_DEBUG <= $this->output->getVerbosity()) {
+            $this->output->writeln("Successfully closed MySQL Connection.");
+        }
 
         return $rows;
 
@@ -141,6 +183,22 @@ QUERY;
     {
         $mysqli = new mysqli($host, $user, $pass, $db);
         return $mysqli;
+    }
+
+    /**
+     * @return OutputInterface
+     */
+    public function getOutput()
+    {
+        return $this->output;
+    }
+
+    /**
+     * @param OutputInterface $output
+     */
+    public function setOutput($output)
+    {
+        $this->output = $output;
     }
 
 }

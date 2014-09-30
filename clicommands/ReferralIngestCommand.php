@@ -79,19 +79,22 @@ HELPBLURB
     protected function ingest($formattedStartTime, $formattedEndTime, InputInterface $input, OutputInterface $output)
     {
         $fetcher = new ReferralBatchFetcher();
+        $fetcher->setOutput($output);
         $fetcher->setMySqlCredentials($this->host, $this->user, $this->pass, $this->db);
         $fetcher->setTimeWindow( $formattedStartTime, $formattedEndTime );
 
+        $filePathToUse = '/tmp/referral_temp_' . time() . '.json';
+
         $preparer = new LocalPhpArrayToJsonFilePreparer();
-        $preparer->outputFilename = 'referral_temp.json';
+        $preparer->setFilePath( $filePathToUse );
 
         $indexTaskQueryGenerator = new SimpleIndexQueryGenerator();
 
         $indexTaskQueryParameters = new IndexTaskQueryParameters();
-        $indexTaskQueryParameters->dataSource = 'referral-report-referrals';
+        $indexTaskQueryParameters->dataSource = 'referral-report-referrals-cli-test';
         $indexTaskQueryParameters->setIntervals( $formattedStartTime, $formattedEndTime );
-        $indexTaskQueryParameters->dimensions = array('a', 'b');
-        $indexTaskQueryParameters->timeDimension = 'created';
+        $indexTaskQueryParameters->dimensions = array('referral_id', 'facility_id', 'patient_id');
+        $indexTaskQueryParameters->timeDimension = 'date';
         // TODO Fill in with dimensions, etc for referrals.
         $indexTaskQueryParameters->validate();
 
@@ -112,7 +115,7 @@ HELPBLURB
 
         try {
 
-            $output->writeln("Fetching referral data from source database...");
+            $output->writeln("Fetching referral data from source...");
 
             $fetchedData = $fetcher->fetch();
 
@@ -123,12 +126,18 @@ HELPBLURB
                 return;
             }
 
+            if ( $output->getVerbosity() >= OutputInterface::VERBOSITY_VERY_VERBOSE ) {
+                $exampleData = print_r( $fetchedData[0], true );
+                $output->writeln("The first record looks like:\n\n" . $exampleData . "\n\n");
+            }
+
 
             $pathOfPreparedData = $preparer->prepare($fetchedData);
 
             $indexTaskQueryParameters->setFilePath($pathOfPreparedData);
             $output->writeln('File is prepared for druid at "' . $pathOfPreparedData . '"');
 
+            $output->writeln('Requesting Druid index the source data into dataSource "' . $indexTaskQueryParameters->dataSource . '"');
 
             $ingestionTaskId = $druidQueryExecutor->executeQuery($indexTaskQueryGenerator, $indexTaskQueryParameters, new IndexingTaskResponseHandler());
             $output->writeln('Druid has received the job. Job id is "' . $ingestionTaskId . '"');

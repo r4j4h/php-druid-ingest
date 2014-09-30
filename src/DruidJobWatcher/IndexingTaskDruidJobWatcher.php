@@ -39,14 +39,14 @@ class IndexingTaskDruidJobWatcher extends BasicDruidJobWatcher
      *
      * @var int
      */
-    public $maximumWatchAttempts = 3;
+    public $maximumWatchAttempts = 12;
 
     /**
      * Delay between task status polling checks.
      *
      * @var int seconds waited between polling
      */
-    public $watchAttemptDelay = 5;
+    public $watchAttemptDelay = 10;
 
     public function __construct() {
         $this->output = new NullOutput();

@@ -96,4 +96,10 @@ class LocalFilePreparer extends BasePreparer
     {
         return unlink( $filePath );
     }
+
+    public function setFilePath($path) {
+        $fileInfo = pathinfo($path);
+        $this->outputBaseDir = $fileInfo['dirname'];
+        $this->outputFilename = $fileInfo['basename'];
+    }
 }
