@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "8453aa3042e6f8ebb3742fad23cb9f00",
+    "hash": "f85ff664498638ad3af31c4dc736a582",
     "packages": [
         {
             "name": "bcncommerce/json-stream",
