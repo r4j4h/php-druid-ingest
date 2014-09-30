@@ -77,7 +77,11 @@ class IndexingTaskDruidJobWatcher extends BasicDruidJobWatcher
         return $this->handleTaskStatus( $response );
     }
 
-
+    /**
+     * @param IndexingTaskStatusQueryResponse $response
+     * @return bool
+     * @throws \Exception
+     */
     public function handleTaskStatus(IndexingTaskStatusQueryResponse $response)
     {
         $taskStatus = $response->getStatus();
@@ -88,27 +92,32 @@ class IndexingTaskDruidJobWatcher extends BasicDruidJobWatcher
             {
                 $jobId = $response->getTask();
                 $this->doWait($this->watchAttemptDelay);
-                $this->watchJob($jobId);
+                return $this->watchJob($jobId);
             }
             else
             {
                 $this->stopWatchingJob();
                 $this->onJobFailed();
+                return false;
             }
         }
         else if  ( $taskStatus === 'SUCCESS' )
         {
             $this->stopWatchingJob();
             $this->onJobCompleted();
+            return true;
         }
         else if  ( $taskStatus === 'FAILED' )
         {
             $this->stopWatchingJob();
             $this->onJobFailed();
+            return false;
 
         } else {
             throw new \Exception('Unexpected task status encountered.');
         }
+
+        return false;
     }
 
     /**

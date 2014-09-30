@@ -10,6 +10,7 @@
 namespace ReferralIngester\Command;
 
 use DruidFamiliar\QueryExecutor\DruidNodeDruidQueryExecutor;
+use PhpDruidIngest\DruidJobWatcher\IndexingTaskDruidJobWatcher;
 use PhpDruidIngest\Preparer\LocalFilePreparer;
 use PhpDruidIngest\QueryParameters\IndexTaskQueryParameters;
 use PhpDruidIngest\DruidJobWatcher\BasicDruidJobWatcher;
@@ -85,7 +86,9 @@ HELPBLURB
 
         $indexTaskQueryParameters = new IndexTaskQueryParameters();
 
-        $basicDruidJobWatcher = new BasicDruidJobWatcher();
+        $basicDruidJobWatcher = new IndexingTaskDruidJobWatcher();
+        $basicDruidJobWatcher->setDruidIp( $this->druidIp );
+        $basicDruidJobWatcher->setDruidPort( $this->druidPort );
 
         $druidQueryExecutor = new DruidNodeDruidQueryExecutor($this->druidIp, $this->druidPort, '/druid/indexer/v1/task');
 
