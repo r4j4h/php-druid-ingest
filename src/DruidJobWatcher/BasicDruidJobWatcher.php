@@ -26,7 +26,7 @@ class BasicDruidJobWatcher implements IDruidJobWatcher
      */
     public function watchJob($jobId)
     {
-        if ( $this->watchingJobId ) {
+        if ( $this->watchingJobId && ( $this->watchingJobId !== $jobId ) ) {
             throw new AlreadyWatchingJobException($this->watchingJobId, $jobId);
         }
 
@@ -52,10 +52,10 @@ class BasicDruidJobWatcher implements IDruidJobWatcher
     {
         if ( $this->watchingJobId ) {
             // TODO: Implement stopWatchingJob() method.
-            return false;
+            return true;
         }
 
-        return true;
+        return false;
     }
 
     /**
