@@ -29,6 +29,8 @@ class LocalFilePreparer extends BasePreparer
 
         $this->writeFile($preparedPath, $this->delimit( $data ) );
 
+        // todo probably should return absolute base path, currently returning relative...
+
         return $preparedPath;
     }
 
