@@ -103,7 +103,7 @@ HELPBLURB
 
             $pathOfPreparedData = $preparer->prepare($fetchedData);
 
-            $indexBody = $indexTaskQueryGenerator->generateIndex( $pathOfPreparedData, $indexTaskQueryParameters );
+            $indexTaskQueryParameters->setFilePath($pathOfPreparedData);
 
             $ingestionTaskId = $druidQueryExecutor->executeQuery($indexTaskQueryGenerator, $indexTaskQueryParameters, new IndexingTaskResponseHandler());
 
