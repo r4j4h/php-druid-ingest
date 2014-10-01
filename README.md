@@ -1,25 +1,34 @@
 php-druid-ingest
 ===============
 
-Experimental PHP wrapper around querying [Druid](http://druid.io).
+Experimental PHP wrapper around ingesting data from a variety of data sources into [Druid](http://druid.io) as
+a data source.
 
 Overview
 ---------------
 
 The wrapper lives in the namespace `PhpDruidIngest`.
 
-The plan for this is to contain tasks related to the extraction, transformation, and loading of data from
-other sources into druid. This involves the ETL of that data, the generation of a compatible Druid indexing task, and
-the execution and subsequent monitoring of indexing task, and removal of data.
+Classes provide for the various tasks related to the extraction, transformation, and loading of data from
+other sources into druid. This involves:
 
-The idea is that this guy lives on the Druid node that will ingest the data, or will have a way to move the file
-from itself to the destination Node (say via `scp`).
+1. the extraction, transformation, and loading of that data
+2. preparing it in a place and format ready for Druid
+3. the generation of a compatible Druid indexing task
+4. the execution of the indexing task
+5. usage of the returned job id for monitoring of the indexing task job, and
+6. removal of prepared ingestion data after Druid has finished ingesting the file.
+
+
+When executed, this will need to live on the Druid node that will ingest the data, using `LocalFilePreparer`.
+Otherwise it will need a way to move or stream the file from itself to the destination Node (say via `scp`).
+`RemoteSCPPreparer` is an initial stab at this.
 
 
 Design
 ---------------
 
-This is totally _work in progress_ and _subject to change_. Please refer to this diagram for an overview of how this works underneath the hood.
+This is a _work in progress_ and _subject to change_. Please refer to this diagram for an overview of how this works underneath the hood.
 
 ![Process Flow](docs/process-flow.png)
 
@@ -99,7 +108,9 @@ Interface wise, this looks like:
 1. Hand the resulting task id to `IDruidJobWatcher` who polls until task succeeds or finishes
 1. `IPreparer` then cleans up left over ingestion file
 
-
+Fetchers are the most interesting element in play here. By adding new Fetchers we can support new input sources.
+Initially we are using `mysqli` to handle fetching from MySQL databases. Fetching from HTTP endpoints, or a log, or running
+map/reduce or storm and getting the results results are all good ideas for other fetchers.
 
 How to Test
 -------------
@@ -173,21 +184,3 @@ References
 - [Druid](http://druid.io)
 - [Composer](http://getcomposer.org)
 - [Guzzle](http://guzzle.readthedocs.org)
-
-
-Appendix A. Composer.json example that does not rely on Packagist.org:
----------------
-
-```json
-{
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "git@github.com:r4j4h/php-druid-ingest"
-        }
-    ],
-    "require": {
-        "r4j4h/php-druid-ingest": "~1.0-dev"
-    }
-}
-```
