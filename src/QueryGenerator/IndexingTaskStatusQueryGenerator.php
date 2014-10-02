@@ -23,6 +23,7 @@ class IndexingTaskStatusQueryGenerator implements IDruidQueryGenerator
      */
     public function generateQuery(IDruidQueryParameters $indexTaskParams)
     {
+        $indexTaskParams->validate();
         return '';
     }
 

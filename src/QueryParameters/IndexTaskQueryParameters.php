@@ -112,15 +112,15 @@ class IndexTaskQueryParameters extends AbstractTaskParameters implements IDruidQ
     /**
      * Configure the aggregators for this request.
      *
-     * @param $aggregatorsArray PHP Array of aggregators
+     * @param $aggregators Array Associative array of aggregators
      */
     public function setAggregators($aggregatorsArray)
     {
         $this->aggregators = array();
 
-        foreach( $aggregatorsArray as $key => $val)
+        foreach( $aggregatorsArray as $aggregator)
         {
-            $this->aggregators[] = json_encode( $val );
+            $this->aggregators[] = json_encode( $aggregator );
         }
 
     }
@@ -142,36 +142,67 @@ class IndexTaskQueryParameters extends AbstractTaskParameters implements IDruidQ
      */
     public function validate()
     {
-        // Validate missing params
-        $missingParams = array();
+        $this->validateForMissingParameters();
 
-        if ( !isset( $this->queryType       ) ) { $missingParams[] = 'queryType';       }
-        if ( !isset( $this->dataSource      ) ) { $missingParams[] = 'dataSource';      }
-        if ( !isset( $this->intervals       ) ) { $missingParams[] = 'intervals';       }
-        if ( !isset( $this->granularity     ) ) { $missingParams[] = 'granularity';     }
-        if ( !isset( $this->dimensions      ) ) { $missingParams[] = 'dimensions';      }
-        if ( !isset( $this->aggregators     ) ) { $missingParams[] = 'aggregators';     }
-
-        if ( count($missingParams) > 0 ) {
-            throw new \DruidFamiliar\Exception\MissingParametersException($missingParams);
-        }
-
-
-
-        // Validate empty params
-        $emptyParams = array();
-
-        if ( $this->queryType === '' ) { $emptyParams[] = 'queryType'; }
-        if ( $this->dataSource === '' ) { $emptyParams[] = 'dataSource'; }
-
-        if ( count($emptyParams) > 0 ) {
-            throw new \DruidFamiliar\Exception\MissingParametersException($missingParams);
-        }
+        $this->validateForEmptyParameters();
 
         // Validate types
-
         if ( !$this->intervals instanceof Interval ) {
             throw new UnexpectedTypeException($this->intervals, "DruidFamiliar\Interval", "intervals property.");
         }
     }
+
+
+    /**
+     * @throws MissingParametersException
+     */
+    protected function validateForMissingParameters()
+    {
+        // Validate missing params
+        $missingParams = array();
+
+        $requiredParams = array(
+            'queryType',
+            'dataSource',
+            'intervals',
+            'granularity',
+            'dimensions',
+            'aggregators',
+        );
+
+        foreach ($requiredParams as $requiredParam) {
+            if ( !isset( $this->$requiredParam ) ) {
+                $missingParams[] = $requiredParam;
+            }
+        }
+
+        if ( count($missingParams) > 0 ) {
+            throw new \DruidFamiliar\Exception\MissingParametersException($missingParams);
+        }
+    }
+
+    /**
+     * @throws MissingParametersException
+     */
+    protected function validateForEmptyParameters()
+    {
+        // Validate empty params
+        $emptyParams = array();
+
+        $requiredNonEmptyParams = array(
+            'queryType',
+            'dataSource'
+        );
+
+        foreach ($requiredNonEmptyParams as $requiredNonEmptyParam) {
+            if ( !isset( $this->$requiredNonEmptyParam ) ) {
+                $emptyParams[] = $requiredNonEmptyParam;
+            }
+        }
+
+        if ( count($emptyParams) > 0 ) {
+            throw new \DruidFamiliar\Exception\MissingParametersException($emptyParams);
+        }
+    }
+
 }

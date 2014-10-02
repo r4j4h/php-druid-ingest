@@ -86,18 +86,17 @@ QUERY;
     public function fetch()
     {
         $mysqli = $this->getMysqli($this->host, $this->user, $this->pass, $this->db);
+        $rows = array();
 
         // Check connection
         if ($mysqli->connect_errno) {
             throw new \Exception( sprintf("Connect failed: %s\n", $mysqli->connect_error) );
         }
 
-        if (OutputInterface::VERBOSITY_VERY_VERBOSE <= $this->output->getVerbosity()) {
+        if (OutputInterface::VERBOSITY_VERBOSE <= $this->output->getVerbosity()) {
             $this->output->writeln("Connected to MySQL Database at " . $this->host . " as user " . $this->user . " using db " . $this->db);
-        } else if (OutputInterface::VERBOSITY_VERBOSE <= $this->output->getVerbosity()) {
-            $this->output->writeln("Connected to MySQL Database at " . $this->host);
         } else {
-            $this->output->writeln("Connected to MySQL Database.");
+            $this->output->writeln("Connected to MySQL Database at " . $this->host);
         }
 
 
@@ -108,7 +107,6 @@ QUERY;
             $this->output->writeln("Prepared query:\n\n" . $preparedQuery . "\n\n");
         }
 
-        $rows = array();
 
         // Select queries return a resultset
         if ($result = $mysqli->query( $preparedQuery, MYSQLI_USE_RESULT )) {
@@ -134,6 +132,8 @@ QUERY;
             /* free result set */
             $result->close();
 
+        } else {
+            throw new \Exception('Query did not return result set.');
         }
 
         $mysqli->close();

@@ -159,12 +159,12 @@
         "source": {
             "type": "git",
             "url": "https://github.com/r4j4h/php-druid-query.git",
-            "reference": "d896ccd439674389f317cc06c6cb6092826cf95c"
+            "reference": "3859bb537d2b84729e9640062f35374c942033fe"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/r4j4h/php-druid-query/zipball/d896ccd439674389f317cc06c6cb6092826cf95c",
-            "reference": "d896ccd439674389f317cc06c6cb6092826cf95c",
+            "url": "https://api.github.com/repos/r4j4h/php-druid-query/zipball/3859bb537d2b84729e9640062f35374c942033fe",
+            "reference": "3859bb537d2b84729e9640062f35374c942033fe",
             "shasum": ""
         },
         "require": {
@@ -177,7 +177,7 @@
             "phpmd/phpmd": "2.1.1",
             "phpunit/phpunit": "4.2.*"
         },
-        "time": "2014-09-30 23:28:20",
+        "time": "2014-10-02 18:11:52",
         "type": "library",
         "extra": {
             "branch-alias": {
