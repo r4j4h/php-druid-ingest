@@ -4,13 +4,13 @@ namespace PhpDruidIngest\Fetcher;
 
 use DateTime;
 use DruidFamiliar\DruidTime;
+use DruidFamiliar\Interval;
+use RuntimeException;
 use mysqli;
 use PhpDruidIngest\Abstracts\BaseFetcher;
 use PhpDruidIngest\Interfaces\IFetcher;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\OutputInterface;
-
-//date_default_timezone_set('UTC');
 
 /**
  * Class ReferralBatchFetcher fetches Referral Data from an app MySQL database.
@@ -20,8 +20,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 class ReferralBatchFetcher extends BaseFetcher implements IFetcher
 {
 
-    protected $timeWindowStart;
-    protected $timeWindowEnd;
+    /**
+     * @var Interval
+     */
+    protected $intervals = null;
 
     protected $host = '';
     protected $user = '';
@@ -63,8 +65,18 @@ class ReferralBatchFetcher extends BaseFetcher implements IFetcher
      * @return string
      */
     public function setTimeWindow($start, $end) {
-        $this->timeWindowStart = $start;
-        $this->timeWindowEnd = $end;
+        $this->setIntervals($start, $end);
+    }
+
+    /**
+     * Set the interval boundaries for this query.
+     *
+     * @param string $intervalStart
+     * @param string $intervalEnd
+     */
+    public function setIntervals($intervalStart = "1970-01-01 01:30:00", $intervalEnd = "3030-01-01 01:30:00")
+    {
+        $this->intervals = new Interval($intervalStart, $intervalEnd);
     }
 
     protected $contactsQuery = <<<QUERY
@@ -85,6 +97,14 @@ QUERY;
      */
     public function fetch()
     {
+        if ( !$this->intervals ) {
+            throw new RuntimeException('Fetch ingestion interval not configured.');
+        }
+        if ( $this->host == '' || $this->user == '' || !$this->pass || !$this->db ) {
+            throw new RuntimeException('Database configuration not configured.');
+        }
+
+
         $mysqli = $this->getMysqli($this->host, $this->user, $this->pass, $this->db);
         $rows = array();
 
@@ -100,7 +120,7 @@ QUERY;
         }
 
 
-        $preparedQuery = $this->prepareQuery( $this->contactsQuery, $this->timeWindowStart, $this->timeWindowEnd );
+        $preparedQuery = $this->prepareQuery( $this->contactsQuery, $this->intervals->getStart(), $this->intervals->getEnd() );
 //        $preparedQuery = $this->prepareQuery( $this->physicianQuery, $this->timeWindowStart, $this->timeWindowEnd );
 
         if (OutputInterface::VERBOSITY_DEBUG <= $this->output->getVerbosity()) {
@@ -118,10 +138,7 @@ QUERY;
 
             while ($row = $result->fetch_array(MYSQLI_ASSOC))
             {
-                $timeForDruid = new DruidTime( new DateTime( $row['date'] ) );
-                $row['date'] = $timeForDruid->formatTimeForDruid();
-
-                $rows[] = $row;
+                $rows[] = $this->processRow($row);
             }
 
 
@@ -155,7 +172,7 @@ QUERY;
      * @param String $end ISO Date Time string
      * @return String Prepared query string
      */
-    public function prepareQuery($query, $start, $end)
+    public function prepareQuery($query, DruidTime $start, DruidTime $end)
     {
 
         $startTime = new \DateTime( $start );
@@ -170,6 +187,20 @@ QUERY;
 
         return $preparedQuery;
 
+    }
+
+    /**
+     * Process an item in the fetched items array
+     *
+     * @param $row
+     * @return mixed
+     */
+    protected function processRow($row)
+    {
+        $timeForDruid = new DruidTime( new DateTime( $row['date'] ) );
+        $row['date'] = $timeForDruid->formatTimeForDruid();
+
+        return $row;
     }
 
     /**

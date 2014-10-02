@@ -7,6 +7,22 @@ use PHPUnit_Framework_TestCase;
 class BasicDruidJobWatcherTest extends PHPUnit_Framework_TestCase
 {
 
+    public function testMaintainsJobBeingWatched()
+    {
+        $this->markTestIncomplete();
+    }
+
+    public function testCanWatchSameJob()
+    {
+        $this->markTestIncomplete();
+    }
+
+    public function testCanOnlyWatchOneJobAtATime()
+    {
+        $this->markTestIncomplete();
+    }
+
+
     public function testRequiresDruidQueryExecutor()
     {
         $this->markTestIncomplete();

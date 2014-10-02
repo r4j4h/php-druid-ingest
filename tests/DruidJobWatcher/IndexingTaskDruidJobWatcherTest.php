@@ -185,6 +185,9 @@ class IndexingTaskDruidJobWatcherTest extends PHPUnit_Framework_TestCase
         $jobWatcher->expects($this->once())->method('onJobFailed');
         $jobWatcher->expects($this->never())->method('onJobCompleted');
 
+        /**
+         * @var \PhpDruidIngest\DruidJobWatcher\IndexingTaskDruidJobWatcher $jobWatcher
+         */
         $jobWatcher->handleTaskStatus($taskStatus);
     }
 
@@ -202,6 +205,9 @@ class IndexingTaskDruidJobWatcherTest extends PHPUnit_Framework_TestCase
         $jobWatcher->expects($this->once())->method('onJobCompleted');
         $jobWatcher->expects($this->never())->method('onJobFailed');
 
+        /**
+         * @var \PhpDruidIngest\DruidJobWatcher\IndexingTaskDruidJobWatcher $jobWatcher
+         */
         $jobWatcher->handleTaskStatus($taskStatus);
     }
 
@@ -229,6 +235,6 @@ class IndexingTaskDruidJobWatcherTest extends PHPUnit_Framework_TestCase
 
     public function testRequiresDruidConnectionInfo()
     {
-        // TODO Test throws exception if watchJob called and not set ip or port
+        $this->markTestIncomplete('Test throws exception if watchJob called and not set ip or port');
     }
 }

@@ -1,16 +1,10 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: jhegman
- * Date: 9/22/14
- * Time: 12:46 PM
- */
 
 namespace PhpDruidIngest\Exception;
 
-use Exception;
+use RuntimeException;
 
-class AlreadyWatchingJobException extends Exception {
+class AlreadyWatchingJobException extends RuntimeException {
 
     /**
      * @param string $currentlyWatchedJobId The Job Id currently watching
@@ -27,4 +21,4 @@ class AlreadyWatchingJobException extends Exception {
 
         parent::__construct($errorMessage, 0, $previous);
     }
-} 
+}

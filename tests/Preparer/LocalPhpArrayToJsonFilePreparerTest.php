@@ -4,7 +4,7 @@ namespace PhpDruidIngest\Preparer;
 
 use PHPUnit_Framework_TestCase;
 
-class LocalPhpArrayToJsonPreparerTest extends PHPUnit_Framework_TestCase
+class LocalPhpArrayToJsonFilePreparerTest extends PHPUnit_Framework_TestCase
 {
     public function testWritesWithNewlineDelimiter()
     {
@@ -26,9 +26,10 @@ class LocalPhpArrayToJsonPreparerTest extends PHPUnit_Framework_TestCase
             array( 'id' => 3,   'animal' => 'dog',    'legs' => 4 ),
         );
 
+        /**
+         * @var \PhpDruidIngest\Preparer\LocalPhpArrayToJsonFilePreparer $p
+         */
         $p->prepare( $fakeData );
-
-        $this->markTestIncomplete('need to mock io');
     }
 
 }

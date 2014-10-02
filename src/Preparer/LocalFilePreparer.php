@@ -2,7 +2,12 @@
 
 namespace PhpDruidIngest\Preparer;
 
+use Guzzle\Common\Exception\UnexpectedValueException;
 use PhpDruidIngest\Abstracts\BasePreparer;
+use PhpDruidIngest\Exception\CannotWriteException;
+use PhpDruidIngest\Exception\MalformedFilePathException;
+use PhpDruidIngest\Exception\UnableToDeleteFileException;
+use PhpDruidIngest\Exception\UnexpectedTypeException;
 
 /**
  * Class LocalFilePreparer prepares files locally on the file system.
@@ -23,13 +28,27 @@ class LocalFilePreparer extends BasePreparer
      * @return string Path of locally prepared file
      */
     public function prepare($data) {
-        // TODO Design exceptions for failure cases
+
+        if ( !is_array($data) ) {
+            throw new UnexpectedTypeException( $data, 'array' );
+        }
+
+        if ( count($data) > 0 && !is_string( $data[0] ) ) {
+            throw new UnexpectedTypeException( $data[0], 'string' );
+        }
 
         $preparedPath = $this->getPreparedPath();
+
+        if ( !$preparedPath ) {
+            throw new MalformedFilePathException($preparedPath);
+        }
 
         $this->writeFile($preparedPath, $this->delimit( $data ) );
 
         // todo probably should return absolute base path, currently returning relative...
+        // further thoughts on this: let's no modify path. The user can feed us an absolute one.
+        // however: druid will never use a relative path, so it makes no sense to support one really
+
 
         return $preparedPath;
     }
@@ -40,7 +59,7 @@ class LocalFilePreparer extends BasePreparer
      * @param string $path File path
      * @return mixed
      */
-    public function cleanup($path)
+    public function cleanup()
     {
         $preparedPath = $this->getPreparedPath();
 
@@ -58,12 +77,12 @@ class LocalFilePreparer extends BasePreparer
     }
 
     /**
-     * Combine the data into one string with a delimiter.
+     * Combine an array of strings into one string with a delimiter.
      *
      * @param array $data
      * @param string $delimiter
      * @return string
-     * @throws UnexpectedType $data
+     * @throws UnexpectedTypeException If $data is not recognized as an array of strings
      */
     protected function delimit($data, $delimiter = "\n")
     {
@@ -76,25 +95,37 @@ class LocalFilePreparer extends BasePreparer
      * @param string $filePath
      * @param string $contents
      * @return int
-     * @throws CannotWrite
-     * @throws UnexpectedType $contents
-     * @throws MalformedFilePath
+     * @throws CannotWriteException
+     * @throws UnexpectedTypeException $contents
+     * @throws MalformedFilePathException
      */
     protected function writeFile($filePath, $contents)
     {
-        return file_put_contents($filePath, $contents);
+        $fpcResult = file_put_contents($filePath, $contents);
+
+        if ($fpcResult === false) {
+            throw new CannotWriteException($filePath);
+        }
+
+        return true;
     }
 
     /**
-     * Remote a previously written file.
+     * Remove a previously written file.
      *
      * @param string $filePath
      * @return bool
-     * @throws UnableToDelete
+     * @throws UnableToDeleteFileException
      */
     protected function deleteFile($filePath)
     {
-        return unlink( $filePath );
+        $success = unlink( $filePath );
+
+        if ( !$success ) {
+            throw new UnableToDeleteFileException($filePath);
+        }
+
+        return $success;
     }
 
     public function setFilePath($path) {
