@@ -119,6 +119,7 @@ Once those are run, require Composer's autoloader and you are off to the races:
 References
 ---------------
 
+- [php-druid-query](https://github.com/r4j4h/php-druid-query)
 - [Druid](http://druid.io)
 - [Composer](http://getcomposer.org)
 - [Guzzle](http://guzzle.readthedocs.org)
