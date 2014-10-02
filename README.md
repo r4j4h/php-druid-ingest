@@ -28,76 +28,6 @@ Otherwise it will need a way to move or stream the file from itself to the desti
 Design
 ---------------
 
-This is a _work in progress_ and _subject to change_. Please refer to this diagram for an overview of how this works underneath the hood.
-
-![Process Flow](docs/process-flow.png)
-
-(From this [Dynamic LucidChart Source URL](https://www.lucidchart.com/publicSegments/view/542c8edd-b500-4dc7-b37f-7a010a0048fd/image.png))
-
-
-
-
-Let's walk through this in a couple scenarios, noting the two parallel tracks that meet together before submission
-to Druid.
-
-1) Referral report
-    fetch/MySQL Query   ->  transform   ->  <none>      ->  load/runTask
-    generate index      -------------------------------/
-
-2) Auction House
-    fetch/HTTP GET      ->  transform   ->  <none>      ->  load/runTask
-    generate index      -------------------------------/
-
-3) Auction House Remote
-    fetch/HTTP GET      ->  transform   ->  scp         ->  load/runTask
-    generate index      -------------------------------/
-
-4) Storm
-    storm topology      ->  transform   ->  prepare     ->  load/runTask
-    generate index      -------------------------------/
-
-5) MapReduce
-    map/reduce job      ->  transform   ->  prepare     ->  load/runTask
-    generate index      -------------------------------/
-
-
-Making the following steps:
-    fetch               ->  transform   ->  prepare     ->  load/runTask
-    generate index      -------------------------------/
-
-
-With the following classes taking on the work:
-    IFetcher            ->  IFetcher    ->  IPreparer   ->  ITaskRunner
-    IIndexGenerator     -------------------------------/
-
-
-IF we wanted to split this work out further to be more modular:
-    IFetcher            ->  ITransformer->  IPreparer   ->  ITaskRunner
-    IIndexGenerator     -------------------------------/
-
-
-Resulting in these classes. Sketch of their interfaces:
-
-IFetcher
-    +fetch
-
-IPreparer
-    +prepare
-    +prepared
-
-IDruidJobWatcher
-    +watchJob (needs job id from `IDruidQueryExecutor`'s `executeQuery` function's result)
-
-
-
-Looking at how these interfaces fit together:
-
-![How Interfaces Fit Together](docs/how-interfaces-fit-together.png)
-
-(From this [Dynamic LucidChart Source URL](https://www.lucidchart.com/publicSegments/view/5418b736-2484-45e5-af7c-79100a00d7bd/image.png))
-
-Interface wise, this looks like:
-
 1. Instantiate a `IFetcher`, configured to fetch the desired records for the desired time periods.
 1. Instantiate a `IPreparer` to record the results in memory or in file, tranfser results to destination, returning the destination path
 1. Instantiate a `IDruidQueryParameters`, configured with parameters. <-- was dimension definition, now index task params + path from IFetcher
@@ -111,6 +41,14 @@ Interface wise, this looks like:
 Fetchers are the most interesting element in play here. By adding new Fetchers we can support new input sources.
 Initially we are using `mysqli` to handle fetching from MySQL databases. Fetching from HTTP endpoints, or a log, or running
 map/reduce or storm and getting the results results are all good ideas for other fetchers.
+
+Please refer to this diagram for an overview of how this works underneath the hood:
+
+![Process Flow](docs/process-flow.png)
+
+(From this [Dynamic LucidChart Source URL](https://www.lucidchart.com/publicSegments/view/542c8edd-b500-4dc7-b37f-7a010a0048fd/image.png))
+
+
 
 How to Test
 -------------
