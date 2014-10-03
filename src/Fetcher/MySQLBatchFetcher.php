@@ -13,14 +13,11 @@ use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Class ReferralBatchFetcher fetches Referral Data from an app MySQL database.
- * It has been superceded by MySQLBatchFetcher and this class will be removed soon. It is a job for a consumer, not
- * this library itself.
+ * Class MySQLBatchFetcher fetches data from an app MySQL database using a query.
  *
- * @deprecated
  * @package PhpDruidIngest\Fetcher
  */
-class ReferralBatchFetcher extends BaseFetcher implements IFetcher
+class MySQLBatchFetcher extends BaseFetcher implements IFetcher
 {
 
     /**
@@ -82,12 +79,7 @@ class ReferralBatchFetcher extends BaseFetcher implements IFetcher
         $this->intervals = new Interval($intervalStart, $intervalEnd);
     }
 
-    protected $contactsQuery = <<<QUERY
-
-QUERY;
-
-
-    protected $physicianQuery = <<<QUERY
+    protected $query = <<<QUERY
 
 QUERY;
 
@@ -123,8 +115,7 @@ QUERY;
         }
 
 
-        $preparedQuery = $this->prepareQuery( $this->contactsQuery, $this->intervals->getStart(), $this->intervals->getEnd() );
-//        $preparedQuery = $this->prepareQuery( $this->physicianQuery, $this->timeWindowStart, $this->timeWindowEnd );
+        $preparedQuery = $this->prepareQuery( $this->query, $this->intervals->getStart(), $this->intervals->getEnd() );
 
         if (OutputInterface::VERBOSITY_DEBUG <= $this->output->getVerbosity()) {
             $this->output->writeln("Prepared query:\n\n" . $preparedQuery . "\n\n");

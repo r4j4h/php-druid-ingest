@@ -16,9 +16,8 @@ return array(
     'React\\Promise' => array($vendorDir . '/react/promise/src'),
     'PHPMD\\' => array($vendorDir . '/phpmd/phpmd/src/main/php'),
     'PDepend\\' => array($vendorDir . '/pdepend/pdepend/src/main/php', $vendorDir . '/phpmd/phpmd/vendor/pdepend/pdepend/src/main/php'),
-    'LazyMap\\' => array($vendorDir . '/ocramius/lazy-map/src'),
-    'Instantiator\\' => array($vendorDir . '/ocramius/instantiator/src'),
     'Guzzle\\Tests' => array($vendorDir . '/guzzle/guzzle/tests'),
     'Guzzle' => array($vendorDir . '/guzzle/guzzle/src'),
+    'Doctrine\\Instantiator\\' => array($vendorDir . '/doctrine/instantiator/src'),
     'Bcn\\Component\\Json\\' => array($vendorDir . '/bcncommerce/json-stream'),
 );

@@ -4,7 +4,7 @@ namespace PhpDruidIngest\Fetcher;
 
 use PHPUnit_Framework_TestCase;
 
-class ReferralBatchFetcherTest extends PHPUnit_Framework_TestCase
+class MySQLBatchFetcherTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
@@ -45,12 +45,12 @@ class ReferralBatchFetcherTest extends PHPUnit_Framework_TestCase
     {
         $mockMysqli = $this->stubMySqli();
 
-        $mockFetcher = $this->getMock('PhpDruidIngest\Fetcher\ReferralBatchFetcher', array('getMysqli', 'processRow'));
+        $mockFetcher = $this->getMock('PhpDruidIngest\Fetcher\MySQLBatchFetcher', array('getMysqli', 'processRow'));
         $mockFetcher->expects($this->any())->method('getMysqli')->willReturn($mockMysqli);
         $mockFetcher->expects($this->any())->method('processRow')->willReturn('apple');
 
         /**
-         * @var \PhpDruidIngest\Fetcher\ReferralBatchFetcher $mockFetcher
+         * @var \PhpDruidIngest\Fetcher\MySQLBatchFetcher $mockFetcher
          */
         $mockFetcher->setMySqlCredentials('h', 'u', 'p', 'db');
         $mockFetcher->setTimeWindow('2014-01-01', '2014-01-02');
@@ -61,24 +61,24 @@ class ReferralBatchFetcherTest extends PHPUnit_Framework_TestCase
 
     public function testFetchRequiresDatabaseConfig()
     {
-        $mockFetcher = new ReferralBatchFetcher();
+        $mockFetcher = new MySQLBatchFetcher();
 
         $this->setExpectedException('RuntimeException', 'Database config');
 
         /**
-         * @var \PhpDruidIngest\Fetcher\ReferralBatchFetcher $mockFetcher
+         * @var \PhpDruidIngest\Fetcher\MySQLBatchFetcher $mockFetcher
          */
         $mockFetcher->setTimeWindow('2014-01-01', '2014-01-02');
         $mockFetcher->fetch();
     }
     public function testFetchRequiresIntervalConfig()
     {
-        $mockFetcher = new ReferralBatchFetcher();
+        $mockFetcher = new MySQLBatchFetcher();
 
         $this->setExpectedException('RuntimeException', 'ingestion interval');
 
         /**
-         * @var \PhpDruidIngest\Fetcher\ReferralBatchFetcher $mockFetcher
+         * @var \PhpDruidIngest\Fetcher\MySQLBatchFetcher $mockFetcher
          */
         $mockFetcher->setMySqlCredentials('h', 'u', 'p', 'db');
         $mockFetcher->fetch();
@@ -88,7 +88,7 @@ class ReferralBatchFetcherTest extends PHPUnit_Framework_TestCase
     {
         $mockMysqli = $this->stubMySqli();
 
-        $mockFetcher = $this->getMock('PhpDruidIngest\Fetcher\ReferralBatchFetcher', array('getMysqli', 'prepareQuery', 'processRow'));
+        $mockFetcher = $this->getMock('PhpDruidIngest\Fetcher\MySQLBatchFetcher', array('getMysqli', 'prepareQuery', 'processRow'));
         $mockFetcher->expects($this->any())->method('getMysqli')->willReturn($mockMysqli);
         $mockFetcher->expects($this->exactly(1))
             ->method('prepareQuery')
@@ -100,23 +100,24 @@ class ReferralBatchFetcherTest extends PHPUnit_Framework_TestCase
         ;
 
         /**
-         * @var \PhpDruidIngest\Fetcher\ReferralBatchFetcher $mockFetcher
+         * @var \PhpDruidIngest\Fetcher\MySQLBatchFetcher $mockFetcher
          */
         $mockFetcher->setMySqlCredentials('h', 'u', 'p', 'db');
         $mockFetcher->setTimeWindow('2014-01-01', '2014-01-02');
         $mockFetcher->fetch();
     }
 
+
     public function testFetchCallsProcessRow()
     {
         $mockMysqli = $this->stubMySqli();
 
-        $mockFetcher = $this->getMock('PhpDruidIngest\Fetcher\ReferralBatchFetcher', array('getMysqli', 'processRow'));
+        $mockFetcher = $this->getMock('PhpDruidIngest\Fetcher\MySQLBatchFetcher', array('getMysqli', 'processRow'));
         $mockFetcher->expects($this->any())->method('getMysqli')->willReturn($mockMysqli);
         $mockFetcher->expects($this->exactly(2))->method('processRow');
 
         /**
-         * @var \PhpDruidIngest\Fetcher\ReferralBatchFetcher $mockFetcher
+         * @var \PhpDruidIngest\Fetcher\MySQLBatchFetcher $mockFetcher
          */
         $mockFetcher->setMySqlCredentials('h', 'u', 'p', 'db');
         $mockFetcher->setTimeWindow('2014-01-01', '2014-01-02');
