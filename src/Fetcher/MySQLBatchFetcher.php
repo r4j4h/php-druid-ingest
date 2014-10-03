@@ -21,6 +21,20 @@ class MySQLBatchFetcher extends BaseFetcher implements IFetcher
 {
 
     /**
+     * MySQL Query Template that is expecting to receive a start and end date as parameters via prepareQuery.
+     *
+     * The parameters are inserted via string replacement:
+     * {STARTDATE} and {ENDDATE}
+     *
+     * An example template:
+     * "SELECT id FROM things WHERE date BETWEEN '{STARTDATE}' AND '{ENDDATE}';"
+     *
+     * @var string
+     */
+    protected $query;
+
+
+    /**
      * @var Interval
      */
     protected $intervals = null;
@@ -78,10 +92,6 @@ class MySQLBatchFetcher extends BaseFetcher implements IFetcher
     {
         $this->intervals = new Interval($intervalStart, $intervalEnd);
     }
-
-    protected $query = <<<QUERY
-
-QUERY;
 
 
     /**
@@ -191,10 +201,6 @@ QUERY;
      */
     protected function processRow($row)
     {
-        // todo could fail here ..needs exception!
-        $timeForDruid = new DruidTime( new DateTime( $row['date'] ) );
-        $row['date'] = $timeForDruid->formatTimeForDruid();
-
         return $row;
     }
 
