@@ -19,7 +19,9 @@ use PhpDruidIngest\DruidJobWatcher\BasicDruidJobWatcher;
 use PhpDruidIngest\Fetcher\ReferralBatchFetcher;
 use PhpDruidIngest\QueryGenerator\SimpleIndexQueryGenerator;
 use PhpDruidIngest\ResponseHandler\IndexingTaskResponseHandler;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Logger\ConsoleLogger;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -78,8 +80,11 @@ HELPBLURB
 
     protected function ingest($formattedStartTime, $formattedEndTime, InputInterface $input, OutputInterface $output)
     {
+        /** @var $logger LoggerInterface */
+        $logger = new ConsoleLogger($output);
+
         $fetcher = new ReferralBatchFetcher();
-        $fetcher->setOutput($output);
+        $fetcher->setOutput($logger);
         $fetcher->setMySqlCredentials($this->host, $this->user, $this->pass, $this->db);
         $fetcher->setTimeWindow( $formattedStartTime, $formattedEndTime );
 
@@ -107,7 +112,7 @@ HELPBLURB
         };
 
         $basicDruidJobWatcher->setOnJobPending($myOnPendingCallback);
-        $basicDruidJobWatcher->setOutput($output);
+        $basicDruidJobWatcher->setOutput($logger);
         $basicDruidJobWatcher->setDruidIp( $this->druidIp );
         $basicDruidJobWatcher->setDruidPort( $this->druidPort );
 
