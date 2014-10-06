@@ -13,8 +13,6 @@
     "require": {
         "php": ">=5.3.0",
         "psr/log": "1.0.0",
-        "react/promise": "~1.0",
-        "bcncommerce/json-stream": "*",
         "guzzle/guzzle": "~3.9",
         "symfony/console": "2.5.4",
         "r4j4h/php-druid-query": "1.0.x-dev"
