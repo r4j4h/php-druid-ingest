@@ -10,13 +10,12 @@ use PhpDruidIngest\QueryParameters\IndexingTaskStatusQueryParameters;
 use PhpDruidIngest\QueryParameters\IndexTaskQueryParameters;
 use PhpDruidIngest\QueryResponse\IndexingTaskStatusQueryResponse;
 use PhpDruidIngest\ResponseHandler\IndexingTaskStatusResponseHandler;
-use Symfony\Component\Console\Output\NullOutput;
-use Symfony\Component\Console\Output\OutputInterface;
+use Psr\Log\LoggerInterface;
 
 class IndexingTaskDruidJobWatcher extends BasicDruidJobWatcher
 {
     /**
-     * @var OutputInterface
+     * @var LoggerInterface
      */
     protected $output;
 
@@ -47,10 +46,6 @@ class IndexingTaskDruidJobWatcher extends BasicDruidJobWatcher
      * @var int seconds waited between polling
      */
     public $watchAttemptDelay = 10;
-
-    public function __construct() {
-        $this->output = new NullOutput();
-    }
 
     /**
      * Begin watching given job id.
@@ -272,7 +267,9 @@ class IndexingTaskDruidJobWatcher extends BasicDruidJobWatcher
      */
     protected function onJobCompleted()
     {
-        $this->output->writeln('Druid says the job was successful! :)');
+        if ( $this->output ) {
+            $this->output->notice('Druid says the job was successful! :)');
+        }
     }
 
     /**
@@ -282,7 +279,9 @@ class IndexingTaskDruidJobWatcher extends BasicDruidJobWatcher
      */
     protected function onJobFailed()
     {
-        $this->output->writeln('Druid says the job failed. :(');
+        if ( $this->output ) {
+            $this->output->notice('Druid says the job failed. :(');
+        }
     }
 
     /**
@@ -292,12 +291,14 @@ class IndexingTaskDruidJobWatcher extends BasicDruidJobWatcher
      */
     protected function onJobPending()
     {
-        $this->output->writeln('Druid says the job is still running.');
-        $this->output->writeln('Trying again in ' . $this->watchAttemptDelay . ' seconds.');
+        if ( $this->output ) {
+            $this->output->info('Druid says the job is still running.');
+            $this->output->debug('Trying again in ' . $this->watchAttemptDelay . ' seconds.');
+        }
     }
 
     /**
-     * @return OutputInterface
+     * @return LoggerInterface
      */
     public function getOutput()
     {
@@ -305,7 +306,7 @@ class IndexingTaskDruidJobWatcher extends BasicDruidJobWatcher
     }
 
     /**
-     * @param OutputInterface $output
+     * @param LoggerInterface $output
      */
     public function setOutput($output)
     {
