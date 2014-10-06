@@ -58,7 +58,7 @@ HELPBLURB
         $formattedStartTime = $startTime->formatTimeForDruid();
         $formattedEndTime = $endTime->formatTimeForDruid();
 
-        $output->write("<info>Ingesting referrals</info>");
+        $output->write("<info>Ingesting data</info>");
         if (OutputInterface::VERBOSITY_VERBOSE <= $output->getVerbosity()) {
             $output->write( " for the period <info>$formattedStartTime</info> to <info>$formattedEndTime</info>" );
         }
