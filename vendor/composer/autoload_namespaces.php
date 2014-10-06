@@ -14,6 +14,7 @@ return array(
     'Symfony\\Component\\Console\\' => array($vendorDir . '/symfony/console'),
     'Symfony\\Component\\Config\\' => array($vendorDir . '/symfony/config'),
     'React\\Promise' => array($vendorDir . '/react/promise/src'),
+    'Psr\\Log\\' => array($vendorDir . '/psr/log'),
     'PHPMD\\' => array($vendorDir . '/phpmd/phpmd/src/main/php'),
     'PDepend\\' => array($vendorDir . '/pdepend/pdepend/src/main/php', $vendorDir . '/phpmd/phpmd/vendor/pdepend/pdepend/src/main/php'),
     'Guzzle\\Tests' => array($vendorDir . '/guzzle/guzzle/tests'),
