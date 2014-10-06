@@ -9,8 +9,7 @@ use RuntimeException;
 use mysqli;
 use PhpDruidIngest\Abstracts\BaseFetcher;
 use PhpDruidIngest\Interfaces\IFetcher;
-use Symfony\Component\Console\Output\NullOutput;
-use Symfony\Component\Console\Output\OutputInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class MySQLBatchFetcher fetches data from an app MySQL database using a query.
@@ -45,15 +44,9 @@ class MySQLBatchFetcher extends BaseFetcher implements IFetcher
     protected $db = '';
 
     /**
-     * @var OutputInterface
+     * @var LoggerInterface
      */
     protected $output;
-
-
-    public function __construct() {
-        $this->output = new NullOutput();
-    }
-
 
 
     /**
@@ -118,17 +111,16 @@ class MySQLBatchFetcher extends BaseFetcher implements IFetcher
             throw new \Exception( sprintf("Connect failed: %s\n", $mysqli->connect_error) );
         }
 
-        if (OutputInterface::VERBOSITY_VERBOSE <= $this->output->getVerbosity()) {
-            $this->output->writeln("Connected to MySQL Database at " . $this->host . " as user " . $this->user . " using db " . $this->db);
-        } else {
-            $this->output->writeln("Connected to MySQL Database at " . $this->host);
+        if ($this->output) {
+            $this->output->info("Connected to MySQL Database at " . $this->host);
+            $this->output->debug("Connected to MySQL Database at " . $this->host . " as user " . $this->user . " using db " . $this->db);
         }
 
 
         $preparedQuery = $this->prepareQuery( $this->query, $this->intervals->getStart(), $this->intervals->getEnd() );
 
-        if (OutputInterface::VERBOSITY_DEBUG <= $this->output->getVerbosity()) {
-            $this->output->writeln("Prepared query:\n\n" . $preparedQuery . "\n\n");
+        if ($this->output) {
+            $this->output->debug("Prepared query:\n\n" . $preparedQuery . "\n\n");
         }
 
 
@@ -136,8 +128,8 @@ class MySQLBatchFetcher extends BaseFetcher implements IFetcher
         if ($result = $mysqli->query( $preparedQuery, MYSQLI_USE_RESULT )) {
 
 
-            if (OutputInterface::VERBOSITY_DEBUG <= $this->output->getVerbosity()) {
-                $this->output->writeln("Iterating mysql result set...");
+            if ($this->output) {
+                $this->output->info("Iterating mysql result set...");
             }
 
             while ($row = $result->fetch_array(MYSQLI_ASSOC))
@@ -146,8 +138,8 @@ class MySQLBatchFetcher extends BaseFetcher implements IFetcher
             }
 
 
-            if (OutputInterface::VERBOSITY_DEBUG <= $this->output->getVerbosity()) {
-                $this->output->writeln("Finished iterating mysql result set.");
+            if ($this->output) {
+                $this->output->info("Finished iterating mysql result set.");
             }
 
             /* free result set */
@@ -159,8 +151,8 @@ class MySQLBatchFetcher extends BaseFetcher implements IFetcher
 
         $mysqli->close();
 
-        if (OutputInterface::VERBOSITY_DEBUG <= $this->output->getVerbosity()) {
-            $this->output->writeln("Successfully closed MySQL Connection.");
+        if ($this->output) {
+            $this->output->info("Successfully closed MySQL Connection.");
         }
 
         return $rows;
@@ -179,11 +171,11 @@ class MySQLBatchFetcher extends BaseFetcher implements IFetcher
     public function prepareQuery($query, DruidTime $start, DruidTime $end)
     {
 
-        $startTime = new \DateTime( $start );
-        $endTime = new \DateTime( $end );
+        $startTime = new DruidTime( $start );
+        $endTime = new DruidTime( $end );
 
-        $formattedStartTime = $startTime->format(DATE_ISO8601);
-        $formattedEndTime = $endTime->format(DATE_ISO8601);
+        $formattedStartTime = $startTime->formatTimeForDruid();
+        $formattedEndTime = $endTime->formatTimeForDruid();
 
         $preparedQuery = $query;
         $preparedQuery = str_replace( '{STARTDATE}', $formattedStartTime, $preparedQuery );
@@ -218,7 +210,7 @@ class MySQLBatchFetcher extends BaseFetcher implements IFetcher
     }
 
     /**
-     * @return OutputInterface
+     * @return LoggerInterface
      */
     public function getOutput()
     {
@@ -226,7 +218,7 @@ class MySQLBatchFetcher extends BaseFetcher implements IFetcher
     }
 
     /**
-     * @param OutputInterface $output
+     * @param LoggerInterface $output
      */
     public function setOutput($output)
     {

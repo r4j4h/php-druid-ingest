@@ -9,8 +9,7 @@ use RuntimeException;
 use mysqli;
 use PhpDruidIngest\Abstracts\BaseFetcher;
 use PhpDruidIngest\Interfaces\IFetcher;
-use Symfony\Component\Console\Output\NullOutput;
-use Symfony\Component\Console\Output\OutputInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class ReferralBatchFetcher fetches Referral Data from an app MySQL database.
@@ -34,15 +33,9 @@ class ReferralBatchFetcher extends BaseFetcher implements IFetcher
     protected $db = '';
 
     /**
-     * @var OutputInterface
+     * @var LoggerInterface
      */
     protected $output;
-
-
-    public function __construct() {
-        $this->output = new NullOutput();
-    }
-
 
 
     /**
@@ -116,18 +109,17 @@ QUERY;
             throw new \Exception( sprintf("Connect failed: %s\n", $mysqli->connect_error) );
         }
 
-        if (OutputInterface::VERBOSITY_VERBOSE <= $this->output->getVerbosity()) {
-            $this->output->writeln("Connected to MySQL Database at " . $this->host . " as user " . $this->user . " using db " . $this->db);
-        } else {
-            $this->output->writeln("Connected to MySQL Database at " . $this->host);
+        if ($this->output) {
+            $this->output->info("Connected to MySQL Database at " . $this->host);
+            $this->output->debug("Connected to MySQL Database at " . $this->host . " as user " . $this->user . " using db " . $this->db);
         }
 
 
         $preparedQuery = $this->prepareQuery( $this->contactsQuery, $this->intervals->getStart(), $this->intervals->getEnd() );
 //        $preparedQuery = $this->prepareQuery( $this->physicianQuery, $this->timeWindowStart, $this->timeWindowEnd );
 
-        if (OutputInterface::VERBOSITY_DEBUG <= $this->output->getVerbosity()) {
-            $this->output->writeln("Prepared query:\n\n" . $preparedQuery . "\n\n");
+        if ($this->output) {
+            $this->output->debug("Prepared query:\n\n" . $preparedQuery . "\n\n");
         }
 
 
@@ -135,8 +127,8 @@ QUERY;
         if ($result = $mysqli->query( $preparedQuery, MYSQLI_USE_RESULT )) {
 
 
-            if (OutputInterface::VERBOSITY_DEBUG <= $this->output->getVerbosity()) {
-                $this->output->writeln("Iterating mysql result set...");
+            if ($this->output) {
+                $this->output->info("Iterating mysql result set...");
             }
 
             while ($row = $result->fetch_array(MYSQLI_ASSOC))
@@ -145,8 +137,8 @@ QUERY;
             }
 
 
-            if (OutputInterface::VERBOSITY_DEBUG <= $this->output->getVerbosity()) {
-                $this->output->writeln("Finished iterating mysql result set.");
+            if ($this->output) {
+                $this->output->info("Finished iterating mysql result set.");
             }
 
             /* free result set */
@@ -158,8 +150,8 @@ QUERY;
 
         $mysqli->close();
 
-        if (OutputInterface::VERBOSITY_DEBUG <= $this->output->getVerbosity()) {
-            $this->output->writeln("Successfully closed MySQL Connection.");
+        if ($this->output) {
+            $this->output->info("Successfully closed MySQL Connection.");
         }
 
         return $rows;
@@ -178,11 +170,11 @@ QUERY;
     public function prepareQuery($query, DruidTime $start, DruidTime $end)
     {
 
-        $startTime = new \DateTime( $start );
-        $endTime = new \DateTime( $end );
+        $startTime = new DruidTime( $start );
+        $endTime = new DruidTime( $end );
 
-        $formattedStartTime = $startTime->format(DATE_ISO8601);
-        $formattedEndTime = $endTime->format(DATE_ISO8601);
+        $formattedStartTime = $startTime->formatTimeForDruid();
+        $formattedEndTime = $endTime->formatTimeForDruid();
 
         $preparedQuery = $query;
         $preparedQuery = str_replace( '{STARTDATE}', $formattedStartTime, $preparedQuery );
@@ -201,7 +193,7 @@ QUERY;
     protected function processRow($row)
     {
         // todo could fail here ..needs exception!
-        $timeForDruid = new DruidTime( new DateTime( $row['date'] ) );
+        $timeForDruid = new DruidTime( $row['date'] );
         $row['date'] = $timeForDruid->formatTimeForDruid();
 
         return $row;
@@ -221,7 +213,7 @@ QUERY;
     }
 
     /**
-     * @return OutputInterface
+     * @return LoggerInterface
      */
     public function getOutput()
     {
@@ -229,7 +221,7 @@ QUERY;
     }
 
     /**
-     * @param OutputInterface $output
+     * @param LoggerInterface $output
      */
     public function setOutput($output)
     {
