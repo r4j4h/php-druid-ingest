@@ -98,8 +98,11 @@ class MySQLBatchFetcher extends BaseFetcher implements IFetcher
         if ( !$this->intervals ) {
             throw new RuntimeException('Fetch ingestion interval not configured.');
         }
-        if ( $this->host == '' || $this->user == '' || !$this->pass || !$this->db ) {
+        if ( $this->host == '' || $this->user == '' || !$this->db ) {
             throw new RuntimeException('Database configuration not configured.');
+        }
+        if ( !$this->pass ) {
+            $this->pass = '';
         }
 
 
