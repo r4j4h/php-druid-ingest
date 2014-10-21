@@ -142,12 +142,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/r4j4h/php-druid-query.git",
-                "reference": "f42bc6f11cadc57ff6e0835b5c0cfe57628d9e0c"
+                "reference": "850cf21fa5601a2a8ef198fad094646a10c42e6f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/r4j4h/php-druid-query/zipball/f42bc6f11cadc57ff6e0835b5c0cfe57628d9e0c",
-                "reference": "f42bc6f11cadc57ff6e0835b5c0cfe57628d9e0c",
+                "url": "https://api.github.com/repos/r4j4h/php-druid-query/zipball/850cf21fa5601a2a8ef198fad094646a10c42e6f",
+                "reference": "850cf21fa5601a2a8ef198fad094646a10c42e6f",
                 "shasum": ""
             },
             "require": {
@@ -163,6 +163,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
+                    "dev-develop": "1.1.x-dev",
                     "dev-master": "1.0.x-dev"
                 }
             },
@@ -189,7 +190,7 @@
                 "query",
                 "querying"
             ],
-            "time": "2014-10-06 19:29:11"
+            "time": "2014-10-21 23:11:32"
         },
         {
             "name": "symfony/console",
@@ -1575,9 +1576,7 @@
             "time": "2014-09-13 10:57:19"
         }
     ],
-    "aliases": [
-
-    ],
+    "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
         "r4j4h/php-druid-query": 20
@@ -1586,7 +1585,5 @@
     "platform": {
         "php": ">=5.3.0"
     },
-    "platform-dev": [
-
-    ]
+    "platform-dev": []
 }
