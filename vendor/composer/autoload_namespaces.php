@@ -13,12 +13,10 @@ return array(
     'Symfony\\Component\\DependencyInjection\\' => array($vendorDir . '/symfony/dependency-injection'),
     'Symfony\\Component\\Console\\' => array($vendorDir . '/symfony/console'),
     'Symfony\\Component\\Config\\' => array($vendorDir . '/symfony/config'),
-    'React\\Promise' => array($vendorDir . '/react/promise/src'),
     'Psr\\Log\\' => array($vendorDir . '/psr/log'),
     'PHPMD\\' => array($vendorDir . '/phpmd/phpmd/src/main/php'),
-    'PDepend\\' => array($vendorDir . '/pdepend/pdepend/src/main/php', $vendorDir . '/phpmd/phpmd/vendor/pdepend/pdepend/src/main/php'),
+    'PDepend\\' => array($vendorDir . '/phpmd/phpmd/vendor/pdepend/pdepend/src/main/php', $vendorDir . '/pdepend/pdepend/src/main/php'),
     'Guzzle\\Tests' => array($vendorDir . '/guzzle/guzzle/tests'),
     'Guzzle' => array($vendorDir . '/guzzle/guzzle/src'),
     'Doctrine\\Instantiator\\' => array($vendorDir . '/doctrine/instantiator/src'),
-    'Bcn\\Component\\Json\\' => array($vendorDir . '/bcncommerce/json-stream'),
 );
