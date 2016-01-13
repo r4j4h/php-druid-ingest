@@ -30,11 +30,5 @@
         "psr-4": {
             "PhpDruidIngest\\": "tests/"
         }
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-develop": "1.1.x-dev",
-            "dev-master": "1.0.x-dev"
-        }
     }
 }
