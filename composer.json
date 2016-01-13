@@ -1,5 +1,5 @@
 {
-    "name": "bartekrylko/php-druid-ingest",
+    "name": "r4j4h/php-druid-ingest",
     "description": "PHP Classes to wrap ingestion of data into Druid",
     "keywords": ["druid", "indexing", "ingestion", "overlord"],
     "license": "MIT",
