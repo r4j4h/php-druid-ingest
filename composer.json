@@ -15,13 +15,16 @@
         "psr/log": "1.0.0",
         "guzzle/guzzle": "~3.9",
         "symfony/console": "~2.5",
-        "r4j4h/php-druid-query": "1.0.x-dev"
+        "r4j4h/php-druid-query": "1.0.x-dev",
+        "react/promise": "~1.0",
+        "bcncommerce/json-stream": "*"
     },
     "require-dev": {
         "phpunit/phpunit": "~4",
         "phing/phing": "~2",
         "phpmd/phpmd": "~2",
-        "phploc/phploc": "~2"
+        "phploc/phploc": "~2",
+        "phpdocumentor/phpdocumentor": "2.*"
     },
     "autoload": {
         "psr-4": {

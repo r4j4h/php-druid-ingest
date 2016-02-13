@@ -7,6 +7,7 @@
 
     <target name="clean" description="Clean project from build artifacts">
         <delete dir="build"/>
+        <delete dir="docs/main"/>
     </target>
 
 
@@ -18,8 +19,24 @@
         <mkdir dir="build/reports"/>
         <mkdir dir="build/reports/phpunit"/>
         <mkdir dir="build/reports/phpmd"/>
+        <mkdir dir="docs/main"/>
     </target>
 
+    <target name="docs" depends="prepare">
+        <phpdoc2 title="API Documentation"
+                 destdir="docs/main"
+                 template="responsive-twig">
+            <fileset dir="./src">
+                <include name="**/*.php" />
+            </fileset>
+            <fileset dir="./clicommands">
+                <include name="**/*.php" />
+            </fileset>
+            <fileset dir="./vendor/r4j4h/php-druid-query">
+                <include name="**/*.php" />
+            </fileset>
+        </phpdoc2>
+    </target>
 
     <target name="phpunit" description="Run PHPUnit on the project">
 
@@ -125,7 +142,7 @@
 
     <target name="build" depends="clean,prepare,phpunit"/>
 
-    <target name="report" depends="clean,prepare,phpmd,phploc"/>
+    <target name="report" depends="clean,prepare,phpmd,phploc,docs"/>
 
     <target name="all" depends="build,report"/>
 
