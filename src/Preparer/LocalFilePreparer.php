@@ -34,7 +34,7 @@ class LocalFilePreparer extends BasePreparer
         }
 
         if ( count($data) > 0 && !is_string( $data[0] ) ) {
-            throw new UnexpectedTypeException( $data[0], 'string' );
+            throw new UnexpectedTypeException( 'First element is not string-like! Given: ' . gettype($data[0]), 'string' );
         }
 
         $preparedPath = $this->getPreparedPath();
