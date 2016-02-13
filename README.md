@@ -1,93 +1,32 @@
 php-druid-ingest
 ===============
 
-Experimental PHP wrapper around querying [Druid](http://druid.io).
+Experimental PHP wrapper around ingesting data from a variety of data sources into [Druid](http://druid.io) as
+a data source.
 
 Overview
 ---------------
 
 The wrapper lives in the namespace `PhpDruidIngest`.
 
-The plan for this is to contain tasks related to the extraction, transformation, and loading of data from
-other sources into druid. This involves the ETL of that data, the generation of a compatible Druid indexing task, and
-the execution and subsequent monitoring of indexing task, and removal of data.
+Classes provide for the various tasks related to the extraction, transformation, and loading of data from
+other sources into druid. This involves:
 
-The idea is that this guy lives on the Druid node that will ingest the data, or will have a way to move the file
-from itself to the destination Node (say via `scp`).
+1. the extraction, transformation, and loading of that data
+2. preparing it in a place and format ready for Druid
+3. the generation of a compatible Druid indexing task
+4. the execution of the indexing task
+5. usage of the returned job id for monitoring of the indexing task job, and
+6. removal of prepared ingestion data after Druid has finished ingesting the file.
+
+
+When executed, this will need to live on the Druid node that will ingest the data, using `LocalFilePreparer`.
+Otherwise it will need a way to move or stream the file from itself to the destination Node (say via `scp`).
+`RemoteSCPPreparer` is an initial stab at this.
 
 
 Design
 ---------------
-
-This is totally _work in progress_ and _subject to change_. Please refer to this diagram for an overview of how this works underneath the hood.
-
-![Process Flow](docs/process-flow.png)
-
-(From this [Dynamic LucidChart Source URL](https://www.lucidchart.com/publicSegments/view/5418b6c7-f4c4-479c-9696-4e1a0a004a03/image.png))
-
-
-
-
-Let's walk through this in a couple scenarios, noting the two parallel tracks that meet together before submission
-to Druid.
-
-1) Referral report
-    fetch/MySQL Query   ->  transform   ->  <none>      ->  load/runTask
-    generate index      -------------------------------/
-
-2) Auction House
-    fetch/HTTP GET      ->  transform   ->  <none>      ->  load/runTask
-    generate index      -------------------------------/
-
-3) Auction House Remote
-    fetch/HTTP GET      ->  transform   ->  scp         ->  load/runTask
-    generate index      -------------------------------/
-
-4) Storm
-    storm topology      ->  transform   ->  prepare     ->  load/runTask
-    generate index      -------------------------------/
-
-5) MapReduce
-    map/reduce job      ->  transform   ->  prepare     ->  load/runTask
-    generate index      -------------------------------/
-
-
-Making the following steps:
-    fetch               ->  transform   ->  prepare     ->  load/runTask
-    generate index      -------------------------------/
-
-
-With the following classes taking on the work:
-    IFetcher            ->  IFetcher    ->  IPreparer   ->  ITaskRunner
-    IIndexGenerator     -------------------------------/
-
-
-IF we wanted to split this work out further to be more modular:
-    IFetcher            ->  ITransformer->  IPreparer   ->  ITaskRunner
-    IIndexGenerator     -------------------------------/
-
-
-Resulting in these classes. Sketch of their interfaces:
-
-IFetcher
-    +fetch
-
-IPreparer
-    +prepare
-    +prepared
-
-IDruidJobWatcher
-    +watchJob (needs job id from `IDruidQueryExecutor`'s `executeQuery` function's result)
-
-
-
-Looking at how these interfaces fit together:
-
-![How Interfaces Fit Together](docs/how-interfaces-fit-together.png)
-
-(From this [Dynamic LucidChart Source URL](https://www.lucidchart.com/publicSegments/view/5418b736-2484-45e5-af7c-79100a00d7bd/image.png))
-
-Interface wise, this looks like:
 
 1. Instantiate a `IFetcher`, configured to fetch the desired records for the desired time periods.
 1. Instantiate a `IPreparer` to record the results in memory or in file, tranfser results to destination, returning the destination path
@@ -98,6 +37,16 @@ Interface wise, this looks like:
 1. Run the `IDruidQueryExecutor`'s `executeQuery` function with the IDruidQuery, getting the result.
 1. Hand the resulting task id to `IDruidJobWatcher` who polls until task succeeds or finishes
 1. `IPreparer` then cleans up left over ingestion file
+
+Fetchers are the most interesting element in play here. By adding new Fetchers we can support new input sources.
+Initially we are using `mysqli` to handle fetching from MySQL databases. Fetching from HTTP endpoints, or a log, or running
+map/reduce or storm and getting the results results are all good ideas for other fetchers.
+
+Please refer to this diagram for an overview of how this works underneath the hood:
+
+![Process Flow](docs/process-flow.png)
+
+(From this [Dynamic LucidChart Source URL](https://www.lucidchart.com/publicSegments/view/542c8edd-b500-4dc7-b37f-7a010a0048fd/image.png))
 
 
 
@@ -116,11 +65,11 @@ From the root directory, in a command terminal run: `php vendor/bin/phing docs`.
 How to Install
 ---------------
 
-Right now, there is no tagged version.
+Right now, there is no tagged version. To be ready for it when it comes, branch-aliases are in place.
 
-- Stable branch: `~1.0-dev`
+- Stable branch: `~1.0@dev`
 - Stable branch w/ PHP 5.3 Compatibility Support: `dev-php-53-compat`
-- Cutting edge: `dev-develop`
+- Cutting edge: `~1.1@dev`
 
 To install, it is suggested to use [Composer](http://getcomposer.org). If you have it installed, then the following instructions
 in a composer.json should be all you need to get started:
@@ -138,7 +87,7 @@ Up to date PHP:
         }
     ],
     "require": {
-        "r4j4h/php-druid-ingest": "~1.0-dev"
+        "r4j4h/php-druid-ingest": "~1.0@dev"
     }
 }
 ```
@@ -170,24 +119,7 @@ Once those are run, require Composer's autoloader and you are off to the races:
 References
 ---------------
 
+- [php-druid-query](https://github.com/r4j4h/php-druid-query)
 - [Druid](http://druid.io)
 - [Composer](http://getcomposer.org)
 - [Guzzle](http://guzzle.readthedocs.org)
-
-
-Appendix A. Composer.json example that does not rely on Packagist.org:
----------------
-
-```json
-{
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "git@github.com:r4j4h/php-druid-ingest"
-        }
-    ],
-    "require": {
-        "r4j4h/php-druid-ingest": "~1.0-dev"
-    }
-}
-```

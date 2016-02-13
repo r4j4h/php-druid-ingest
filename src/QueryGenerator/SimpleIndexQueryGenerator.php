@@ -65,10 +65,8 @@ INDEXTEMPLATE;
 
         $generatedIndex = str_replace( '{AGGREGATORS}', join(",", $indexTaskParams->aggregators), $generatedIndex );
 
-        var_dump( "Here's a generated index. I hope you like it! As follows:" );
-        var_dump( $generatedIndex );
-
         return $generatedIndex;
+
     }
 
 }

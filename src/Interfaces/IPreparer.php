@@ -15,9 +15,8 @@ interface IPreparer {
     /**
      * Clean up a prepared ingestion file.
      *
-     * @param string $path File path
      * @return mixed
      */
-    public function cleanup($path);
+    public function cleanup();
 
 }

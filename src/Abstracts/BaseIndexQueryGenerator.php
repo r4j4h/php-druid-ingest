@@ -25,11 +25,11 @@ abstract class BaseIndexQueryGenerator implements IDruidQueryGenerator {
      * @return string Query payload in JSON
      */
     public function generateQuery(IDruidQueryParameters $params) {
-        if ( $params instanceof IndexTaskQueryParameters ) {
+        if ( !$params instanceof IndexTaskQueryParameters ) {
             throw new \Exception("Expected IndexTaskQueryParameters");
         }
 
-        $this->generateIndex($params);
+        return $this->generateIndex($params);
     }
 
 }

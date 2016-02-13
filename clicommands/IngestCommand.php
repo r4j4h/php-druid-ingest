@@ -6,6 +6,7 @@
 
 namespace ReferralIngester\Command;
 
+use DruidFamiliar\DruidTime;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -51,13 +52,13 @@ HELPBLURB
         $inputStart = ( $input->getArgument('start') );
         $inputEnd = ( $input->getArgument('end') );
 
-        $startTime = new \DateTime( $inputStart );
-        $endTime = new \DateTime( $inputEnd );
+        $startTime = new DruidTime( $inputStart );
+        $endTime = new DruidTime( $inputEnd );
 
-        $formattedStartTime = $startTime->format(DATE_ISO8601);
-        $formattedEndTime = $endTime->format(DATE_ISO8601);
+        $formattedStartTime = $startTime->formatTimeForDruid();
+        $formattedEndTime = $endTime->formatTimeForDruid();
 
-        $output->write("<info>Ingesting referrals</info>");
+        $output->write("<info>Ingesting data</info>");
         if (OutputInterface::VERBOSITY_VERBOSE <= $output->getVerbosity()) {
             $output->write( " for the period <info>$formattedStartTime</info> to <info>$formattedEndTime</info>" );
         }

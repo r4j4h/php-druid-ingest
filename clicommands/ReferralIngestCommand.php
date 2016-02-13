@@ -10,13 +10,18 @@
 namespace ReferralIngester\Command;
 
 use DruidFamiliar\QueryExecutor\DruidNodeDruidQueryExecutor;
+use PhpDruidIngest\DruidJobWatcher\CallbackBasedIndexingTaskDruidJobWatcher;
+use PhpDruidIngest\DruidJobWatcher\IndexingTaskDruidJobWatcher;
 use PhpDruidIngest\Preparer\LocalFilePreparer;
+use PhpDruidIngest\Preparer\LocalPhpArrayToJsonFilePreparer;
 use PhpDruidIngest\QueryParameters\IndexTaskQueryParameters;
 use PhpDruidIngest\DruidJobWatcher\BasicDruidJobWatcher;
 use PhpDruidIngest\Fetcher\ReferralBatchFetcher;
 use PhpDruidIngest\QueryGenerator\SimpleIndexQueryGenerator;
 use PhpDruidIngest\ResponseHandler\IndexingTaskResponseHandler;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Logger\ConsoleLogger;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -75,41 +80,100 @@ HELPBLURB
 
     protected function ingest($formattedStartTime, $formattedEndTime, InputInterface $input, OutputInterface $output)
     {
+        /** @var $logger LoggerInterface */
+        $logger = new ConsoleLogger($output);
+
         $fetcher = new ReferralBatchFetcher();
+        $fetcher->setOutput($logger);
         $fetcher->setMySqlCredentials($this->host, $this->user, $this->pass, $this->db);
         $fetcher->setTimeWindow( $formattedStartTime, $formattedEndTime );
 
-        $preparer = new LocalFilePreparer();
+        $filePathToUse = '/tmp/referral_temp_' . time() . '.json';
+
+        $preparer = new LocalPhpArrayToJsonFilePreparer();
+        $preparer->setFilePath( $filePathToUse );
 
         $indexTaskQueryGenerator = new SimpleIndexQueryGenerator();
 
         $indexTaskQueryParameters = new IndexTaskQueryParameters();
+        $indexTaskQueryParameters->dataSource = 'referral-report-referrals-cli-test';
+        $indexTaskQueryParameters->setIntervals( $formattedStartTime, $formattedEndTime );
+        $indexTaskQueryParameters->dimensions = array('referral_id', 'facility_id', 'patient_id');
+        $indexTaskQueryParameters->timeDimension = 'date';
+        // TODO Fill in with dimensions, etc for referrals.
+        $indexTaskQueryParameters->validate();
 
-        $basicDruidJobWatcher = new BasicDruidJobWatcher();
+        $basicDruidJobWatcher = new CallbackBasedIndexingTaskDruidJobWatcher();
+        /**
+         * @param CallbackBasedIndexingTaskDruidJobWatcher $jobWatcher
+         */
+        $myOnPendingCallback = function($jobWatcher) use ($output) {
+            $output->writeln('Druid says the job is still running. Trying again in ' . $jobWatcher->watchAttemptDelay . ' seconds...');
+        };
+
+        $basicDruidJobWatcher->setOnJobPending($myOnPendingCallback);
+        $basicDruidJobWatcher->setOutput($logger);
+        $basicDruidJobWatcher->setDruidIp( $this->druidIp );
+        $basicDruidJobWatcher->setDruidPort( $this->druidPort );
 
         $druidQueryExecutor = new DruidNodeDruidQueryExecutor($this->druidIp, $this->druidPort, '/druid/indexer/v1/task');
 
         try {
 
+            $output->writeln("Fetching referral data from source...");
+
             $fetchedData = $fetcher->fetch();
 
             ////////////////////////////////
-            $exampleData = print_r( $fetchedData[ 0 ], true );
-            $output->writeln( "Fetched " . count($fetchedData) . " referrals.\nOne referral looks like: " . $exampleData . "\n" );
-            ////////////////////////////////
+            $output->writeln( "Fetched " . count($fetchedData) . " referrals." );
+            if ( count( $fetchedData ) === 0 ) {
+                $output->writeln( "Fetched no records, so stopping here." );
+                return;
+            }
+
+            if ( $output->getVerbosity() >= OutputInterface::VERBOSITY_VERY_VERBOSE ) {
+                $exampleData = print_r( $fetchedData[0], true );
+                $output->writeln("The first record looks like:\n\n" . $exampleData . "\n\n");
+            }
+
 
             $pathOfPreparedData = $preparer->prepare($fetchedData);
 
-            $indexBody = $indexTaskQueryGenerator->generateIndex( $pathOfPreparedData, $indexTaskQueryParameters );
+            $indexTaskQueryParameters->setFilePath($pathOfPreparedData);
+            $output->writeln('File is prepared for druid at "' . $pathOfPreparedData . '"');
+
+            $output->writeln('Requesting Druid index the source data into dataSource "' . $indexTaskQueryParameters->dataSource . '"');
 
             $ingestionTaskId = $druidQueryExecutor->executeQuery($indexTaskQueryGenerator, $indexTaskQueryParameters, new IndexingTaskResponseHandler());
+            $output->writeln('Druid has received the job. Job id is "' . $ingestionTaskId . '"');
 
-            var_dump('IndexTaskResponseHandler returned task id:');
-            var_dump( $ingestionTaskId );
-
+            $output->writeln('Checking Druid for the job status:');
             $success = $basicDruidJobWatcher->watchJob( $ingestionTaskId );
 
-            $output->writeln( $success );
+
+
+            if ( $success )
+            {
+                $output->writeln('Done checking druid job status.');
+
+                $output->writeln('Cleaning up prepared file "' . $pathOfPreparedData . '"...');
+
+                $cleanedUpSuccess = $preparer->cleanup($pathOfPreparedData);
+
+                if ( $cleanedUpSuccess ) {
+                    $output->writeln('Succesfully cleaned up file.');
+                }
+            }
+            else
+            {
+                $output->writeln('Job failed or did not finish in time.');
+                $output->writeln('In the future I will ask you if you want to delete the temporary file but for now I will leave it in place so that ingestion is not interrupted.');
+            }
+
+            $output->writeln('Done.');
+
+            ////////////////////////////////
+
 
         } catch ( \Exception $e ) {
             throw $e;

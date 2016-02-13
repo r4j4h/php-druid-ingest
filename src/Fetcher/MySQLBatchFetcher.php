@@ -12,15 +12,26 @@ use PhpDruidIngest\Interfaces\IFetcher;
 use Psr\Log\LoggerInterface;
 
 /**
- * Class ReferralBatchFetcher fetches Referral Data from an app MySQL database.
- * It has been superceded by MySQLBatchFetcher and this class will be removed soon. It is a job for a consumer, not
- * this library itself.
+ * Class MySQLBatchFetcher fetches data from an app MySQL database using a query.
  *
- * @deprecated
  * @package PhpDruidIngest\Fetcher
  */
-class ReferralBatchFetcher extends BaseFetcher implements IFetcher
+class MySQLBatchFetcher extends BaseFetcher implements IFetcher
 {
+
+    /**
+     * MySQL Query Template that is expecting to receive a start and end date as parameters via prepareQuery.
+     *
+     * The parameters are inserted via string replacement:
+     * {STARTDATE} and {ENDDATE}
+     *
+     * An example template:
+     * "SELECT id FROM things WHERE date BETWEEN '{STARTDATE}' AND '{ENDDATE}';"
+     *
+     * @var string
+     */
+    protected $query;
+
 
     /**
      * @var Interval
@@ -75,15 +86,6 @@ class ReferralBatchFetcher extends BaseFetcher implements IFetcher
         $this->intervals = new Interval($intervalStart, $intervalEnd);
     }
 
-    protected $contactsQuery = <<<QUERY
-
-QUERY;
-
-
-    protected $physicianQuery = <<<QUERY
-
-QUERY;
-
 
     /**
      * Fetch data.
@@ -96,8 +98,11 @@ QUERY;
         if ( !$this->intervals ) {
             throw new RuntimeException('Fetch ingestion interval not configured.');
         }
-        if ( $this->host == '' || $this->user == '' || !$this->pass || !$this->db ) {
+        if ( $this->host == '' || $this->user == '' || !$this->db ) {
             throw new RuntimeException('Database configuration not configured.');
+        }
+        if ( !$this->pass ) {
+            $this->pass = '';
         }
 
 
@@ -115,8 +120,7 @@ QUERY;
         }
 
 
-        $preparedQuery = $this->prepareQuery( $this->contactsQuery, $this->intervals->getStart(), $this->intervals->getEnd() );
-//        $preparedQuery = $this->prepareQuery( $this->physicianQuery, $this->timeWindowStart, $this->timeWindowEnd );
+        $preparedQuery = $this->prepareQuery( $this->query, $this->intervals->getStart(), $this->intervals->getEnd() );
 
         if ($this->output) {
             $this->output->debug("Prepared query:\n\n" . $preparedQuery . "\n\n");
@@ -192,10 +196,6 @@ QUERY;
      */
     protected function processRow($row)
     {
-        // todo could fail here ..needs exception!
-        $timeForDruid = new DruidTime( $row['date'] );
-        $row['date'] = $timeForDruid->formatTimeForDruid();
-
         return $row;
     }
 
