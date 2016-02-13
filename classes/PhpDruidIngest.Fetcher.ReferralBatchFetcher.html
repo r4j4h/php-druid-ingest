@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+    <meta charset="utf-8"/>
+    <title>    API Documentation &raquo; \PhpDruidIngest\Fetcher\ReferralBatchFetcher
+</title>
+    <meta name="author" content=""/>
+    <meta name="description" content=""/>
+
+            <link href="../css/template.css" rel="stylesheet" media="all"/>
+    
+            <!--[if lt IE 9]>
+        <script src="https://html5shim.googlecode.com/svn/trunk/html5.js" type="text/javascript"></script>
+        <![endif]-->
+        <script src="../js/jquery-1.7.1.min.js" type="text/javascript"></script>
+        <script src="../js/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script>
+        <script src="../js/jquery.mousewheel.min.js" type="text/javascript"></script>
+        <script src="../js/bootstrap.js" type="text/javascript"></script>
+        <script src="../js/template.js" type="text/javascript"></script>
+        <script src="../js/prettify/prettify.min.js" type="text/javascript"></script>
+    
+            <link rel="shortcut icon" href="../img/favicon.ico"/>
+        <link rel="apple-touch-icon" href="../img/apple-touch-icon.png"/>
+        <link rel="apple-touch-icon" sizes="72x72" href="../img/apple-touch-icon-72x72.png"/>
+        <link rel="apple-touch-icon" sizes="114x114" href="../img/apple-touch-icon-114x114.png"/>
+    </head>
+<body>
+
+        <div class="navbar navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container">
+                <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                    <span class="icon-bar"></span> <span class="icon-bar"></span>
+                    <span class="icon-bar"></span> </a>
+                <a class="brand" href="../index.html">API Documentation</a>
+
+                <div class="nav-collapse">
+                    <ul class="nav">
+                        <li class="dropdown">
+                            <a href="#api" class="dropdown-toggle" data-toggle="dropdown">
+                                API Documentation <b class="caret"></b>
+                            </a>
+                            <ul class="dropdown-menu">
+                                                                    <li><a>Namespaces</a></li>
+                                                                        <li><a href="../namespaces/PhpDruidIngest.html">PhpDruidIngest</a></li>
+                                                                        <li><a href="../namespaces/ReferralIngester.html">ReferralIngester</a></li>
+                                                                        <li><a href="../namespaces/DruidFamiliar.html">DruidFamiliar</a></li>
+                                                                                                                                </ul>
+                        </li>
+                        <li class="dropdown" id="charts-menu">
+                            <a href="#charts" class="dropdown-toggle" data-toggle="dropdown">
+                                Charts <b class="caret"></b>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="../graph_class.html">
+                                        <i class="icon-list-alt"></i>&#160;Class hierarchy diagram
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="dropdown" id="reports-menu">
+                            <a href="#reports" class="dropdown-toggle" data-toggle="dropdown">
+                                Reports <b class="caret"></b>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="../errors.html">
+                                        <i class="icon-list-alt"></i>&#160;Errors
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="../markers.html">
+                                        <i class="icon-list-alt"></i>&#160;Markers
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="../deprecated.html">
+                                        <i class="icon-list-alt"></i>&#160;Deprecated
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="go_to_top">
+            <a href="#___" style="color: inherit">Back to top&#160;&#160;<i class="icon-upload icon-white"></i></a>
+        </div>
+    </div>
+    
+    <div id="___" class="container">
+        <noscript>
+            <div class="alert alert-warning">
+                Javascript is disabled; several features are only available if Javascript is enabled.
+            </div>
+        </noscript>
+
+        
+            <style>
+        .deprecated h2 {
+            text-decoration: line-through;
+        }
+    </style>
+    <div class="row">
+        <div class="span4">
+                    <div class="btn-group view pull-right" data-toggle="buttons-radio">
+        <button class="btn details" title="Show descriptions and method names"><i class="icon-list"></i></button>
+        <button class="btn simple" title="Show only method names"><i class="icon-align-justify"></i></button>
+    </div>
+    <div class="btn-group visibility" data-toggle="buttons-checkbox">
+        <button class="btn public active" title="Show public elements">Public</button>
+        <button class="btn protected" title="Show protected elements">Protected</button>
+        <button class="btn private" title="Show private elements">Private</button>
+        <button class="btn inherited active" title="Show inherited elements">Inherited</button>
+    </div>
+
+        <ul class="side-nav nav nav-list">
+        <li class="nav-header">
+            <i class="icon-custom icon-method"></i> Methods
+            <ul>
+                                                                                                    <li class="method public">
+        <a href="#method_fetch" title="fetch :: Fetch data.">
+            <span class="description">Fetch data.</span><pre>fetch</pre>
+        </a>
+    </li>
+
+                                                                                                                                                                <li class="method public">
+        <a href="#method_getOutput" title="getOutput :: ">
+            <span class="description"></span><pre>getOutput</pre>
+        </a>
+    </li>
+
+                                                                                                        <li class="method public">
+        <a href="#method_prepareQuery" title="prepareQuery :: Bind the start and end ingestion date windows to a query.">
+            <span class="description">Bind the start and end ingestion date windows to a query.</span><pre>prepareQuery</pre>
+        </a>
+    </li>
+
+                                                                                                                                                                <li class="method public">
+        <a href="#method_setIntervals" title="setIntervals :: Set the interval boundaries for this query.">
+            <span class="description">Set the interval boundaries for this query.</span><pre>setIntervals</pre>
+        </a>
+    </li>
+
+                                                                                                        <li class="method public">
+        <a href="#method_setMySqlCredentials" title="setMySqlCredentials :: Set the MySQL DB credentials for fetching.">
+            <span class="description">Set the MySQL DB credentials for fetching.</span><pre>setMySqlCredentials</pre>
+        </a>
+    </li>
+
+                                                                                                        <li class="method public">
+        <a href="#method_setOutput" title="setOutput :: ">
+            <span class="description"></span><pre>setOutput</pre>
+        </a>
+    </li>
+
+                                                                                                        <li class="method public">
+        <a href="#method_setTimeWindow" title="setTimeWindow :: Set the time window for fetching.">
+            <span class="description">Set the time window for fetching.</span><pre>setTimeWindow</pre>
+        </a>
+    </li>
+
+                                                </ul>
+        </li>
+        <li class="nav-header protected">» Protected
+            <ul>
+                                                                                                                <li class="method protected">
+                            <a href="#method_getMysqli" title="getMysqli :: ">
+                                <span class="description"></span><pre>getMysqli</pre>
+                            </a>
+                        </li>
+                                                                                                                                                        <li class="method protected">
+                            <a href="#method_processRow" title="processRow :: Process an item in the fetched items array">
+                                <span class="description">Process an item in the fetched items array</span><pre>processRow</pre>
+                            </a>
+                        </li>
+                                                                                                                                                                                                </ul>
+        </li>
+        <li class="nav-header private">» Private
+            <ul>
+                                                                                                                                                                                                                                                                                                                                                                                </ul>
+        </li>
+        <li class="nav-header">
+            <i class="icon-custom icon-constant"></i> Constants
+            <ul>
+                            </ul>
+        </li>
+    </ul>
+
+
+        </div>
+
+        <div class="span8">
+            <div class="element class">
+                <h1>ReferralBatchFetcher</h1>
+                <small style="display: block; text-align: right">
+                                            Extends <a href="../classes/PhpDruidIngest.Abstracts.BaseFetcher.html">\PhpDruidIngest\Abstracts\BaseFetcher</a>
+                                                                Implements <a href="../classes/PhpDruidIngest.Interfaces.IFetcher.html">\PhpDruidIngest\Interfaces\IFetcher</a>
+                                    </small>
+                <p class="short_description">Class ReferralBatchFetcher fetches Referral Data from an app MySQL database.</p>
+                <div class="details">
+                    <div class="long_description">
+                        <p>It has been superceded by MySQLBatchFetcher and this class will be removed soon. It is a job for a consumer, not
+this library itself.</p>
+                    </div>
+                    <table class="table table-bordered">
+                                                                                    <tr>
+                                    <th>
+                                        deprecated
+                                                                            </th>
+                                    <td>
+                                                                                    
+                                                                                
+                                    </td>
+                                </tr>
+                                                                                                                <tr>
+                                    <th>
+                                        package
+                                                                            </th>
+                                    <td>
+                                                                                    
+                                                                                <p>PhpDruidIngest\Fetcher</p>
+                                    </td>
+                                </tr>
+                                                                                                                                                                                </table>
+
+                    <h3><i class="icon-custom icon-method"></i> Methods</h3>
+                                                                <a id="method_fetch"></a>
+                        <div class="element clickable method public  method_fetch" data-toggle="collapse" data-target=".method_fetch .collapse">
+                            <h2>Fetch data.</h2>
+                            <pre>fetch() : array|mixed</pre>
+                            <div class="labels">
+                                                                                                                                                                                            </div>
+
+                            
+                            <div class="row collapse">
+                                <div class="detail-description">
+                                    <div class="long_description"></div>
+
+                                    <table class="table">
+                                                                                    <tr>
+                                                <th>
+                                                    throws
+                                                </th>
+                                                <td>
+                                                                                                                                                                        
+                                                                                                                                                                        
+                                                                                                    </td>
+                                            </tr>
+                                                                                    <tr>
+                                                <th>
+                                                    
+                                                </th>
+                                                <td>
+                                                                                                    </td>
+                                            </tr>
+                                                                            </table>
+
+                                    
+                                                                            <h3>Response</h3>
+                                        <code>array|mixed</code><p></p>
+                                                                    </div>
+                            </div>
+
+                        </div>
+                                            <a id="method_getMysqli"></a>
+                        <div class="element clickable method protected  method_getMysqli" data-toggle="collapse" data-target=".method_getMysqli .collapse">
+                            <h2>getMysqli</h2>
+                            <pre>getMysqli( $host,  $user,  $pass,  $db) : \mysqli</pre>
+                            <div class="labels">
+                                                                                                                                                                                            </div>
+
+                            
+                            <div class="row collapse">
+                                <div class="detail-description">
+                                    <div class="long_description"></div>
+
+                                    <table class="table">
+                                                                            </table>
+
+                                                                            <h3>Arguments</h3>
+                                                                                    <div class="subelement argument">
+                                                <h4>$host</h4>
+                                                <code></code><p></p>
+                                            </div>
+                                                                                    <div class="subelement argument">
+                                                <h4>$user</h4>
+                                                <code></code><p></p>
+                                            </div>
+                                                                                    <div class="subelement argument">
+                                                <h4>$pass</h4>
+                                                <code></code><p></p>
+                                            </div>
+                                                                                    <div class="subelement argument">
+                                                <h4>$db</h4>
+                                                <code></code><p></p>
+                                            </div>
+                                                                            
+                                                                            <h3>Response</h3>
+                                        <code>\mysqli</code><p></p>
+                                                                    </div>
+                            </div>
+
+                        </div>
+                                            <a id="method_getOutput"></a>
+                        <div class="element clickable method public  method_getOutput" data-toggle="collapse" data-target=".method_getOutput .collapse">
+                            <h2>getOutput</h2>
+                            <pre>getOutput() : \Psr\Log\LoggerInterface</pre>
+                            <div class="labels">
+                                                                                                                                                                                            </div>
+
+                            
+                            <div class="row collapse">
+                                <div class="detail-description">
+                                    <div class="long_description"></div>
+
+                                    <table class="table">
+                                                                                    <tr>
+                                                <th>
+                                                    
+                                                </th>
+                                                <td>
+                                                                                                    </td>
+                                            </tr>
+                                                                            </table>
+
+                                    
+                                                                            <h3>Response</h3>
+                                        <code>\Psr\Log\LoggerInterface</code><p></p>
+                                                                    </div>
+                            </div>
+
+                        </div>
+                                            <a id="method_prepareQuery"></a>
+                        <div class="element clickable method public  method_prepareQuery" data-toggle="collapse" data-target=".method_prepareQuery .collapse">
+                            <h2>Bind the start and end ingestion date windows to a query.</h2>
+                            <pre>prepareQuery(String $query, String $start, String $end) : String</pre>
+                            <div class="labels">
+                                                                                                                                                                                            </div>
+
+                            
+                            <div class="row collapse">
+                                <div class="detail-description">
+                                    <div class="long_description"></div>
+
+                                    <table class="table">
+                                                                            </table>
+
+                                                                            <h3>Arguments</h3>
+                                                                                    <div class="subelement argument">
+                                                <h4>$query</h4>
+                                                <code>String</code><p><p>Query with {STARTDATE} and {ENDDATE} for value substituion</p></p>
+                                            </div>
+                                                                                    <div class="subelement argument">
+                                                <h4>$start</h4>
+                                                <code>String</code><p><p>ISO Date Time string</p></p>
+                                            </div>
+                                                                                    <div class="subelement argument">
+                                                <h4>$end</h4>
+                                                <code>String</code><p><p>ISO Date Time string</p></p>
+                                            </div>
+                                                                            
+                                                                            <h3>Response</h3>
+                                        <code>String</code><p><p>Prepared query string</p></p>
+                                                                    </div>
+                            </div>
+
+                        </div>
+                                            <a id="method_processRow"></a>
+                        <div class="element clickable method protected  method_processRow" data-toggle="collapse" data-target=".method_processRow .collapse">
+                            <h2>Process an item in the fetched items array</h2>
+                            <pre>processRow( $row) : mixed</pre>
+                            <div class="labels">
+                                                                                                                                                                                            </div>
+
+                            
+                            <div class="row collapse">
+                                <div class="detail-description">
+                                    <div class="long_description"></div>
+
+                                    <table class="table">
+                                                                            </table>
+
+                                                                            <h3>Arguments</h3>
+                                                                                    <div class="subelement argument">
+                                                <h4>$row</h4>
+                                                <code></code><p></p>
+                                            </div>
+                                                                            
+                                                                            <h3>Response</h3>
+                                        <code>mixed</code><p></p>
+                                                                    </div>
+                            </div>
+
+                        </div>
+                                            <a id="method_setIntervals"></a>
+                        <div class="element clickable method public  method_setIntervals" data-toggle="collapse" data-target=".method_setIntervals .collapse">
+                            <h2>Set the interval boundaries for this query.</h2>
+                            <pre>setIntervals(string $intervalStart = &quot;1970-01-01 01:30:00&quot;, string $intervalEnd = &quot;3030-01-01 01:30:00&quot;) </pre>
+                            <div class="labels">
+                                                                                                                                                                                            </div>
+
+                            
+                            <div class="row collapse">
+                                <div class="detail-description">
+                                    <div class="long_description"></div>
+
+                                    <table class="table">
+                                                                                    <tr>
+                                                <th>
+                                                    
+                                                </th>
+                                                <td>
+                                                                                                    </td>
+                                            </tr>
+                                                                            </table>
+
+                                                                            <h3>Arguments</h3>
+                                                                                    <div class="subelement argument">
+                                                <h4>$intervalStart</h4>
+                                                <code>string</code><p></p>
+                                            </div>
+                                                                                    <div class="subelement argument">
+                                                <h4>$intervalEnd</h4>
+                                                <code>string</code><p></p>
+                                            </div>
+                                                                            
+                                                                    </div>
+                            </div>
+
+                        </div>
+                                            <a id="method_setMySqlCredentials"></a>
+                        <div class="element clickable method public  method_setMySqlCredentials" data-toggle="collapse" data-target=".method_setMySqlCredentials .collapse">
+                            <h2>Set the MySQL DB credentials for fetching.</h2>
+                            <pre>setMySqlCredentials( $host,  $user,  $pass,  $db) </pre>
+                            <div class="labels">
+                                                                                                                                                                                            </div>
+
+                            
+                            <div class="row collapse">
+                                <div class="detail-description">
+                                    <div class="long_description"></div>
+
+                                    <table class="table">
+                                                                                    <tr>
+                                                <th>
+                                                    
+                                                </th>
+                                                <td>
+                                                                                                    </td>
+                                            </tr>
+                                                                            </table>
+
+                                                                            <h3>Arguments</h3>
+                                                                                    <div class="subelement argument">
+                                                <h4>$host</h4>
+                                                <code></code><p></p>
+                                            </div>
+                                                                                    <div class="subelement argument">
+                                                <h4>$user</h4>
+                                                <code></code><p></p>
+                                            </div>
+                                                                                    <div class="subelement argument">
+                                                <h4>$pass</h4>
+                                                <code></code><p></p>
+                                            </div>
+                                                                                    <div class="subelement argument">
+                                                <h4>$db</h4>
+                                                <code></code><p></p>
+                                            </div>
+                                                                            
+                                                                    </div>
+                            </div>
+
+                        </div>
+                                            <a id="method_setOutput"></a>
+                        <div class="element clickable method public  method_setOutput" data-toggle="collapse" data-target=".method_setOutput .collapse">
+                            <h2>setOutput</h2>
+                            <pre>setOutput(\Psr\Log\LoggerInterface $output) </pre>
+                            <div class="labels">
+                                                                                                                                                                                            </div>
+
+                            
+                            <div class="row collapse">
+                                <div class="detail-description">
+                                    <div class="long_description"></div>
+
+                                    <table class="table">
+                                                                                    <tr>
+                                                <th>
+                                                    
+                                                </th>
+                                                <td>
+                                                                                                    </td>
+                                            </tr>
+                                                                            </table>
+
+                                                                            <h3>Arguments</h3>
+                                                                                    <div class="subelement argument">
+                                                <h4>$output</h4>
+                                                <code>\Psr\Log\LoggerInterface</code><p></p>
+                                            </div>
+                                                                            
+                                                                    </div>
+                            </div>
+
+                        </div>
+                                            <a id="method_setTimeWindow"></a>
+                        <div class="element clickable method public  method_setTimeWindow" data-toggle="collapse" data-target=".method_setTimeWindow .collapse">
+                            <h2>Set the time window for fetching.</h2>
+                            <pre>setTimeWindow(string $start, string $end) : string</pre>
+                            <div class="labels">
+                                                                                                                                                                                            </div>
+
+                            
+                            <div class="row collapse">
+                                <div class="detail-description">
+                                    <div class="long_description"></div>
+
+                                    <table class="table">
+                                                                            </table>
+
+                                                                            <h3>Arguments</h3>
+                                                                                    <div class="subelement argument">
+                                                <h4>$start</h4>
+                                                <code>string</code><p><p>ISO DateTime for start of ingestion window</p></p>
+                                            </div>
+                                                                                    <div class="subelement argument">
+                                                <h4>$end</h4>
+                                                <code>string</code><p><p>ISO DateTime for end of ingestion window</p></p>
+                                            </div>
+                                                                            
+                                                                            <h3>Response</h3>
+                                        <code>string</code><p></p>
+                                                                    </div>
+                            </div>
+
+                        </div>
+                    
+                    
+                                                                <h3><i class="icon-custom icon-property"></i> Properties</h3>
+                                                    <a id="property_intervals"> </a>
+                            <div class="element clickable property  protected property_intervals" data-toggle="collapse" data-target=".property_intervals .collapse">
+                                <h2>intervals</h2>
+                                <pre>intervals : \DruidFamiliar\Interval</pre>
+                                <div class="labels">
+                                                                                                        </div>
+                                <div class="row collapse">
+                                    <div class="detail-description">
+                                        <div class="long_description"></div>
+
+                                        <table class="table">
+                                                                                            <tr>
+                                                    <th>
+                                                        var
+                                                    </th>
+                                                    <td>
+                                                                                                                    
+                                                                                                            </td>
+                                                </tr>
+                                                                                    </table>
+
+                                                                                    <h3>Type(s)</h3>
+                                            <code><a href="../classes/DruidFamiliar.Interval.html">\DruidFamiliar\Interval</a></code>
+                                                                            </div>
+                                </div>
+                            </div>
+                                                    <a id="property_host"> </a>
+                            <div class="element clickable property  protected property_host" data-toggle="collapse" data-target=".property_host .collapse">
+                                <h2>host</h2>
+                                <pre>host : </pre>
+                                <div class="labels">
+                                                                                                        </div>
+                                <div class="row collapse">
+                                    <div class="detail-description">
+                                        <div class="long_description"></div>
+
+                                        <table class="table">
+                                                                                            <tr>
+                                                    <th>
+                                                        
+                                                    </th>
+                                                    <td>
+                                                                                                            </td>
+                                                </tr>
+                                                                                    </table>
+
+                                                                                    <h3>Type(s)</h3>
+                                            <code></code>
+                                                                            </div>
+                                </div>
+                            </div>
+                                                    <a id="property_user"> </a>
+                            <div class="element clickable property  protected property_user" data-toggle="collapse" data-target=".property_user .collapse">
+                                <h2>user</h2>
+                                <pre>user : </pre>
+                                <div class="labels">
+                                                                                                        </div>
+                                <div class="row collapse">
+                                    <div class="detail-description">
+                                        <div class="long_description"></div>
+
+                                        <table class="table">
+                                                                                            <tr>
+                                                    <th>
+                                                        
+                                                    </th>
+                                                    <td>
+                                                                                                            </td>
+                                                </tr>
+                                                                                    </table>
+
+                                                                                    <h3>Type(s)</h3>
+                                            <code></code>
+                                                                            </div>
+                                </div>
+                            </div>
+                                                    <a id="property_pass"> </a>
+                            <div class="element clickable property  protected property_pass" data-toggle="collapse" data-target=".property_pass .collapse">
+                                <h2>pass</h2>
+                                <pre>pass : </pre>
+                                <div class="labels">
+                                                                                                        </div>
+                                <div class="row collapse">
+                                    <div class="detail-description">
+                                        <div class="long_description"></div>
+
+                                        <table class="table">
+                                                                                            <tr>
+                                                    <th>
+                                                        
+                                                    </th>
+                                                    <td>
+                                                                                                            </td>
+                                                </tr>
+                                                                                    </table>
+
+                                                                                    <h3>Type(s)</h3>
+                                            <code></code>
+                                                                            </div>
+                                </div>
+                            </div>
+                                                    <a id="property_db"> </a>
+                            <div class="element clickable property  protected property_db" data-toggle="collapse" data-target=".property_db .collapse">
+                                <h2>db</h2>
+                                <pre>db : </pre>
+                                <div class="labels">
+                                                                                                        </div>
+                                <div class="row collapse">
+                                    <div class="detail-description">
+                                        <div class="long_description"></div>
+
+                                        <table class="table">
+                                                                                            <tr>
+                                                    <th>
+                                                        
+                                                    </th>
+                                                    <td>
+                                                                                                            </td>
+                                                </tr>
+                                                                                    </table>
+
+                                                                                    <h3>Type(s)</h3>
+                                            <code></code>
+                                                                            </div>
+                                </div>
+                            </div>
+                                                    <a id="property_output"> </a>
+                            <div class="element clickable property  protected property_output" data-toggle="collapse" data-target=".property_output .collapse">
+                                <h2>output</h2>
+                                <pre>output : \Psr\Log\LoggerInterface</pre>
+                                <div class="labels">
+                                                                                                        </div>
+                                <div class="row collapse">
+                                    <div class="detail-description">
+                                        <div class="long_description"></div>
+
+                                        <table class="table">
+                                                                                            <tr>
+                                                    <th>
+                                                        var
+                                                    </th>
+                                                    <td>
+                                                                                                                    
+                                                                                                            </td>
+                                                </tr>
+                                                                                    </table>
+
+                                                                                    <h3>Type(s)</h3>
+                                            <code>\Psr\Log\LoggerInterface</code>
+                                                                            </div>
+                                </div>
+                            </div>
+                                                    <a id="property_contactsQuery"> </a>
+                            <div class="element clickable property  protected property_contactsQuery" data-toggle="collapse" data-target=".property_contactsQuery .collapse">
+                                <h2>contactsQuery</h2>
+                                <pre>contactsQuery : </pre>
+                                <div class="labels">
+                                                                                                        </div>
+                                <div class="row collapse">
+                                    <div class="detail-description">
+                                        <div class="long_description"></div>
+
+                                        <table class="table">
+                                                                                            <tr>
+                                                    <th>
+                                                        
+                                                    </th>
+                                                    <td>
+                                                                                                            </td>
+                                                </tr>
+                                                                                    </table>
+
+                                                                                    <h3>Type(s)</h3>
+                                            <code></code>
+                                                                            </div>
+                                </div>
+                            </div>
+                                                    <a id="property_physicianQuery"> </a>
+                            <div class="element clickable property  protected property_physicianQuery" data-toggle="collapse" data-target=".property_physicianQuery .collapse">
+                                <h2>physicianQuery</h2>
+                                <pre>physicianQuery : </pre>
+                                <div class="labels">
+                                                                                                        </div>
+                                <div class="row collapse">
+                                    <div class="detail-description">
+                                        <div class="long_description"></div>
+
+                                        <table class="table">
+                                                                                            <tr>
+                                                    <th>
+                                                        
+                                                    </th>
+                                                    <td>
+                                                                                                            </td>
+                                                </tr>
+                                                                                    </table>
+
+                                                                                    <h3>Type(s)</h3>
+                                            <code></code>
+                                                                            </div>
+                                </div>
+                            </div>
+                                                            </div>
+            </div>
+            <a id="\PhpDruidIngest\Fetcher\ReferralBatchFetcher"></a>
+            <ul class="breadcrumb">
+                <li><a href="../index.html"><i class="icon-custom icon-class"></i></a></li>
+                    
+    
+    <li><span class="divider">\</span><a href="../namespaces/PhpDruidIngest.Fetcher.html">Fetcher</a></li>
+
+                <li class="active"><span class="divider">\</span><a href="../classes/PhpDruidIngest.Fetcher.ReferralBatchFetcher.html">ReferralBatchFetcher</a></li>
+            </ul>
+        </div>
+    </div>
+
+    </div>
+
+        <footer class="span12">
+            Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by
+            <a href="http://glyphicons.com/">Glyphicons</a>.<br/>
+            Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor </a> and<br/>
+            generated on Sat, 13 Feb 2016 05:07:53 -0600.<br/>
+    </footer>
+    </body>
+</html>
